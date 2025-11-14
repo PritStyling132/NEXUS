@@ -33,4 +33,4 @@ const OTPInput = ({ otp, setOtp }: Props) => {
     )
 }
 
-export default OTPInput;
+export default OTPInput

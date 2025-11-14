@@ -1,23 +1,20 @@
-//this is our redux store
 "use client"
-import { combineReducers, configureStore } from "@reduxjs/toolkit"
+import { configureStore } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useSelector } from "react-redux"
 
-const rootReducer = combineReducers({
-    //add all your reducers here
-})
-
+// Create store without combineReducers when there are no reducers yet
 export const store = configureStore({
-    reducer: rootReducer,
+    reducer: {},
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
         }),
+    devTools: false,
 })
 
-//we export these type definitions
+// Export type definitions
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
-//this useAppSelector has type definitions added
+// useAppSelector with type definitions
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
