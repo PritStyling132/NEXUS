@@ -11,10 +11,10 @@ const PricingSection = dynamic(
 )
 export default function Home() {
     return (
-        <main className="md:px-10 py-20 flex flex-col gap-36">
+        <main className="px-4 sm:px-6 md:px-10 lg:px-12 py-12 sm:py-16 md:py-20 flex flex-col gap-20 sm:gap-28 md:gap-36">
             <div>
                 <CallToAction />
-                <div className="mt-3">
+                <div className="mt-6 sm:mt-8 md:mt-10">
                     <DashboardSinppet />
                 </div>
             </div>

@@ -5,7 +5,7 @@ type GlassSheetProps = {
     children: React.ReactNode
     trigger: React.ReactNode
     className?: string
-    triggerClass: string
+    triggerClass?: string
 }
 
 const GlassSheet = ({
@@ -20,9 +20,10 @@ const GlassSheet = ({
                 {trigger}
             </SheetTrigger>
             <SheetContent
-            
                 className={cn(
-                    "bg-clip-padding backdrop-filter backdrop--blur__safari backdrop-blur-3xl bg-opacity-20 bg-themeGray border-themeGray",
+                    "bg-background/95 dark:bg-themeGray/95 backdrop-blur-2xl",
+                    "border-border dark:border-themeGray",
+                    "transition-all duration-300",
                     className,
                 )}
             >

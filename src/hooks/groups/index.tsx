@@ -1,5 +1,3 @@
-
-
 // "use client"
 
 // import { useEffect, useState } from "react"
@@ -80,7 +78,7 @@
 
 // export const useGroupSettings = (groupid: string) => {
 //   const router = useRouter()
-  
+
 //   const { data } = useQuery({
 //     queryKey: ["group-info"],
 //     queryFn: () => onGetGroupInfo(groupid),
@@ -220,7 +218,7 @@
 //           description: "Oops! looks like your form is empty",
 //         })
 //       }
-      
+
 //       return toast("Success", {
 //         description: "Group data updated",
 //       })
@@ -251,249 +249,290 @@
 //   }
 // }
 
-
-
 "use client"
 
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { onSearchGroups, onUpdateGroupSettings } from "@/actions/groups"
 import { onGetGroupInfo } from "@/actions/groups"
-import { JSONContent } from "novel"
 import type { AppDispatch } from "@/redux/store"
 import { onClearSearch, onSearch } from "@/redux/slices/search-slice"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { GroupSettingsSchema } from "@/components/forms/group-settings/schema"
 import { z } from "zod"
-import { upload } from "@/lib/uploadcare"
+import { uploadFileAndGetPath } from "@/lib/uploadcare"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
 export const useSearch = (search: "GROUPS" | "POSTS") => {
-  const [query, setQuery] = useState<string>("")
-  const [debounce, setDebounce] = useState<string>("")
+    const [query, setQuery] = useState<string>("")
+    const [debounce, setDebounce] = useState<string>("")
 
-  const dispatch: AppDispatch = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
 
-  const onSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-  }
-
-  useEffect(() => {
-    const delayInputTimeoutId = setTimeout(() => {
-      setDebounce(query)
-    }, 1000)
-
-    return () => clearTimeout(delayInputTimeoutId)
-  }, [query])
-
-  const { refetch, data, isFetched, isFetching } = useQuery({
-    queryKey: ["search-data", debounce],
-    queryFn: async ({ queryKey }) => {
-      if (search === "GROUPS") {
-        const groups = await onSearchGroups(search, queryKey[1] as string)
-        return groups
-      }
-      return null
-    },
-    enabled: false,
-  })
-
-  useEffect(() => {
-    if (isFetching) {
-      dispatch(
-        onSearch({
-          isSearching: true,
-          data: [],
-        })
-      )
+    const onSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value)
     }
 
-    if (isFetched) {
-      dispatch(
-        onSearch({
-          isSearching: false,
-          status: data?.status as number,
-          data: data?.groups || [],
-          debounce,
-        })
-      )
-    }
-  }, [isFetching, isFetched, data, dispatch, debounce])
+    useEffect(() => {
+        const delayInputTimeoutId = setTimeout(() => {
+            setDebounce(query)
+        }, 1000)
 
-  useEffect(() => {
-    if (debounce) refetch()
-    if (!debounce) dispatch(onClearSearch())
-  }, [debounce, refetch, dispatch])
+        return () => clearTimeout(delayInputTimeoutId)
+    }, [query])
 
-  return { query, onSearchQuery }
+    const { refetch, data, isFetched, isFetching } = useQuery({
+        queryKey: ["search-data", debounce],
+        queryFn: async ({ queryKey }) => {
+            if (search === "GROUPS") {
+                const groups = await onSearchGroups(
+                    search,
+                    queryKey[1] as string,
+                )
+                return groups
+            }
+            return null
+        },
+        enabled: false,
+    })
+
+    useEffect(() => {
+        if (isFetching) {
+            dispatch(
+                onSearch({
+                    isSearching: true,
+                    data: [],
+                }),
+            )
+        }
+
+        if (isFetched) {
+            dispatch(
+                onSearch({
+                    isSearching: false,
+                    status: data?.status as number,
+                    data: data?.groups || [],
+                    debounce,
+                }),
+            )
+        }
+    }, [isFetching, isFetched, data, dispatch, debounce])
+
+    useEffect(() => {
+        if (debounce) refetch()
+        if (!debounce) dispatch(onClearSearch())
+    }, [debounce, refetch, dispatch])
+
+    return { query, onSearchQuery }
 }
 
 export const useGroupSettings = (groupid: string) => {
-  const router = useRouter()
-  
-  const { data } = useQuery({
-    queryKey: ["group-info"],
-    queryFn: () => onGetGroupInfo(groupid),
-  })
+    const router = useRouter()
+    const queryClient = useQueryClient()
 
-  const jsonContent =
-    data?.group?.jsonDescription !== null && data?.group?.jsonDescription
-      ? JSON.parse(data.group.jsonDescription)
-      : undefined
-
-  const [onJsonDescription, setJsonDescription] = useState<JSONContent | undefined>(jsonContent)
-  const [onDescription, setOnDescription] = useState<string | undefined>(
-    data?.group?.description || undefined
-  )
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<z.infer<typeof GroupSettingsSchema>>({
-    resolver: zodResolver(GroupSettingsSchema),
-    mode: "onChange",
-  })
-
-  const [previewIcon, setPreviewIcon] = useState<string | undefined>(undefined)
-  const [previewThumbnail, setPreviewThumbnail] = useState<string | undefined>(undefined)
-
-  useEffect(() => {
-    const subscription = watch(({ thumbnail, icon }) => {
-      if (icon && icon[0]) {
-        setPreviewIcon(URL.createObjectURL(icon[0]))
-      }
-      if (thumbnail && thumbnail[0]) {
-        setPreviewThumbnail(URL.createObjectURL(thumbnail[0]))
-      }
+    const { data } = useQuery({
+        queryKey: ["group-info", groupid],
+        queryFn: () => onGetGroupInfo(groupid),
     })
-    return () => subscription.unsubscribe()
-  }, [watch])
 
-  // ✅ Fixed: Added setValue to dependencies
-  useEffect(() => {
-    const JsonContent = JSON.stringify(onJsonDescription)
-    setValue("jsondescription", JsonContent)
-    setValue("description", onDescription)
-  }, [onJsonDescription, onDescription, setValue])
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+        watch,
+        setValue,
+        reset,
+    } = useForm<z.infer<typeof GroupSettingsSchema>>({
+        resolver: zodResolver(GroupSettingsSchema),
+        mode: "onChange",
+    })
 
-  const { mutate: update, isPending } = useMutation({
-    mutationKey: ["group-settings"],
-    mutationFn: async (values: z.infer<typeof GroupSettingsSchema>) => {
-      if (values.thumbnail && values.thumbnail.length > 0) {
-        const uploaded = await upload.uploadFile(values.thumbnail[0])
-        const updated = await onUpdateGroupSettings(
-          groupid,
-          "IMAGE",
-          uploaded.uuid,
-          `/group/${groupid}/settings`
-        )
-        if (updated.status !== 200) {
-          return toast("Error", {
-            description: "Failed to update thumbnail",
-          })
+    // Initialize form with data when it loads
+    useEffect(() => {
+        if (data?.group) {
+            console.log("📊 Group data loaded:", {
+                name: data.group.name,
+                description: data.group.description,
+                icon: data.group.icon,
+                thumbnail: data.group.thumbnail,
+                iconType: typeof data.group.icon,
+                thumbnailType: typeof data.group.thumbnail,
+            })
+
+            // Reset form with the loaded data
+            reset({
+                name: data.group.name || "",
+                description: data.group.description || "",
+            })
+
+            // Log the constructed URLs for debugging
+            const iconUrl = data.group.icon
+                ? `https://ucarecdn.com/${data.group.icon}/`
+                : "default"
+            const thumbnailUrl = data.group.thumbnail
+                ? `https://ucarecdn.com/${data.group.thumbnail}/`
+                : "default"
+
+            console.log("🖼️ Image URLs that will be used:", {
+                iconUrl,
+                thumbnailUrl,
+                iconRaw: data.group.icon,
+                thumbnailRaw: data.group.thumbnail,
+            })
+
+            // Test the URLs
+            if (data.group.icon) {
+                console.log(`🌐 Testing icon URL: ${iconUrl}`)
+            }
+            if (data.group.thumbnail) {
+                console.log(`🌐 Testing thumbnail URL: ${thumbnailUrl}`)
+            }
         }
-      }
+    }, [data?.group, reset])
 
-      if (values.icon && values.icon.length > 0) {
-        const uploaded = await upload.uploadFile(values.icon[0])
-        const updated = await onUpdateGroupSettings(
-          groupid,
-          "ICON",
-          uploaded.uuid,
-          `/group/${groupid}/settings`
-        )
-        if (updated.status !== 200) {
-          return toast("Error", {
-            description: "Failed to update icon",
-          })
-        }
-      }
+    const [previewIcon, setPreviewIcon] = useState<string | undefined>(
+        undefined,
+    )
+    const [previewThumbnail, setPreviewThumbnail] = useState<
+        string | undefined
+    >(undefined)
 
-      if (values.name) {
-        const updated = await onUpdateGroupSettings(
-          groupid,
-          "NAME",
-          values.name,
-          `/group/${groupid}/settings`
-        )
-        if (updated.status !== 200) {
-          return toast("Error", {
-            description: "Failed to update name",
-          })
-        }
-      }
-
-      if (values.description) {
-        const updated = await onUpdateGroupSettings(
-          groupid,
-          "DESCRIPTION",
-          values.description,
-          `/group/${groupid}/settings`
-        )
-        if (updated.status !== 200) {
-          return toast("Error", {
-            description: "Failed to update description",
-          })
-        }
-      }
-
-      if (values.jsondescription) {
-        const updated = await onUpdateGroupSettings(
-          groupid,
-          "JSONDESCRIPTION",
-          values.jsondescription,
-          `/group/${groupid}/settings`
-        )
-        if (updated.status !== 200) {
-          return toast("Error", {
-            description: "Failed to update JSON description",
-          })
-        }
-      }
-
-      if (
-        !values.description &&
-        !values.name &&
-        !values.thumbnail?.length &&
-        !values.icon?.length &&
-        !values.jsondescription
-      ) {
-        return toast("Error", {
-          description: "Oops! looks like your form is empty",
+    useEffect(() => {
+        const subscription = watch(({ thumbnail, icon }) => {
+            if (icon && icon[0]) {
+                setPreviewIcon(URL.createObjectURL(icon[0]))
+            }
+            if (thumbnail && thumbnail[0]) {
+                setPreviewThumbnail(URL.createObjectURL(thumbnail[0]))
+            }
         })
-      }
-      
-      return toast("Success", {
-        description: "Group data updated",
-      })
-    },
-  })
+        return () => subscription.unsubscribe()
+    }, [watch])
 
-  const onUpdate = handleSubmit(async (values) => update(values))
+    const { mutate: update, isPending } = useMutation({
+        mutationKey: ["group-settings"],
+        mutationFn: async (values: z.infer<typeof GroupSettingsSchema>) => {
+            console.log("💾 Saving group settings:", values)
+            let hasUpdates = false
 
-  useEffect(() => {
-    if (data?.status !== 200 && data?.status !== undefined) {
-      router.push('/group/create')
+            if (values.thumbnail && values.thumbnail.length > 0) {
+                console.log("📤 Uploading thumbnail...")
+                const uploadedPath = await uploadFileAndGetPath(values.thumbnail[0])
+                console.log("📦 Uploadcare thumbnail path to save:", uploadedPath)
+                const updated = await onUpdateGroupSettings(
+                    groupid,
+                    "IMAGE",
+                    uploadedPath,
+                    `/group/${groupid}/settings`,
+                )
+                console.log("✅ Thumbnail update result:", updated)
+                if (updated.status !== 200) {
+                    throw new Error("Failed to update thumbnail")
+                }
+                hasUpdates = true
+            }
+
+            if (values.icon && values.icon.length > 0) {
+                console.log("📤 Uploading icon...")
+                const uploadedPath = await uploadFileAndGetPath(values.icon[0])
+                console.log("📦 Uploadcare icon path to save:", uploadedPath)
+                const updated = await onUpdateGroupSettings(
+                    groupid,
+                    "ICON",
+                    uploadedPath,
+                    `/group/${groupid}/settings`,
+                )
+                console.log("✅ Icon update result:", updated)
+                if (updated.status !== 200) {
+                    throw new Error("Failed to update icon")
+                }
+                hasUpdates = true
+            }
+
+            if (values.name) {
+                console.log("📝 Updating name to:", values.name)
+                const updated = await onUpdateGroupSettings(
+                    groupid,
+                    "NAME",
+                    values.name,
+                    `/group/${groupid}/settings`,
+                )
+                console.log("✅ Name update result:", updated)
+                if (updated.status !== 200) {
+                    throw new Error("Failed to update name")
+                }
+                hasUpdates = true
+            }
+
+            if (values.description) {
+                console.log("📝 Updating description to:", values.description)
+                const updated = await onUpdateGroupSettings(
+                    groupid,
+                    "DESCRIPTION",
+                    values.description,
+                    `/group/${groupid}/settings`,
+                )
+                console.log("✅ Description update result:", updated)
+                if (updated.status !== 200) {
+                    throw new Error("Failed to update description")
+                }
+                hasUpdates = true
+            }
+
+            if (!hasUpdates) {
+                console.log("⚠️ No changes detected")
+                throw new Error("No changes to save")
+            }
+
+            console.log("✅ All updates completed successfully")
+            return { success: true }
+        },
+        onSuccess: () => {
+            console.log("🔄 Refetching group data...")
+            // Clear preview states to show the uploaded images from database
+            setPreviewIcon(undefined)
+            setPreviewThumbnail(undefined)
+
+            // Reset the file input fields to clear them
+            reset({
+                name: undefined,
+                description: undefined,
+                icon: undefined,
+                thumbnail: undefined,
+            })
+
+            // Refetch the group data after successful update
+            queryClient.invalidateQueries({ queryKey: ["group-info", groupid] })
+            toast("Success", {
+                description: "Group settings updated successfully",
+            })
+        },
+        onError: (error: Error) => {
+            console.error("❌ Error saving group settings:", error)
+            toast("Error", {
+                description: error.message || "Failed to update group settings",
+            })
+        },
+    })
+
+    const onUpdate = handleSubmit(async (values) => update(values))
+
+    useEffect(() => {
+        if (data?.status !== 200 && data?.status !== undefined) {
+            router.push("/group/create")
+        }
+    }, [data?.status, router])
+
+    return {
+        data,
+        register,
+        errors,
+        onUpdate,
+        isPending,
+        previewIcon,
+        previewThumbnail,
     }
-  }, [data?.status, router])
-
-  return {
-    data,
-    register,
-    errors,
-    onUpdate,
-    isPending,
-    previewIcon,
-    previewThumbnail,
-    onJsonDescription,
-    setJsonDescription,
-    setOnDescription,
-    onDescription,
-  }
 }

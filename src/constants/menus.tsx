@@ -1,4 +1,14 @@
-import { Compass, CreditCard, Home, icons, Target,Zap,Globe,Layers,Settings } from "lucide-react"
+import {
+    Compass,
+    CreditCard,
+    Home,
+    icons,
+    Target,
+    Zap,
+    Globe,
+    Layers,
+    Settings,
+} from "lucide-react"
 
 export type MenuProps = {
     id: number
@@ -44,7 +54,7 @@ export const SIDEBAR_SETTINGS_MENU: MenuProps[] = [
         id: 0,
         label: "General",
         icon: <Settings />,
-        path: "",
+        path: "settings",
     },
     {
         id: 1,

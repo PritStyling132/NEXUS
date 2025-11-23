@@ -6,14 +6,12 @@ import { NEXUS_CONSTANTS } from "@/constants"
 import { useAuthSignIn } from "@/hooks/authentication"
 import { Loader2 } from "lucide-react"
 
-type Props = {}
-
-const SignInForm = (props: Props) => {
+const SignInForm = () => {
     const { isPending, onAuthenticateUser, register, errors } = useAuthSignIn()
 
     return (
         <form
-            className="flex flex-col gap-4 mt-10"
+            className="flex flex-col gap-4 sm:gap-5 mt-6 sm:mt-8 md:mt-10 w-full"
             onSubmit={onAuthenticateUser}
         >
             {/* Dynamically render input fields */}
@@ -29,11 +27,13 @@ const SignInForm = (props: Props) => {
             <Button
                 type="submit"
                 disabled={isPending}
-                className="rounded-2xl flex items-center justify-center gap-2"
+                size="lg"
+                className="rounded-2xl flex items-center justify-center gap-2 w-full mt-2
+                bg-primary hover:bg-primary/90 transition-all shadow-lg"
             >
                 {isPending ? (
                     <>
-                        <Loader2 className="animate-spin w-4 h-4" />
+                        <Loader2 className="animate-spin w-5 h-5" />
                         Signing In...
                     </>
                 ) : (

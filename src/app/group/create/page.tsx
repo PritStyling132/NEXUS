@@ -115,11 +115,11 @@ export default async function CreateGroupPage() {
         )
 
         return (
-            <div className="min-h-screen">
+            <div className="min-h-screen bg-background dark:bg-black">
                 {/* Header with User Menu */}
-                <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                    <div className="container flex h-16 items-center justify-between">
-                        <h2 className="text-2xl font-bold text-themeTextWhite">
+                <header className="border-b border-border dark:border-border/40 bg-background/95 dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+                    <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6">
+                        <h2 className="text-xl sm:text-2xl font-bold text-foreground dark:text-themeTextWhite">
                             NeXuS.
                         </h2>
                         <UserMenu />
@@ -127,41 +127,41 @@ export default async function CreateGroupPage() {
                 </header>
 
                 {/* Main Content */}
-                <div className="container grid grid-cols-1 lg:grid-cols-2 content-center gap-8 py-16 min-h-[calc(100vh-4rem)]">
+                <div className="container grid grid-cols-1 lg:grid-cols-2 content-center gap-8 lg:gap-12 py-8 sm:py-12 lg:py-16 px-4 sm:px-6 min-h-[calc(100vh-4rem)]">
                     {/* Left Side - Information */}
-                    <div className="flex items-center">
+                    <div className="flex items-center order-2 lg:order-1">
                         <BackdropGradient className="w-full h-full opacity-50">
-                            <div className="p-8">
-                                <h5 className="text-2xl font-bold text-themeTextWhite mb-4">
+                            <div className="p-6 sm:p-8 lg:p-10">
+                                <h5 className="text-xl sm:text-2xl font-bold text-foreground dark:text-themeTextWhite mb-4">
                                     Welcome, {dbUser.firstname}!
                                 </h5>
 
                                 <GradientText
                                     element="H2"
-                                    className="text-4xl font-semibold py-1"
+                                    className="text-3xl sm:text-4xl lg:text-5xl font-semibold py-1"
                                 >
                                     {hasPaymentMethod
                                         ? "Create Your Group"
                                         : "Get Started"}
                                 </GradientText>
 
-                                <p className="text-themeTextGray mt-4">
+                                <p className="text-sm sm:text-base text-muted-foreground dark:text-themeTextGray mt-4 leading-relaxed">
                                     Free for 14 days, then INR 99/month. Cancel
                                     anytime. All features. Unlimited everything.
                                     No hidden fees.
                                 </p>
 
-                                <div className="flex flex-col gap-3 mt-16 pl-5">
+                                <div className="flex flex-col gap-3 sm:gap-4 mt-8 sm:mt-12 lg:mt-16 pl-2 sm:pl-5">
                                     {NEXUS_CONSTANTS.createGroupPlaceholder.map(
                                         (placeholder) => (
                                             <div
                                                 className="flex gap-3 items-start"
                                                 key={placeholder.id}
                                             >
-                                                <div className="mt-1">
+                                                <div className="mt-1 text-primary dark:text-primary">
                                                     {placeholder.icon}
                                                 </div>
-                                                <p className="text-themeTextGray">
+                                                <p className="text-sm sm:text-base text-muted-foreground dark:text-themeTextGray">
                                                     {placeholder.label}
                                                 </p>
                                             </div>
@@ -170,10 +170,10 @@ export default async function CreateGroupPage() {
                                 </div>
 
                                 {!hasPaymentMethod && (
-                                    <div className="mt-8 p-4 bg-themeBlack/50 rounded-lg border border-themeGray">
-                                        <p className="text-sm text-themeTextGray">
+                                    <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-primary/5 dark:bg-themeBlack/50 rounded-lg border border-primary/20 dark:border-themeGray">
+                                        <p className="text-xs sm:text-sm text-muted-foreground dark:text-themeTextGray leading-relaxed">
                                             💳{" "}
-                                            <strong className="text-themeTextWhite">
+                                            <strong className="text-foreground dark:text-themeTextWhite">
                                                 One-time setup:
                                             </strong>{" "}
                                             Add your payment method to start
@@ -187,12 +187,14 @@ export default async function CreateGroupPage() {
                     </div>
 
                     {/* Right Side - Payment Form or Group Creation Form */}
-                    <div className="flex items-center justify-center">
-                        {hasPaymentMethod ? (
-                            <GroupCreationForm />
-                        ) : (
-                            <PaymentForm />
-                        )}
+                    <div className="flex items-center justify-center order-1 lg:order-2">
+                        <div className="w-full max-w-md">
+                            {hasPaymentMethod ? (
+                                <GroupCreationForm />
+                            ) : (
+                                <PaymentForm />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

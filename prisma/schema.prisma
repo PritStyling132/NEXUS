@@ -142,6 +142,7 @@ model Like {
 model Channel {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
+  icon      String?
   createdAt DateTime @default(now())
   groupId   String   @db.Uuid
 

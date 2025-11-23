@@ -1,118 +1,132 @@
-import { onUpdateChannelInfo } from "@/actions/groups"
+import { onUpdateChannelInfo, onDeleteChannel } from "@/actions/groups"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRef, useState } from "react"
 import { toast } from "sonner"
 
 export const useChannelInfo = () => {
-  const channelRef = useRef<HTMLAnchorElement | null>(null)
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const triggerRef = useRef<HTMLButtonElement | null>(null)
+    const channelRef = useRef<HTMLAnchorElement | null>(null)
+    const inputRef = useRef<HTMLInputElement | null>(null)
+    const triggerRef = useRef<HTMLButtonElement | null>(null)
 
-  const [channel, setChannel] = useState<string | undefined>(undefined)
-  const [edit, setEdit] = useState<boolean>(false)
-  const [icon, setIcon] = useState<string | undefined>(undefined)
+    const [channel, setChannel] = useState<string | undefined>(undefined)
+    const [edit, setEdit] = useState<boolean>(false)
+    const [icon, setIcon] = useState<string | undefined>(undefined)
 
-  const client = useQueryClient()
+    const client = useQueryClient()
 
-  const onEditChannel = (id: string | undefined) => {
-    setChannel(id)
-    setEdit(true)
-  }
+    const onEditChannel = (id: string | undefined) => {
+        if (id === undefined) {
+            // Save the channel edit
+            if (channel && inputRef.current) {
+                const newName = inputRef.current.value.trim()
+                if (newName && newName.length > 0) {
+                    mutate({ name: newName })
+                } else {
+                    setEdit(false)
+                    setChannel(undefined)
+                }
+            } else {
+                setEdit(false)
+                setChannel(undefined)
+            }
+        } else {
+            // Start editing
+            setChannel(id)
+            setEdit(true)
+        }
+    }
 
-  const onSetIcon = (icon: string | undefined) => setIcon(icon)
+    const onSetIcon = (icon: string | undefined) => setIcon(icon)
 
-  // Update channel mutation
-  const { isPending, mutate, variables } = useMutation({
-    mutationFn: (data: { name?: string; icon?: string }) => {
-      if (!channel) {
-        throw new Error("No channel selected")
-      }
-      // Fixed parameter order: channelId, icon, name
-      return onUpdateChannelInfo(channel, data.icon, data.name)
-    },
+    // Update channel mutation
+    const { isPending, mutate, variables } = useMutation({
+        mutationFn: (data: { name?: string; icon?: string }) => {
+            if (!channel) {
+                throw new Error("No channel selected")
+            }
+            // Fixed parameter order: channelId, icon, name
+            return onUpdateChannelInfo(channel, data.icon, data.name)
+        },
 
-    onMutate: () => {
-      setEdit(false)
-      onSetIcon(undefined)
-    },
+        onMutate: () => {
+            setEdit(false)
+            onSetIcon(undefined)
+        },
 
-    onSuccess: (data) => {
-      toast(data.status !== 200 ? "Error" : "Success", {
-        description: data.message,
-      })
-      // Reset channel state after successful update
-      setChannel(undefined)
-    },
+        onSuccess: (data) => {
+            toast(data.status !== 200 ? "Error" : "Success", {
+                description: data.message,
+            })
+            // Reset channel state after successful update
+            setChannel(undefined)
+        },
 
-    onError: (error) => {
-      toast("Error", {
-        description: "Failed to update channel",
-      })
-      console.error(error)
-    },
+        onError: (error) => {
+            toast("Error", {
+                description: "Failed to update channel",
+            })
+            console.error(error)
+        },
 
-    onSettled: async () => {
-      return await client.invalidateQueries({
-        queryKey: ["group-channels"],
-      })
-    },
-  })
+        onSettled: async () => {
+            return await client.invalidateQueries({
+                queryKey: ["group-channels"],
+            })
+        },
+    })
 
-  // Delete channel mutation
-  const {
-    isPending: isDeleting,
-    mutate: deleteChannel,
-    variables: deleteVariables,
-  } = useMutation({
-    mutationFn: (channelId: string) => {
-      // You'll need to create this action
-      // import { onDeleteChannel } from "@/actions/groups"
-      // return onDeleteChannel(channelId)
-      return Promise.resolve({ status: 200, message: "Channel deleted" })
-    },
+    // Delete channel mutation
+    const {
+        isPending: isDeleting,
+        mutate: deleteChannel,
+        variables: deleteVariables,
+    } = useMutation({
+        mutationFn: (channelId: string) => {
+            return onDeleteChannel(channelId)
+        },
 
-    onSuccess: (data) => {
-      toast(data.status !== 200 ? "Error" : "Success", {
-        description: data.message,
-      })
-    },
+        onSuccess: (data) => {
+            toast(data.status !== 200 ? "Error" : "Success", {
+                description: data.message,
+            })
+        },
 
-    onError: (error) => {
-      toast("Error", {
-        description: "Failed to delete channel",
-      })
-      console.error(error)
-    },
+        onError: (error) => {
+            toast("Error", {
+                description: "Failed to delete channel",
+            })
+            console.error(error)
+        },
 
-    onSettled: async () => {
-      return await client.invalidateQueries({
-        queryKey: ["group-channels"],
-      })
-    },
-  })
+        onSettled: async () => {
+            return await client.invalidateQueries({
+                queryKey: ["group-channels"],
+            })
+        },
+    })
 
-  const onChannelDelete = (id: string) => {
-    deleteChannel(id)
-  }
+    const onChannelDelete = (id: string) => {
+        deleteChannel(id)
+    }
 
-  return {
-    channelRef,
-    inputRef,
-    triggerRef,
+    return {
+        channelRef,
+        inputRef,
+        triggerRef,
 
-    channel,
-    edit,
-    icon,
+        channel,
+        edit,
+        icon,
 
-    onEditChannel,
-    onSetIcon,
-    mutate,
-    isPending,
-    variables,
+        onEditChannel,
+        onSetIcon,
+        mutate,
+        isPending,
+        variables,
 
-    // Delete functionality
-    onChannelDelete,
-    deleteVariables,
-    isDeleting,
-  }
+        // Delete functionality
+        onChannelDelete,
+        deleteVariables,
+        isDeleting,
+    }
 }

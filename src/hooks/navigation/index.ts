@@ -1,6 +1,5 @@
 // "use client"
 
-
 // import { onGetGroupChannels } from "@/actions/groups"
 // import { IGroupInfo, IGroups } from "@/components/global/sidebar"
 // import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -23,8 +22,6 @@
 //         onSetSection,
 //     }
 // }
-
-
 
 // export const useSideBar = (groupid: string) => {
 //     const { data: groups } = useQuery({
@@ -75,14 +72,12 @@
 //     return { groupInfo, groups, mutate, variables, isPending, channels }
 // }
 
-
-
 // export const onCreateNewChannels =async(
 //     groupid:string ,
 //     data:{
 //         id:string
 //         name:string,
-//         icon:string 
+//         icon:string
 //     },
 
 // )=>{
@@ -110,7 +105,6 @@
 //             message: "Channel could not be created",
 //         }
 
-
 //         }catch(error){
 //             return{
 //                 status:400,
@@ -118,7 +112,6 @@
 //             }
 //         }
 //     }
-
 
 "use client"
 
@@ -146,10 +139,22 @@ export const useNavigation = () => {
 export const useSideBar = (groupid: string) => {
     const { data: groups } = useQuery({
         queryKey: ["user-groups"],
+        queryFn: async () => {
+            // This data is prefetched in the layout, so we just return undefined
+            // The data will be available from the cache
+            return undefined
+        },
+        staleTime: Infinity,
     }) as { data: IGroups }
 
     const { data: groupInfo } = useQuery({
         queryKey: ["group-info"],
+        queryFn: async () => {
+            // This data is prefetched in the layout, so we just return undefined
+            // The data will be available from the cache
+            return undefined
+        },
+        staleTime: Infinity,
     }) as { data: IGroupInfo }
 
     const { data: channels } = useQuery({
@@ -175,12 +180,11 @@ export const useSideBar = (groupid: string) => {
                 icon: data.icon,
             })
         },
-        onSettled: async () => {
-            return await queryClient.invalidateQueries({
+        onSuccess: () => {
+            // Invalidate queries to refetch the latest channels
+            queryClient.invalidateQueries({
                 queryKey: ["group-channels"],
             })
-        },
-        onSuccess: () => {
             toast("Success", {
                 description: "Channel created",
             })

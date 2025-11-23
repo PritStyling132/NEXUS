@@ -5,33 +5,42 @@ import Link from "next/link"
 
 const SignInPage = () => {
     return (
-        <>
-            <h5 className="font-bold text-base text-themeTextWhite">Login</h5>
-            <p className="text-themeTextGray leading-tight">
-                Network with people from around the world, join groups, create
-                your own, watch courses and become the best version of yourself.
-            </p>
+        <div className="w-full space-y-4 sm:space-y-6">
+            <div className="space-y-2">
+                <h5 className="font-bold text-xl sm:text-2xl text-foreground dark:text-themeTextWhite">
+                    Welcome Back
+                </h5>
+                <p className="text-sm sm:text-base text-muted-foreground dark:text-themeTextGray leading-relaxed">
+                    Network with people from around the world, join groups,
+                    create your own, watch courses and become the best version
+                    of yourself.
+                </p>
+            </div>
+
             <SignInForm />
-            <div className="my-10 w-full relative">
-                <div className="bg-black p-3 absolute text-themeTextGray text-xs top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+
+            <div className="my-8 sm:my-10 w-full relative">
+                <div className="bg-background dark:bg-black px-3 py-2 absolute text-muted-foreground dark:text-themeTextGray text-xs font-medium top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
                     OR CONTINUE WITH
                 </div>
                 <Separator
                     orientation="horizontal"
-                    className="bg-themeGray h-[1px]"
+                    className="bg-border dark:bg-themeGray"
                 />
             </div>
+
             <GoogleAuthButton method="signin" />
-            <p className="text-center text-sm text-gray-700 mt-3">
+
+            <p className="text-center text-sm sm:text-base text-muted-foreground dark:text-gray-400 mt-4">
                 Don't have an account?{" "}
                 <Link
                     href="/sign-up"
-                    className="text-blue-600 hover:underline font-medium"
+                    className="text-primary dark:text-blue-400 hover:underline font-semibold transition-colors"
                 >
                     Sign Up
                 </Link>
             </p>
-        </>
+        </div>
     )
 }
 

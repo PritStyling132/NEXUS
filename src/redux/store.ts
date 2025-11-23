@@ -1,15 +1,18 @@
 "use client"
 import { configureStore } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useSelector } from "react-redux"
+import searchReducer from "./slices/search-slice"
 
-// Create store without combineReducers when there are no reducers yet
+// Create store with search reducer
 export const store = configureStore({
-    reducer: {},
+    reducer: {
+        search: searchReducer,
+    },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
         }),
-    devTools: false,
+    devTools: process.env.NODE_ENV !== "production",
 })
 
 // Export type definitions

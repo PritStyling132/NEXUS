@@ -8,16 +8,21 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+    DropdownMenuSub,
+    DropdownMenuSubTrigger,
+    DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu"
 import { useClerk, useUser } from "@clerk/nextjs"
-import { LogOut, Settings, User } from "lucide-react"
+import { LogOut, Moon, Sun, Monitor } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 import { toast } from "sonner"
 
 export function UserMenu() {
     const { user } = useUser()
     const { signOut } = useClerk()
     const router = useRouter()
+    const { theme, setTheme } = useTheme()
 
     const handleSignOut = async () => {
         try {
@@ -35,8 +40,11 @@ export function UserMenu() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 rounded-full h-10 w-10">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+                <Button
+                    variant="ghost"
+                    className="p-0 rounded-full h-10 w-10 hover:opacity-80 transition-opacity"
+                >
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold shadow-lg">
                         {user.firstName?.[0] ||
                             user.emailAddresses[0].emailAddress[0].toUpperCase()}
                     </div>
@@ -54,18 +62,39 @@ export function UserMenu() {
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {/* <DropdownMenuItem onClick={() => router.push('/profile')}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push('/settings')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                </DropdownMenuItem> */}
+
+                {/* Theme Submenu */}
+                <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                        {theme === "light" ? (
+                            <Sun className="mr-2 h-4 w-4 text-yellow-500" />
+                        ) : theme === "dark" ? (
+                            <Moon className="mr-2 h-4 w-4 text-blue-400" />
+                        ) : (
+                            <Monitor className="mr-2 h-4 w-4" />
+                        )}
+                        <span>Theme</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                        <DropdownMenuItem onClick={() => setTheme("light")}>
+                            <Sun className="mr-2 h-4 w-4 text-yellow-500" />
+                            <span>Light</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("dark")}>
+                            <Moon className="mr-2 h-4 w-4 text-blue-400" />
+                            <span>Dark</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("system")}>
+                            <Monitor className="mr-2 h-4 w-4" />
+                            <span>System</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                </DropdownMenuSub>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                     onClick={handleSignOut}
-                    className="text-red-600"
+                    className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
                 >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>

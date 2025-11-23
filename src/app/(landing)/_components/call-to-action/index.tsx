@@ -1,43 +1,43 @@
 import GradientText from "@/components/global/gradient-text"
 import { Button } from "@/components/ui/button"
-import { BadgePlus } from "lucide-react"
+import { BadgePlus, Play } from "lucide-react"
 import Link from "next/link"
 
-type Props = {}
-
-const CallToAction = (props: Props) => {
+const CallToAction = () => {
     return (
-        <div className="flex flex-col item-start md:items-center gap-y-5 md:gap-y-0">
+        <div className="flex flex-col items-start md:items-center gap-y-6 md:gap-y-8">
             <GradientText
-                className="text-[35px] lg:text-[55px] xl:text-[70px] 2xl:text-[80px] 
-        leading-tight font-semibold"
+                className="text-[32px] sm:text-[40px] md:text-[50px] lg:text-[60px] xl:text-[70px] 2xl:text-[80px]
+                leading-tight font-semibold text-left md:text-center"
                 element="H1"
             >
-                {" "}
-                Bringing Communites <br className="md:hidden" /> Together{" "}
+                Bringing Communities <br className="md:hidden" /> Together
             </GradientText>
-            <p className="text-sm ms:text-center text-left text-muted-foreground">
-                {" "}
-                NeXuS is a vibrant online platform that empowers{" "}
-                <br className="md:block" /> collaborate, and cultivate
-                meaningful <br className="md:hidden" /> relationships
+            <p className="text-sm sm:text-base md:text-lg text-left md:text-center text-muted-foreground max-w-2xl px-2">
+                NeXuS is a vibrant online platform that empowers communities to{" "}
+                <br className="hidden md:block" />
+                collaborate, and cultivate meaningful relationships
             </p>
 
-            <div
-                className="flex md:flex-row flex-col md:justify-center gap-5
-         md:mt-5 w-full"
-            ></div>
-            <Button
-                variant="outline"
-                className="rounded-xl bg-transparent text-base"
-            >
-                Watch Demo
-            </Button>
-            <Link href="/sign-in">
-                <Button className="rounded-xl text-base flex gap-2 w-ful">
-                    <BadgePlus /> Get Started
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 w-full sm:w-auto mt-4">
+                <Link href="/sign-in" className="w-full sm:w-auto">
+                    <Button
+                        size="lg"
+                        className="rounded-xl text-base flex gap-2 w-full sm:w-auto justify-center
+                        bg-primary hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl"
+                    >
+                        <BadgePlus className="w-5 h-5" /> Get Started
+                    </Button>
+                </Link>
+                <Button
+                    variant="outline"
+                    size="lg"
+                    className="rounded-xl text-base flex gap-2 w-full sm:w-auto justify-center
+                    bg-transparent hover:bg-accent/10 transition-all"
+                >
+                    <Play className="w-5 h-5" /> Watch Demo
                 </Button>
-            </Link>
+            </div>
         </div>
     )
 }
