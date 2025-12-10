@@ -37,7 +37,7 @@ async function getOrCreatePlan(): Promise<string> {
     // Step 2: Create a new plan
     console.log("\n📍 [PLAN STEP 2] Creating new plan...")
     const planConfig = {
-        period: "monthly",
+        period: "monthly" as const,
         interval: 1,
         item: {
             name: "NeXuS Pro Monthly",
@@ -212,7 +212,7 @@ export async function POST(req: NextRequest) {
             quantity: 1,
             total_count: 120,
             start_at: Math.floor(trialEndDate.getTime() / 1000),
-            customer_notify: 1,
+            customer_notify: 1 as const,
             notes: {
                 groupId: group.id,
                 userId: dbUser.id,

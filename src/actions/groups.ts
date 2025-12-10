@@ -411,7 +411,10 @@ export const onUpdateGroupSettings = async (
     path: string,
 ) => {
     try {
-        console.log(`🔧 [Server] Updating group ${groupid} - ${type}:`, content.substring(0, 100))
+        console.log(
+            `🔧 [Server] Updating group ${groupid} - ${type}:`,
+            content.substring(0, 100),
+        )
 
         if (type === "IMAGE") {
             const result = await client.group.update({
@@ -491,5 +494,75 @@ export const onUpdateGroupSettings = async (
     } catch (error) {
         console.error("❌ [Server] Error updating group settings:", error)
         return { status: 400 }
+    }
+}
+
+export const onUpdateGroupGallery = async (
+    groupid: string,
+    content: string,
+) => {
+    try {
+        // 1. Fetch the current gallery to check the limit
+        const mediaLimit = await client.group.findUnique({
+            where: {
+                id: groupid,
+            },
+            select: {
+                gallery: true,
+            },
+        })
+
+        // 2. Check if the gallery length is less than 6
+        if (mediaLimit && mediaLimit?.gallery.length < 6) {
+            // 3. If within limits, push the new content to the gallery array
+            await client.group.update({
+                where: {
+                    id: groupid,
+                },
+                data: {
+                    gallery: {
+                        push: content,
+                    },
+                },
+            })
+
+            // Invalidate the cache for the group's about page
+            revalidatePath(`/about/${groupid}`)
+
+            // Success response
+            return { status: 200 }
+        }
+
+        // 4. Return an error if the limit is exceeded
+        return {
+            status: 400,
+            message: "Looks like your gallery has the maximum media allowed",
+        }
+    } catch (error) {
+        // 5. Handle unexpected server/database errors
+        return { status: 400, message: "Looks like something went wrong" }
+    }
+}
+
+export const onJoinGroup = async (groupid: string) => {
+    try {
+        const user = await onAuthenticatedUser()
+        const member = await client.group.update({
+            where: {
+                id: groupid,
+            },
+            data: {
+                members: {
+                    create: {
+                        userId: user.id,
+                    },
+                },
+            },
+        })
+        if (member) {
+            return { status: 200 }
+        }
+    } catch (error) {
+        return { status: 404 }
     }
 }

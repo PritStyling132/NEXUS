@@ -1,10 +1,13 @@
 "use client"
-import GroupCard from "@/app/(discover)/explore/_components/group-card"
+import GroupCard from "@/app/(landing)/explore/_components/group-card"
 import { useGroupSettings } from "@/hooks/groups"
 import { Label } from "@radix-ui/react-label"
 import { Input } from "@/components/ui/input"
 import { FormGenerator } from "@/components/global/form-generator"
-import { getGroupIconUrl, getGroupThumbnailUrl } from "@/lib/default-group-assets"
+import {
+    getGroupIconUrl,
+    getGroupThumbnailUrl,
+} from "@/lib/default-group-assets"
 import { Textarea } from "@/components/ui/textarea"
 
 type Props = {
@@ -23,8 +26,11 @@ const GroupSettingsForm = ({ groupId }: Props) => {
     } = useGroupSettings(groupId)
 
     // Calculate URLs that will be used for rendering
-    const iconUrl = previewIcon || getGroupIconUrl(data?.group?.icon, data?.group?.category)
-    const thumbnailUrl = previewThumbnail || getGroupThumbnailUrl(data?.group?.thumbnail, data?.group?.category)
+    const iconUrl =
+        previewIcon || getGroupIconUrl(data?.group?.icon, data?.group?.category)
+    const thumbnailUrl =
+        previewThumbnail ||
+        getGroupThumbnailUrl(data?.group?.thumbnail, data?.group?.category)
 
     console.log("🎨 [GroupSettingsForm] Rendering with:", {
         previewIcon,
@@ -72,10 +78,16 @@ const GroupSettingsForm = ({ groupId }: Props) => {
                             src={iconUrl}
                             alt="icon"
                             onLoad={() => {
-                                console.log("✅ Icon loaded successfully:", iconUrl)
+                                console.log(
+                                    "✅ Icon loaded successfully:",
+                                    iconUrl,
+                                )
                             }}
                             onError={(e) => {
-                                console.error("❌ Failed to load icon:", e.currentTarget.src)
+                                console.error(
+                                    "❌ Failed to load icon:",
+                                    e.currentTarget.src,
+                                )
                             }}
                         />
                         <div className="flex flex-col gap-3 w-full sm:w-auto">
@@ -161,4 +173,4 @@ const GroupSettingsForm = ({ groupId }: Props) => {
     )
 }
 
-export default GroupSettingsForm;
+export default GroupSettingsForm

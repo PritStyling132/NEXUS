@@ -67,12 +67,15 @@
     }
     body {
         @apply bg-background text-foreground;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition:
+            background-color 0.3s ease,
+            color 0.3s ease;
     }
 
     /* Smooth transitions for theme changes */
     * {
-        transition-property: background-color, border-color, color, fill, stroke;
+        transition-property:
+            background-color, border-color, color, fill, stroke;
         transition-duration: 0.2s;
         transition-timing-function: ease-in-out;
     }
@@ -84,4 +87,32 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
+}
+
+/* Hide scrollbar for horizontal scrolling */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Infinite horizontal scroll animation */
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-33.333%);
+    }
+}
+
+.animate-scroll-left {
+    animation: scroll-left 30s linear infinite;
+}
+
+.pause-animation:hover {
+    animation-play-state: paused;
 }

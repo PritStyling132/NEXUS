@@ -162,9 +162,7 @@ const SideBarMenu = ({
                                             onKeyDown={(e) => {
                                                 if (e.key === "Enter") {
                                                     handleEditSave()
-                                                } else if (
-                                                    e.key === "Escape"
-                                                ) {
+                                                } else if (e.key === "Escape") {
                                                     onEditChannel(undefined)
                                                 }
                                             }}
@@ -262,7 +260,9 @@ const SideBarMenu = ({
                 </p>
                 {SIDEBAR_SETTINGS_MENU.map((item) => {
                     // Check if current tab is active - but NOT on the default landing page
-                    const isActive = pathname.includes(`/${item.path}`) && pathname !== `/group/${groupid}`
+                    const isActive =
+                        pathname.includes(`/${item.path}`) &&
+                        pathname !== `/group/${groupid}`
 
                     return (
                         <Link

@@ -9,12 +9,14 @@ I've added comprehensive logging throughout the entire image upload and display 
 ## 📋 Step-by-Step Testing Process
 
 ### 1. Open Group Settings Page
+
 1. Navigate to your group
 2. Click "Settings" in sidebar
 3. **Open Browser Console (F12)** → Console tab
 4. **Clear console** (important!)
 
 ### 2. Check Initial State
+
 Look for these logs when the page loads:
 
 ```javascript
@@ -47,6 +49,7 @@ Look for these logs when the page loads:
 ```
 
 **What to check:**
+
 - ✅ Are `icon` and `thumbnail` showing UUIDs or `null`?
 - ✅ Are URLs being constructed correctly?
 - ✅ Do you see "Icon loaded successfully" or "Failed to load icon"?
@@ -54,6 +57,7 @@ Look for these logs when the page loads:
 ---
 
 ### 3. Upload a New Icon
+
 1. Click "Change Icon"
 2. Select an image file
 3. **Watch console** - should see preview appear on screen
@@ -72,6 +76,7 @@ Look for these logs when the page loads:
 ---
 
 ### 4. Click "Save Changes"
+
 **CRITICAL STEP:** Watch the console logs carefully in this exact order:
 
 ```javascript
@@ -152,9 +157,11 @@ Look for these logs when the page loads:
 ## 🐛 Troubleshooting Scenarios
 
 ### Scenario A: No logs appear after clicking "Save Changes"
+
 **Problem:** Form submission not working
 
 **Check:**
+
 1. Are there any JavaScript errors in console?
 2. Is the button disabled?
 3. Is the form validation passing?
@@ -162,18 +169,21 @@ Look for these logs when the page loads:
 ---
 
 ### Scenario B: Upload starts but fails
+
 ```javascript
 📤 Uploading icon...
 ❌ Error saving group settings: Network error
 ```
 
 **Possible Causes:**
+
 1. Uploadcare API key missing/invalid
 2. Network connectivity issues
 3. File too large (max 2MB)
 4. Wrong file type (must be PNG/JPG/JPEG)
 
 **Check:**
+
 ```javascript
 // Check environment variable
 console.log(process.env.NEXT_PUBLIC_UPLOAD_CARE_PUBLIC_KEY)
@@ -182,6 +192,7 @@ console.log(process.env.NEXT_PUBLIC_UPLOAD_CARE_PUBLIC_KEY)
 ---
 
 ### Scenario C: Upload succeeds but UUID is wrong
+
 ```javascript
 📦 Uploadcare icon response: { ... }
 🔑 Icon UUID to save: undefined
@@ -194,12 +205,14 @@ console.log(process.env.NEXT_PUBLIC_UPLOAD_CARE_PUBLIC_KEY)
 ---
 
 ### Scenario D: Database update fails
+
 ```javascript
 🔧 [Server] Updating group... - ICON: a1b2c3d4...
 ❌ [Server] Error updating group settings: ...
 ```
 
 **Possible Causes:**
+
 1. Database connection issue
 2. Invalid group ID
 3. Prisma error
@@ -209,6 +222,7 @@ console.log(process.env.NEXT_PUBLIC_UPLOAD_CARE_PUBLIC_KEY)
 ---
 
 ### Scenario E: Data refetch doesn't show new UUID
+
 ```javascript
 🔄 Refetching group data...
 📊 Group data loaded: {
@@ -218,11 +232,13 @@ console.log(process.env.NEXT_PUBLIC_UPLOAD_CARE_PUBLIC_KEY)
 ```
 
 **Possible Causes:**
+
 1. Query cache not invalidating
 2. Database update didn't actually save
 3. Wrong query key
 
 **Check database directly:**
+
 ```sql
 SELECT icon, thumbnail FROM "Group" WHERE id = 'your-group-id';
 ```
@@ -230,6 +246,7 @@ SELECT icon, thumbnail FROM "Group" WHERE id = 'your-group-id';
 ---
 
 ### Scenario F: Image URL is constructed but image doesn't load
+
 ```javascript
 🖼️ Image URLs that will be used: {
   iconUrl: "https://ucarecdn.com/a1b2c3d4.../"
@@ -243,12 +260,14 @@ SELECT icon, thumbnail FROM "Group" WHERE id = 'your-group-id';
 ```
 
 **Possible Causes:**
+
 1. UUID is invalid/corrupted
 2. Image was deleted from Uploadcare
 3. Uploadcare CDN issue
 4. Network/CORS issue
 
 **Test the URL:**
+
 1. Copy the URL from console
 2. Paste in new browser tab
 3. Should display the image
@@ -256,6 +275,7 @@ SELECT icon, thumbnail FROM "Group" WHERE id = 'your-group-id';
 ---
 
 ### Scenario G: Everything works but preview doesn't clear
+
 ```javascript
 🔄 Refetching group data...
 🎨 [GroupSettingsForm] Rendering with: {
@@ -268,6 +288,7 @@ SELECT icon, thumbnail FROM "Group" WHERE id = 'your-group-id';
 **Problem:** `setPreviewIcon(undefined)` not being called
 
 **Check:**
+
 - Is `onSuccess` callback running?
 - Look for `🔄 Refetching group data...` log
 - If missing, mutation didn't succeed
@@ -277,24 +298,28 @@ SELECT icon, thumbnail FROM "Group" WHERE id = 'your-group-id';
 ## 🔑 Key Checkpoints
 
 ### ✅ Upload Phase
+
 - [ ] File selected appears as `FileList` in form values
 - [ ] Upload to Uploadcare starts: `📤 Uploading icon...`
 - [ ] Uploadcare returns response with UUID: `📦 Uploadcare icon response`
 - [ ] UUID is extracted: `🔑 Icon UUID to save: "uuid-here"`
 
 ### ✅ Save Phase
+
 - [ ] Server receives UUID: `🔧 [Server] Updating group - ICON: uuid`
 - [ ] Database updates successfully: `✅ [Server] Icon updated successfully`
 - [ ] Path revalidated: `✅ [Server] Path revalidated`
 - [ ] Response status is 200: `✅ Icon update result: { status: 200 }`
 
 ### ✅ Refetch Phase
+
 - [ ] Refetch triggered: `🔄 Refetching group data...`
 - [ ] Previews cleared in logs
 - [ ] New data loaded with NEW UUID: `📊 Group data loaded: { icon: "new-uuid" }`
 - [ ] URLs constructed with new UUID: `🖼️ Image URLs: { iconUrl: "https://ucarecdn.com/new-uuid/" }`
 
 ### ✅ Render Phase
+
 - [ ] Component renders with new data: `🎨 [GroupSettingsForm] Rendering`
 - [ ] Preview is undefined: `previewIcon: undefined`
 - [ ] DB icon is new UUID: `dbIcon: "new-uuid"`
@@ -306,6 +331,7 @@ SELECT icon, thumbnail FROM "Group" WHERE id = 'your-group-id';
 ## 📞 Next Steps Based on Findings
 
 **If you see:**
+
 1. **Upload fails** → Check Uploadcare API key and network
 2. **UUID is undefined** → Check Uploadcare response structure
 3. **Database update fails** → Check server logs and database

@@ -4,7 +4,7 @@ import { useRef, useState } from "react"
 import { toast } from "sonner"
 
 export const useChannelInfo = () => {
-    const channelRef = useRef<HTMLAnchorElement | null>(null)
+    const channelRef = useRef<HTMLDivElement | null>(null)
     const inputRef = useRef<HTMLInputElement | null>(null)
     const triggerRef = useRef<HTMLButtonElement | null>(null)
 

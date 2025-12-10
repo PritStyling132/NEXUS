@@ -282,7 +282,6 @@ export const useAuthSignUp = () => {
         }
     })
 
-    // ✅ Resend code function
     const onResendCode = async () => {
         if (!isLoaded || !signUp) {
             toast.error("Please wait...")
@@ -315,9 +314,6 @@ export const useAuthSignUp = () => {
     }
 }
 
-// ================================
-// ✅ GOOGLE AUTH HOOK
-// ================================
 export const useGoogleAuth = () => {
     const { signIn, isLoaded: LoadedSignIn } = useSignIn()
     const { signUp, isLoaded: LoadedSignUp } = useSignUp()

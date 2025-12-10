@@ -2,11 +2,11 @@ import GroupSettingsForm from "@/components/forms/group-settings"
 import { Settings } from "lucide-react"
 
 interface Props {
-    params: { groupid: string }
+    params: Promise<{ groupid: string }>
 }
 
-const GroupSettingsPage = ({ params }: Props) => {
-    const groupid = params?.groupid
+const GroupSettingsPage = async ({ params }: Props) => {
+    const { groupid } = await params
     return (
         <div className="flex flex-col w-full h-full gap-6 sm:gap-8 md:gap-10 px-4 sm:px-6 md:px-10 lg:px-16 py-6 sm:py-8 md:py-10 overflow-auto bg-background dark:bg-[#101011]">
             {/* Header Section */}

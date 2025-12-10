@@ -6,7 +6,8 @@ export type GroupStateProps = {
     name: string
     category: string
     createdAt: Date
-    html: string
+    html?: string
+    htmlDescription?: string | null
     userId: string
     thumbnail: string | null
     description: string | null

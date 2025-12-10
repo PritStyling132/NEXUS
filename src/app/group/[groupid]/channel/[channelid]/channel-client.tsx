@@ -2,7 +2,12 @@
 import { useState, useEffect, useRef } from "react"
 import { Hash, Send, Image, Smile, MoreVertical, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Card,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -14,14 +19,19 @@ interface Props {
     channelid: string
 }
 
-export default function ChannelClient({ channelInfo, groupid, channelid }: Props) {
+export default function ChannelClient({
+    channelInfo,
+    groupid,
+    channelid,
+}: Props) {
     const [message, setMessage] = useState("")
     const [messages, setMessages] = useState(channelInfo?.messages || [])
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
-    const channel = channelInfo && typeof channelInfo === "object" && "id" in channelInfo
-        ? channelInfo
-        : null
+    const channel =
+        channelInfo && typeof channelInfo === "object" && "id" in channelInfo
+            ? channelInfo
+            : null
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -80,22 +90,28 @@ export default function ChannelClient({ channelInfo, groupid, channelid }: Props
                 {messages && messages.length > 0 ? (
                     <div className="space-y-4 pb-4">
                         {messages.map((msg: any, index: number) => {
-                            const showAvatar = index === 0 || messages[index - 1]?.sender?.firstname !== msg.sender?.firstname
+                            const showAvatar =
+                                index === 0 ||
+                                messages[index - 1]?.sender?.firstname !==
+                                    msg.sender?.firstname
 
                             return (
                                 <div
                                     key={msg.id}
                                     className={cn(
                                         "flex gap-3 group hover:bg-accent/30 dark:hover:bg-themeGray/10 -mx-2 px-2 py-1 rounded-lg transition-colors",
-                                        !showAvatar && "mt-1"
+                                        !showAvatar && "mt-1",
                                     )}
                                 >
                                     <div className="flex-shrink-0 w-10">
                                         {showAvatar ? (
                                             <Avatar className="w-10 h-10 border-2 border-border dark:border-themeGray">
-                                                <AvatarImage src={msg.sender?.image} />
+                                                <AvatarImage
+                                                    src={msg.sender?.image}
+                                                />
                                                 <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white font-semibold">
-                                                    {msg.sender?.firstname?.[0] || "U"}
+                                                    {msg.sender
+                                                        ?.firstname?.[0] || "U"}
                                                 </AvatarFallback>
                                             </Avatar>
                                         ) : null}
@@ -104,21 +120,26 @@ export default function ChannelClient({ channelInfo, groupid, channelid }: Props
                                         {showAvatar && (
                                             <div className="flex items-baseline gap-2 mb-1">
                                                 <span className="font-semibold text-foreground dark:text-themeTextWhite">
-                                                    {msg.sender?.firstname} {msg.sender?.lastname}
+                                                    {msg.sender?.firstname}{" "}
+                                                    {msg.sender?.lastname}
                                                 </span>
                                                 <span className="text-xs text-muted-foreground dark:text-themeTextGray">
-                                                    {new Date(msg.createdAt).toLocaleString('en-US', {
-                                                        hour: 'numeric',
-                                                        minute: '2-digit',
-                                                        hour12: true
+                                                    {new Date(
+                                                        msg.createdAt,
+                                                    ).toLocaleString("en-US", {
+                                                        hour: "numeric",
+                                                        minute: "2-digit",
+                                                        hour12: true,
                                                     })}
                                                 </span>
                                             </div>
                                         )}
-                                        <p className={cn(
-                                            "text-sm text-foreground dark:text-themeTextGray break-words",
-                                            !showAvatar && "text-sm"
-                                        )}>
+                                        <p
+                                            className={cn(
+                                                "text-sm text-foreground dark:text-themeTextGray break-words",
+                                                !showAvatar && "text-sm",
+                                            )}
+                                        >
                                             {msg.message}
                                         </p>
                                     </div>
@@ -138,8 +159,10 @@ export default function ChannelClient({ channelInfo, groupid, channelid }: Props
                                     Welcome to #{channel?.name || "channel"}
                                 </CardTitle>
                                 <CardDescription className="text-muted-foreground dark:text-themeTextGray mt-2">
-                                    This is the start of the #{channel?.name || "channel"} channel.
-                                    Send your first message below to get the conversation started!
+                                    This is the start of the #
+                                    {channel?.name || "channel"} channel. Send
+                                    your first message below to get the
+                                    conversation started!
                                 </CardDescription>
                             </CardHeader>
                         </Card>
@@ -149,7 +172,10 @@ export default function ChannelClient({ channelInfo, groupid, channelid }: Props
 
             {/* Message Input */}
             <div className="border-t border-border dark:border-[#28282D] px-4 sm:px-6 md:px-8 py-4 bg-background dark:bg-[#1A1A1D]">
-                <form onSubmit={handleSendMessage} className="flex gap-2 items-end">
+                <form
+                    onSubmit={handleSendMessage}
+                    className="flex gap-2 items-end"
+                >
                     <div className="flex-1">
                         <Textarea
                             value={message}

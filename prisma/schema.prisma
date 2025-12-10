@@ -56,6 +56,7 @@ model Group {
   affiliate    Affiliate?
   subscription Subscription?  // Changed to singular - one subscription per group
   modules      Module[]
+  videos       Video[]        // NEW: Video uploads
 }
 
 model Members {
@@ -167,10 +168,58 @@ model Course {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String
   description String?
+  thumbnail   String?  // Course cover image
+  published   Boolean  @default(false) // Draft vs Published
   createdAt   DateTime @default(now())
-  groupId     String?  @db.Uuid
+  updatedAt   DateTime @updatedAt
+  groupId     String   @db.Uuid
 
-  group Group? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group            Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  videos           CourseVideo[]
+  resources        CourseResource[]
+
+  @@index([groupId])
+  @@index([published])
+}
+
+model CourseVideo {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  caption       String?  // Video description
+  videoUrl      String   // Uploadcare UUID for video
+  thumbnailUrl  String   // Uploadcare UUID for thumbnail
+  order         Int      @default(0) // For ordering videos in course
+  duration      Float?   // Duration in seconds
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  courseId      String   @db.Uuid
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@index([order])
+}
+
+model CourseResource {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  url         String   // YouTube or external resource URL
+  type        ResourceType @default(YOUTUBE)
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  courseId    String   @db.Uuid
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+}
+
+enum ResourceType {
+  YOUTUBE
+  LINK
+  DOCUMENT
 }
 
 model Affiliate {
@@ -231,6 +280,25 @@ model Subscription {
 enum Group_PRIVACY {
   PUBLIC
   PRIVATE
+}
+
+model Video {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  videoUrl      String   // Uploadcare UUID
+  thumbnailUrl  String   // Uploadcare UUID for custom thumbnail
+  caption       String   // User-provided description
+  order         Int      @default(0)
+  videoSize     Int?     // Size in bytes
+  videoDuration Float?   // Duration in seconds (optional)
+
+  groupId       String   @db.Uuid
+  group         Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([createdAt])
 }
 
 enum SubscriptionStatus {

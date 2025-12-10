@@ -1,14 +1,20 @@
 import { MessageSquare, Send, Hash } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 
 interface Props {
-    params: { groupid: string }
+    params: Promise<{ groupid: string }>
 }
 
-const MessagesPage = ({ params }: Props) => {
-    const groupid = params?.groupid
+const MessagesPage = async ({ params }: Props) => {
+    const { groupid } = await params
 
     return (
         <div className="flex flex-col w-full h-full gap-6 sm:gap-8 md:gap-10 px-4 sm:px-6 md:px-10 lg:px-16 py-6 sm:py-8 md:py-10 overflow-auto bg-background dark:bg-[#101011]">
@@ -38,8 +44,9 @@ const MessagesPage = ({ params }: Props) => {
                             No Messages Yet
                         </CardTitle>
                         <CardDescription className="text-muted-foreground dark:text-themeTextGray">
-                            Start a conversation with your group members. Messages are private
-                            and only visible to the participants.
+                            Start a conversation with your group members.
+                            Messages are private and only visible to the
+                            participants.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -50,7 +57,8 @@ const MessagesPage = ({ params }: Props) => {
                             <div className="flex gap-2">
                                 <Hash className="w-4 h-4 mt-1 text-muted-foreground" />
                                 <span className="text-sm text-muted-foreground dark:text-themeTextGray">
-                                    Channels are great for topic-based conversations
+                                    Channels are great for topic-based
+                                    conversations
                                 </span>
                             </div>
                         </div>

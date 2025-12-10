@@ -2,7 +2,13 @@
 import React, { useState } from "react"
 import { FieldErrors } from "react-hook-form"
 import { HtmlParser } from "../html-persar"
-import { EditorContent, EditorRoot, handleCommandNavigation, Placeholder, CharacterCount } from "novel"
+import {
+    EditorContent,
+    EditorRoot,
+    handleCommandNavigation,
+    Placeholder,
+    CharacterCount,
+} from "novel"
 import { defaultExtensions } from "./extension"
 import { SlashCommand } from "./slash-commad"
 import { Video } from "./video"
@@ -50,56 +56,59 @@ const BlockTextEditor = ({
         textContent?.length || undefined,
     )
 
-    return <div>
-        {" "}
-        {htmlContent && !onEdit && inline ? (
-            <HtmlParser html={htmlContent} />
-        ) : (
-            <EditorRoot>
-                <EditorContent
-                    className={cn(
-                        inline
-                            ? onEdit && "mb-5"
-                            : "border-[1px] rounded-xl px-10 py-5 text-base border-themeGray bg-themeBlack w-full",
-                    )}
-                    initialContent={content}
-                    editorProps={{
-                        editable: () => !disabled as boolean,
-                        handleDOMEvents: {
-                            keydown: (_view, event) => handleCommandNavigation(event),
-                        },
-                        attributes: {
-                            class: `prose prose-lg dark:prose-invert focus:outline-none max-w-full [&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-2xl text-themeTextGray`,
-                        },
-                    }}
-                    onUpdate={({ editor }) => {
-                        const json = editor.getJSON()
-                        const text = editor.getText()
+    return (
+        <div>
+            {" "}
+            {htmlContent && !onEdit && inline ? (
+                <HtmlParser html={htmlContent} />
+            ) : (
+                <EditorRoot>
+                    <EditorContent
+                        className={cn(
+                            inline
+                                ? onEdit && "mb-5"
+                                : "border-[1px] rounded-xl px-10 py-5 text-base border-themeGray bg-themeBlack w-full",
+                        )}
+                        initialContent={content}
+                        editorProps={{
+                            editable: () => !disabled as boolean,
+                            handleDOMEvents: {
+                                keydown: (_view, event) =>
+                                    handleCommandNavigation(event),
+                            },
+                            attributes: {
+                                class: `prose prose-lg dark:prose-invert focus:outline-none max-w-full [&_h1]:text-4xl [&_h2]:text-3xl [&_h3]:text-2xl text-themeTextGray`,
+                            },
+                        }}
+                        onUpdate={({ editor }) => {
+                            const json = editor.getJSON()
+                            const text = editor.getText()
 
-                        if (setHtmlContent) {
-                            const html = editor.getHTML()
-                            setHtmlContent(html)
-                        }
-                        setContent(json)
-                        setTextContent(text)
-                        setCharacters(text.length)
-                    }}
-                    extensions={[
-                        ...defaultExtensions,
-                        SlashCommand,
-                        CharacterCount.configure({
-                            limit: max,
-                        }),
-                        Placeholder.configure({
-                            placeholder: "Type / to insert element...",
-                        }),
-                        Video,
-                        Image,
-                    ]}
-                />
-            </EditorRoot>
-        )}
-    </div >
+                            if (setHtmlContent) {
+                                const html = editor.getHTML()
+                                setHtmlContent(html)
+                            }
+                            setContent(json)
+                            setTextContent(text)
+                            setCharacters(text.length)
+                        }}
+                        extensions={[
+                            ...defaultExtensions,
+                            SlashCommand,
+                            CharacterCount.configure({
+                                limit: max,
+                            }),
+                            Placeholder.configure({
+                                placeholder: "Type / to insert element...",
+                            }),
+                            Video,
+                            Image,
+                        ]}
+                    />
+                </EditorRoot>
+            )}
+        </div>
+    )
 }
 
-export default BlockTextEditor;
+export default BlockTextEditor

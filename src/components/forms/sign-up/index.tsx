@@ -34,6 +34,7 @@ const SignUpForm = () => {
             onSubmit={onInitiateUserRegistration}
             className="flex flex-col gap-4 sm:gap-5 mt-6 sm:mt-8 md:mt-10 w-full"
         >
+            <div id="clerk-captcha"></div>
             {verifying ? (
                 <div className="flex flex-col items-center mb-5 gap-6 py-4">
                     <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-4">

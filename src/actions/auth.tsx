@@ -35,7 +35,7 @@ export const onAuthenticatedUser = async () => {
             status: 404,
         }
     } catch (error) {
-        console.error("❌ onAuthenticatedUser Error:", error)
+        console.error(" onAuthenticatedUser Error:", error)
         return {
             status: 400,
         }
@@ -49,7 +49,7 @@ export const onSignUpUser = async (data: {
     clerkId: string
 }) => {
     try {
-        console.log("🔄 Starting user creation with data:", data)
+        console.log(" Starting user creation with data:", data)
 
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
@@ -59,7 +59,7 @@ export const onSignUpUser = async (data: {
         })
 
         if (existingUser) {
-            console.log("⚠️ User already exists:", existingUser.id)
+            console.log(" User already exists:", existingUser.id)
             return {
                 status: 200,
                 message: "User already registered",
@@ -77,7 +77,7 @@ export const onSignUpUser = async (data: {
             },
         })
 
-        console.log("✅ User created successfully:", createdUser.id)
+        console.log(" User created successfully:", createdUser.id)
 
         if (createdUser) {
             return {
@@ -92,13 +92,13 @@ export const onSignUpUser = async (data: {
             message: "User could not be created! Try again",
         }
     } catch (error: any) {
-        console.error("❌ onSignUpUser Error:", error)
-        console.error("❌ Error details:", error.message)
-        console.error("❌ Error code:", error.code)
+        console.error(" onSignUpUser Error:", error)
+        console.error(" Error details:", error.message)
+        console.error(" Error code:", error.code)
 
         // Handle unique constraint violation (user already exists)
         if (error.code === "P2002") {
-            console.log("⚠️ Unique constraint violation - user already exists")
+            console.log(" Unique constraint violation - user already exists")
             return {
                 status: 200,
                 message: "User already registered",

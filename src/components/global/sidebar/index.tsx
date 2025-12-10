@@ -18,7 +18,7 @@ type Props = {
 export interface IChannels {
     id: string
     name: string
-    icon: string
+    icon: string | null
     createdAt: Date
     groupId: string | null
 }
@@ -70,7 +70,7 @@ const SideBar = ({ groupid, userid, mobile }: Props) => {
                                 <img
                                     src={getGroupIconUrl(
                                         groupInfo?.group?.icon,
-                                        groupInfo?.group?.category
+                                        groupInfo?.group?.category,
                                     )}
                                     alt="icon"
                                     className="w-10 h-10 object-cover rounded-lg"
@@ -86,16 +86,15 @@ const SideBar = ({ groupid, userid, mobile }: Props) => {
                     {groups?.groups?.map(
                         (item) =>
                             item.id !== groupid && (
-                                <Link
-                                    key={item.id}
-                                    href={`/group/${item.id}`}
-                                >
+                                <Link key={item.id} href={`/group/${item.id}`}>
                                     <Button
                                         variant="ghost"
                                         className="flex gap-2 w-full justify-start hover:bg-accent dark:hover:bg-themeGray items-center transition-colors"
                                     >
                                         <Group className="w-4 h-4" />
-                                        <span className="truncate">{item.name}</span>
+                                        <span className="truncate">
+                                            {item.name}
+                                        </span>
                                     </Button>
                                 </Link>
                             ),
@@ -135,7 +134,7 @@ const SideBar = ({ groupid, userid, mobile }: Props) => {
                     optimisticChannel={variables}
                     loading={isPending}
                     groupid={groupid}
-                    groupUserId={groupInfo.group?.userId ?? ""}
+                    groupUserId={groupInfo?.group?.userId ?? ""}
                     userId={userid}
                 />
             </div>

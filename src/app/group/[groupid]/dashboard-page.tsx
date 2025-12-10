@@ -1,5 +1,18 @@
-import { Users, Hash, BookOpen, MessageSquare, TrendingUp, Crown } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Users,
+    Hash,
+    BookOpen,
+    MessageSquare,
+    TrendingUp,
+    Crown,
+} from "lucide-react"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 
@@ -11,12 +24,23 @@ type Props = {
     dashboardData?: any
 }
 
-export const GroupDashboard = ({ groupid, groupInfo, subscriptions, channels, dashboardData }: Props) => {
+export const GroupDashboard = ({
+    groupid,
+    groupInfo,
+    subscriptions,
+    channels,
+    dashboardData,
+}: Props) => {
     const group = groupInfo?.group
-    const memberCount = dashboardData?.data?.memberCount || subscriptions?.count || 0
-    const channelCount = dashboardData?.data?.channelCount || channels?.channels?.length || 0
+    const memberCount =
+        dashboardData?.data?.memberCount || subscriptions?.count || 0
+    const channelCount =
+        dashboardData?.data?.channelCount || channels?.channels?.length || 0
     const courseCount = dashboardData?.data?.courseCount || 0
-    const subscriptionCount = dashboardData?.data?.subscriptionCount || subscriptions?.subscriptions?.length || 0
+    const subscriptionCount =
+        dashboardData?.data?.subscriptionCount ||
+        subscriptions?.subscriptions?.length ||
+        0
 
     return (
         <div className="flex flex-col w-full h-full gap-6 sm:gap-8 md:gap-10 px-4 sm:px-6 md:px-10 lg:px-16 py-6 sm:py-8 md:py-10 overflow-auto bg-background dark:bg-[#101011]">
@@ -31,25 +55,35 @@ export const GroupDashboard = ({ groupid, groupInfo, subscriptions, channels, da
                                     {group?.name || "Your Group"}
                                 </h3>
                                 {groupInfo?.groupOwner && (
-                                    <Badge variant="secondary" className="gap-1">
+                                    <Badge
+                                        variant="secondary"
+                                        className="gap-1"
+                                    >
                                         <Crown className="w-3 h-3" />
                                         Owner
                                     </Badge>
                                 )}
                             </div>
                             <p className="text-sm sm:text-base text-muted-foreground dark:text-themeTextGray leading-relaxed max-w-3xl">
-                                {group?.description || "Group dashboard and overview"}
+                                {group?.description ||
+                                    "Group dashboard and overview"}
                             </p>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-4 text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground dark:text-themeTextGray">
                             <Users className="w-4 h-4" />
-                            <span>{memberCount} member{memberCount !== 1 ? 's' : ''}</span>
+                            <span>
+                                {memberCount} member
+                                {memberCount !== 1 ? "s" : ""}
+                            </span>
                         </div>
                         <div className="flex items-center gap-2 text-muted-foreground dark:text-themeTextGray">
                             <Hash className="w-4 h-4" />
-                            <span>{channelCount} channel{channelCount !== 1 ? 's' : ''}</span>
+                            <span>
+                                {channelCount} channel
+                                {channelCount !== 1 ? "s" : ""}
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -81,7 +81,8 @@ export function getGroupIconUrl(
         }
         // Otherwise, assume it's an uploadcare UUID
         // Use your specific CDN subdomain from your UploadCare project
-        const cdnSubdomain = process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN || "339qsoofdz"
+        const cdnSubdomain =
+            process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN || "339qsoofdz"
         // UploadCare automatically includes the sanitized filename in the URL
         return `https://${cdnSubdomain}.ucarecd.net/${icon}/`
     }
@@ -106,7 +107,8 @@ export function getGroupThumbnailUrl(
         }
         // Otherwise, assume it's an uploadcare UUID
         // Use your specific CDN subdomain from your UploadCare project
-        const cdnSubdomain = process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN || "339qsoofdz"
+        const cdnSubdomain =
+            process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN || "339qsoofdz"
         // UploadCare automatically includes the sanitized filename in the URL
         return `https://${cdnSubdomain}.ucarecd.net/${thumbnail}/`
     }

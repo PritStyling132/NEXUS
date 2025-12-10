@@ -11,10 +11,10 @@ import {
     Code,
     Image as ImageIcon,
     Video,
-} from "lucide-react";
+} from "lucide-react"
 
-import { createSuggestionItems, Command, renderItems } from "novel";
-import { upload } from "@/lib/uploadcare";
+import { createSuggestionItems, Command, renderItems } from "novel"
+import { upload } from "@/lib/uploadcare"
 
 export const suggestionItems = createSuggestionItems([
     {
@@ -22,8 +22,8 @@ export const suggestionItems = createSuggestionItems([
         description: "Let us know how we can improve.",
         icon: <MessageSquarePlus size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).run();
-            window.open("/feedback", "_blank");
+            editor.chain().focus().deleteRange(range).run()
+            window.open("/feedback", "_blank")
         },
     },
 
@@ -38,7 +38,7 @@ export const suggestionItems = createSuggestionItems([
                 .focus()
                 .deleteRange(range)
                 .toggleNode("paragraph", "paragraph")
-                .run();
+                .run()
         },
     },
 
@@ -48,7 +48,7 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["todo", "task", "list", "check", "checkbox"],
         icon: <CheckSquare size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).toggleTaskList().run();
+            editor.chain().focus().deleteRange(range).toggleTaskList().run()
         },
     },
 
@@ -58,7 +58,12 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["title", "big", "large"],
         icon: <Heading1 size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).setNode("heading", { level: 1 }).run();
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .setNode("heading", { level: 1 })
+                .run()
         },
     },
 
@@ -68,7 +73,12 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["subtitle", "medium"],
         icon: <Heading2 size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).setNode("heading", { level: 2 }).run();
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .setNode("heading", { level: 2 })
+                .run()
         },
     },
 
@@ -78,7 +88,12 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["subtitle", "small"],
         icon: <Heading3 size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).setNode("heading", { level: 3 }).run();
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .setNode("heading", { level: 3 })
+                .run()
         },
     },
 
@@ -88,7 +103,7 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["unordered", "point"],
         icon: <List size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).toggleBulletList().run();
+            editor.chain().focus().deleteRange(range).toggleBulletList().run()
         },
     },
 
@@ -98,7 +113,7 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["ordered"],
         icon: <ListOrdered size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+            editor.chain().focus().deleteRange(range).toggleOrderedList().run()
         },
     },
 
@@ -114,7 +129,7 @@ export const suggestionItems = createSuggestionItems([
                 .deleteRange(range)
                 .toggleNode("paragraph", "paragraph")
                 .toggleBlockquote()
-                .run();
+                .run()
         },
     },
 
@@ -124,7 +139,7 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["codeblock"],
         icon: <Code size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
+            editor.chain().focus().deleteRange(range).toggleCodeBlock().run()
         },
     },
 
@@ -134,31 +149,33 @@ export const suggestionItems = createSuggestionItems([
         searchTerms: ["photo", "picture", "media"],
         icon: <ImageIcon size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).run();
+            editor.chain().focus().deleteRange(range).run()
 
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "image/*";
+            const input = document.createElement("input")
+            input.type = "file"
+            input.accept = "image/*"
 
             input.onchange = async () => {
                 if (input.files?.length) {
-                    const file = input.files[0];
-                    const uploaded = await upload.uploadFile(file);
+                    const file = input.files[0]
+                    const uploaded = await upload.uploadFile(file)
 
                     // Use the correct CDN subdomain for your UploadCare project
-                    const cdnSubdomain = process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN || "339qsoofdz";
-                    const imgsrc = `https://${cdnSubdomain}.ucarecd.net/${uploaded.uuid}/`;
+                    const cdnSubdomain =
+                        process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN ||
+                        "339qsoofdz"
+                    const imgsrc = `https://${cdnSubdomain}.ucarecd.net/${uploaded.uuid}/`
 
                     if (imgsrc) {
                         editor.commands.insertContent({
                             type: "image",
                             attrs: { src: imgsrc },
-                        });
+                        })
                     }
                 }
-            };
+            }
 
-            input.click();
+            input.click()
         },
     },
 
@@ -168,19 +185,19 @@ export const suggestionItems = createSuggestionItems([
         description: "Embed video",
         icon: <Video size={18} />,
         command: ({ editor, range }) => {
-            editor.chain().focus().deleteRange(range).run();
+            editor.chain().focus().deleteRange(range).run()
 
-            const videoSrc = window.prompt("Video URL");
+            const videoSrc = window.prompt("Video URL")
 
             if (videoSrc?.length) {
                 editor.commands.insertContent({
                     type: "video",
                     attrs: { src: videoSrc },
-                });
+                })
             }
         },
     },
-]);
+])
 
 // ✅ Export Slash Command Config
 export const SlashCommand = Command.configure({
@@ -188,4 +205,4 @@ export const SlashCommand = Command.configure({
         items: () => suggestionItems,
         render: renderItems,
     },
-});
+})

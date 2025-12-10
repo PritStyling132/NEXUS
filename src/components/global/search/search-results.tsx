@@ -30,7 +30,7 @@ export const SearchResults = ({ className }: Props) => {
         <Card
             className={cn(
                 "absolute top-full left-0 right-0 mt-2 max-h-96 overflow-y-auto z-50 bg-background dark:bg-themeBlack border-border dark:border-themeGray shadow-lg",
-                className
+                className,
             )}
         >
             {isSearching ? (
@@ -51,7 +51,7 @@ export const SearchResults = ({ className }: Props) => {
                             <img
                                 src={getGroupIconUrl(
                                     group.thumbnail,
-                                    group.category
+                                    group.category,
                                 )}
                                 alt={group.name}
                                 className="w-10 h-10 rounded-lg object-cover flex-shrink-0"

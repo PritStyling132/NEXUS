@@ -9,7 +9,7 @@ type Props = {
 }
 
 const AuthLayout = async ({ children }: Props) => {
-    // Only check Clerk authentication, don't query database here
+    // checking authentication, don't query database here
     const user = await currentUser()
 
     // If user is authenticated in Clerk, redirect to group creation

@@ -23,6 +23,7 @@ const config: Config = {
                 themeBlack: "#0D0D0D",
                 themeGray: "#2E2E2E",
                 themeLightGray: "#B4B0AE",
+                themeTextGray: "#A0A0A0",
                 themeAccent: "#6366F1", // bluish accent for hover/CTA
                 themeAccent2: "#8B5CF6", // purple variant for gradients
                 themeWhite: "#F5F5F5",

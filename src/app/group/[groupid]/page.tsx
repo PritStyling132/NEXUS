@@ -1,4 +1,9 @@
-import { onGetGroupInfo, onGetGroupChannels, onGetGroupSubscriptions, onGetGroupDashboardData } from "@/actions/groups"
+import {
+    onGetGroupInfo,
+    onGetGroupChannels,
+    onGetGroupSubscriptions,
+    onGetGroupDashboardData,
+} from "@/actions/groups"
 import { GroupDashboard } from "./dashboard-page"
 
 type Props = {
@@ -10,12 +15,13 @@ type Props = {
 const GroupHomePage = async ({ params }: Props) => {
     const { groupid } = await params
 
-    const [groupInfo, channels, subscriptions, dashboardData] = await Promise.all([
-        onGetGroupInfo(groupid),
-        onGetGroupChannels(groupid),
-        onGetGroupSubscriptions(groupid),
-        onGetGroupDashboardData(groupid)
-    ])
+    const [groupInfo, channels, subscriptions, dashboardData] =
+        await Promise.all([
+            onGetGroupInfo(groupid),
+            onGetGroupChannels(groupid),
+            onGetGroupSubscriptions(groupid),
+            onGetGroupDashboardData(groupid),
+        ])
 
     return (
         <GroupDashboard
@@ -28,4 +34,4 @@ const GroupHomePage = async ({ params }: Props) => {
     )
 }
 
-export default GroupHomePage;
+export default GroupHomePage
