@@ -29,10 +29,7 @@ function generateSignedUrl(publicId: string): string {
     // For raw files, we need to sign the URL properly
     // The signature is created from: public_id + timestamp + api_secret
     const toSign = `public_id=${publicId}&timestamp=${expiresAt}${apiSecret}`
-    const signature = crypto
-        .createHash("sha256")
-        .update(toSign)
-        .digest("hex")
+    const signature = crypto.createHash("sha256").update(toSign).digest("hex")
 
     return `https://res.cloudinary.com/${cloudName}/raw/upload/${publicId}?api_key=${apiKey}&timestamp=${expiresAt}&signature=${signature}`
 }
@@ -44,10 +41,7 @@ export async function GET(request: NextRequest) {
         const adminSession = cookieStore.get("admin_session")
 
         if (!adminSession?.value) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            )
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
         // Get the CV URL from query params
@@ -58,7 +52,7 @@ export async function GET(request: NextRequest) {
         if (!cvUrl) {
             return NextResponse.json(
                 { error: "CV URL is required" },
-                { status: 400 }
+                { status: 400 },
             )
         }
 
@@ -75,8 +69,8 @@ export async function GET(request: NextRequest) {
             // Approach 1: Try direct URL first (works if file is public)
             response = await fetch(cvUrl, {
                 headers: {
-                    "User-Agent": "Mozilla/5.0 (compatible; Server-side fetch)"
-                }
+                    "User-Agent": "Mozilla/5.0 (compatible; Server-side fetch)",
+                },
             })
 
             if (!response.ok && publicId) {
@@ -109,7 +103,11 @@ export async function GET(request: NextRequest) {
         }
 
         if (!response.ok) {
-            console.error("All fetch attempts failed:", response.status, response.statusText)
+            console.error(
+                "All fetch attempts failed:",
+                response.status,
+                response.statusText,
+            )
 
             // For debugging, log response body
             const errorBody = await response.text().catch(() => "")
@@ -118,10 +116,12 @@ export async function GET(request: NextRequest) {
             return NextResponse.json(
                 {
                     error: `Failed to fetch CV: ${response.status}`,
-                    message: "The file could not be accessed. This may be due to Cloudinary access restrictions.",
-                    suggestion: "Please go to Cloudinary Dashboard > Settings > Security and ensure 'Restrict unsigned uploads' is configured correctly, or re-upload the CV."
+                    message:
+                        "The file could not be accessed. This may be due to Cloudinary access restrictions.",
+                    suggestion:
+                        "Please go to Cloudinary Dashboard > Settings > Security and ensure 'Restrict unsigned uploads' is configured correctly, or re-upload the CV.",
                 },
-                { status: response.status || 500 }
+                { status: response.status || 500 },
             )
         }
 
@@ -131,7 +131,7 @@ export async function GET(request: NextRequest) {
         if (fileBuffer.byteLength === 0) {
             return NextResponse.json(
                 { error: "Downloaded file is empty" },
-                { status: 500 }
+                { status: 500 },
             )
         }
 
@@ -141,10 +141,15 @@ export async function GET(request: NextRequest) {
         if (lowerFileName.endsWith(".doc")) {
             contentType = "application/msword"
         } else if (lowerFileName.endsWith(".docx")) {
-            contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            contentType =
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         }
 
-        console.log("Successfully fetched CV, size:", fileBuffer.byteLength, "bytes")
+        console.log(
+            "Successfully fetched CV, size:",
+            fileBuffer.byteLength,
+            "bytes",
+        )
 
         // Return the file with proper headers for inline viewing
         return new NextResponse(fileBuffer, {
@@ -159,7 +164,7 @@ export async function GET(request: NextRequest) {
         console.error("Download CV error:", error)
         return NextResponse.json(
             { error: "Failed to download CV", details: String(error) },
-            { status: 500 }
+            { status: 500 },
         )
     }
 }

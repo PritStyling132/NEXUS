@@ -32,10 +32,7 @@ export async function POST(request: NextRequest) {
         const admin = await verifyAdmin()
 
         if (!admin) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 },
-            )
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
         const { applicationId } = await request.json()

@@ -69,7 +69,10 @@ export const JoinButton = ({
                 toast.success("Successfully joined the group!")
                 router.push("/dashboard")
             } else {
-                toast.error(member?.message || "Failed to join group. Please try again.")
+                toast.error(
+                    member?.message ||
+                        "Failed to join group. Please try again.",
+                )
             }
         } catch (error) {
             toast.error("Something went wrong. Please try again.")
@@ -125,7 +128,8 @@ export const JoinButton = ({
             if (activePlan) {
                 return (
                     <>
-                        Sign in to Join - ₹{activePlan.priceDisplay?.toLocaleString()}
+                        Sign in to Join - ₹
+                        {activePlan.priceDisplay?.toLocaleString()}
                     </>
                 )
             }

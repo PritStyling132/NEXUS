@@ -34,7 +34,9 @@ export const FormGenerator = ({
                     className="flex flex-col gap-2 text-foreground dark:text-themeTextGray"
                     htmlFor={`input-${label}`}
                 >
-                    {label && <span className="text-sm font-medium">{label}</span>}
+                    {label && (
+                        <span className="text-sm font-medium">{label}</span>
+                    )}
                     <Input
                         id={`input-${label}`}
                         type={type}
@@ -59,7 +61,9 @@ export const FormGenerator = ({
                     htmlFor={`select-${label}`}
                     className="flex flex-col gap-2 text-foreground dark:text-themeTextGray"
                 >
-                    {label && <span className="text-sm font-medium">{label}</span>}
+                    {label && (
+                        <span className="text-sm font-medium">{label}</span>
+                    )}
                     <select
                         id={`select-${label}`}
                         className="w-full bg-card dark:bg-themeBlack border border-border dark:border-themeGray text-foreground dark:text-themeTextGray p-3 rounded-lg focus:ring-primary focus:border-primary"
@@ -93,7 +97,9 @@ export const FormGenerator = ({
                     className="flex flex-col gap-2 text-foreground dark:text-themeTextGray"
                     htmlFor={`input-${label}`}
                 >
-                    {label && <span className="text-sm font-medium">{label}</span>}
+                    {label && (
+                        <span className="text-sm font-medium">{label}</span>
+                    )}
                     <Textarea
                         className="bg-card dark:bg-themeBlack border-border dark:border-themeGray text-foreground dark:text-themeTextGray placeholder:text-muted-foreground focus:ring-primary focus:border-primary"
                         id={`input-${label}`}

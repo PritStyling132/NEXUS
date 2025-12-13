@@ -11,7 +11,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogIn, MenuIcon, LogOut, Settings, LayoutDashboard } from "lucide-react"
+import {
+    LogIn,
+    MenuIcon,
+    LogOut,
+    Settings,
+    LayoutDashboard,
+} from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
@@ -79,8 +85,10 @@ const LandingPageNavbar: React.FC = () => {
     const handleSignOut = async () => {
         if (isOwner) {
             // Clear owner session cookies
-            document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-            document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
             router.push("/sign-in")
         } else {
             // Clerk sign out
@@ -96,9 +104,11 @@ const LandingPageNavbar: React.FC = () => {
         ? `${userProfile.firstname} ${userProfile.lastname}`.trim()
         : user?.fullName || "User"
 
-    const displayEmail = userProfile?.email || user?.primaryEmailAddress?.emailAddress || ""
+    const displayEmail =
+        userProfile?.email || user?.primaryEmailAddress?.emailAddress || ""
 
-    const displayInitial = userProfile?.firstname?.[0]?.toUpperCase() ||
+    const displayInitial =
+        userProfile?.firstname?.[0]?.toUpperCase() ||
         user?.firstName?.[0] ||
         user?.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ||
         "U"
@@ -109,7 +119,9 @@ const LandingPageNavbar: React.FC = () => {
     // Get the dashboard link based on user type
     // For owners with groups, go to their first group; otherwise go to create page
     const dashboardLink = isOwner
-        ? (userProfile?.firstGroupId ? `/group/${userProfile.firstGroupId}` : "/group/create")
+        ? userProfile?.firstGroupId
+            ? `/group/${userProfile.firstGroupId}`
+            : "/group/create"
         : "/dashboard"
 
     return (
@@ -171,14 +183,28 @@ const LandingPageNavbar: React.FC = () => {
                                 </div>
                             </div>
                             <DropdownMenuSeparator className="bg-border dark:bg-themeGray" />
-                            <DropdownMenuItem asChild className="cursor-pointer">
-                                <Link href={dashboardLink} className="flex items-center">
+                            <DropdownMenuItem
+                                asChild
+                                className="cursor-pointer"
+                            >
+                                <Link
+                                    href={dashboardLink}
+                                    className="flex items-center"
+                                >
                                     <LayoutDashboard className="mr-2 h-4 w-4" />
-                                    <span>{isOwner ? "My Groups" : "Dashboard"}</span>
+                                    <span>
+                                        {isOwner ? "My Groups" : "Dashboard"}
+                                    </span>
                                 </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem asChild className="cursor-pointer">
-                                <Link href="/account-settings" className="flex items-center">
+                            <DropdownMenuItem
+                                asChild
+                                className="cursor-pointer"
+                            >
+                                <Link
+                                    href="/account-settings"
+                                    className="flex items-center"
+                                >
                                     <Settings className="mr-2 h-4 w-4" />
                                     <span>Account Settings</span>
                                 </Link>
@@ -251,7 +277,10 @@ const LandingPageNavbar: React.FC = () => {
                                         {isOwner ? "My Groups" : "Dashboard"}
                                     </Button>
                                 </Link>
-                                <Link href="/account-settings" className="block">
+                                <Link
+                                    href="/account-settings"
+                                    className="block"
+                                >
                                     <Button
                                         variant="outline"
                                         className="w-full justify-start gap-2 rounded-xl"

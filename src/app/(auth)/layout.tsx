@@ -41,7 +41,10 @@ const AuthLayout = async ({ children }: Props) => {
                     </GlassCard>
                 </BackdropGradient>
                 <p className="mt-6 text-sm text-muted-foreground">
-                    <Link href="/" className="hover:text-primary transition-colors">
+                    <Link
+                        href="/"
+                        className="hover:text-primary transition-colors"
+                    >
                         ← Back to Home
                     </Link>
                 </p>

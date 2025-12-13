@@ -65,7 +65,9 @@ export default function LearnerChannelClient({
         onSuccess: (result) => {
             if (result.status === 200) {
                 // Invalidate and refetch messages
-                queryClient.invalidateQueries({ queryKey: ["channel-messages", channelid] })
+                queryClient.invalidateQueries({
+                    queryKey: ["channel-messages", channelid],
+                })
             } else {
                 toast.error(result.message || "Failed to send message")
             }
@@ -90,7 +92,11 @@ export default function LearnerChannelClient({
             <div className="border-b border-border px-4 sm:px-6 py-4 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
                 <div className="flex items-center gap-4">
                     <Link href={`/dashboard/group/${groupid}`}>
-                        <Button variant="ghost" size="icon" className="rounded-lg">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="rounded-lg"
+                        >
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                     </Link>
@@ -223,7 +229,9 @@ export default function LearnerChannelClient({
                     <Button
                         type="submit"
                         size="icon"
-                        disabled={!message.trim() || sendMessageMutation.isPending}
+                        disabled={
+                            !message.trim() || sendMessageMutation.isPending
+                        }
                         className="rounded-xl bg-primary hover:bg-primary/90 shadow-lg disabled:opacity-50 h-[60px] w-[60px]"
                     >
                         {sendMessageMutation.isPending ? (

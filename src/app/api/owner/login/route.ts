@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
             // Verify against temporary password
             if (!pendingOwner.temporaryPassword) {
                 return NextResponse.json(
-                    { error: "Account not properly configured. Contact support." },
+                    {
+                        error: "Account not properly configured. Contact support.",
+                    },
                     { status: 401 },
                 )
             }
@@ -64,7 +66,9 @@ export async function POST(request: NextRequest) {
             // Check if temporary password expired
             if (isPasswordExpired(pendingOwner.passwordExpiresAt)) {
                 return NextResponse.json(
-                    { error: "Temporary password has expired. Contact support for a new one." },
+                    {
+                        error: "Temporary password has expired. Contact support for a new one.",
+                    },
                     { status: 401 },
                 )
             }
@@ -105,7 +109,10 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        const isValidPassword = await verifyPassword(password, user.ownerPassword)
+        const isValidPassword = await verifyPassword(
+            password,
+            user.ownerPassword,
+        )
 
         if (!isValidPassword) {
             return NextResponse.json(
@@ -128,7 +135,9 @@ export async function POST(request: NextRequest) {
             isFirstLogin: false,
             hasGroup: user.groups.length > 0,
             firstGroupId: user.groups[0]?.id || null,
-            hasPaymentMethod: !!(user.razorpayCustomerId && user.razorpayTokenId),
+            hasPaymentMethod: !!(
+                user.razorpayCustomerId && user.razorpayTokenId
+            ),
             skippedGroupCreation: user.skippedGroupCreation,
             userId: user.id,
         })

@@ -27,10 +27,13 @@ const SignInPage = () => {
         }
     }, [tabParam])
 
-    const handleTabChange = useCallback((value: string) => {
-        setActiveTab(value)
-        router.push(`/sign-in?tab=${value}`, { scroll: false })
-    }, [router])
+    const handleTabChange = useCallback(
+        (value: string) => {
+            setActiveTab(value)
+            router.push(`/sign-in?tab=${value}`, { scroll: false })
+        },
+        [router],
+    )
 
     return (
         <div className="w-full space-y-4 sm:space-y-6">
@@ -43,7 +46,11 @@ const SignInPage = () => {
                 </p>
             </div>
 
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <Tabs
+                value={activeTab}
+                onValueChange={handleTabChange}
+                className="w-full"
+            >
                 <TabsList className="grid w-full grid-cols-3 mb-6 bg-muted/50 dark:bg-themeGray/30">
                     <TabsTrigger
                         value="learner"
@@ -71,7 +78,8 @@ const SignInPage = () => {
                 {/* Learner Sign-in Tab */}
                 <TabsContent value="learner" className="space-y-4">
                     <p className="text-sm text-muted-foreground dark:text-themeTextGray leading-relaxed">
-                        Join groups, watch courses, and connect with communities.
+                        Join groups, watch courses, and connect with
+                        communities.
                     </p>
 
                     <SignInForm />

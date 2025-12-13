@@ -28,7 +28,9 @@ export default async function Page({
     const userid = authResult.status === 200 ? authResult.id : undefined
 
     // Check if user is already a member
-    const membershipResult = userid ? await onCheckGroupMembership(groupid) : null
+    const membershipResult = userid
+        ? await onCheckGroupMembership(groupid)
+        : null
     const isMember = membershipResult?.isMember || false
 
     return (

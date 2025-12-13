@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         console.log("Auth check passed:", {
             hasClerkUser: !!user,
             clerkUserId: user?.id,
-            hasOwnerSession: !!ownerSessionId
+            hasOwnerSession: !!ownerSessionId,
         })
 
         const { phone, name } = await req.json()
@@ -68,18 +68,32 @@ export async function POST(req: NextRequest) {
                 })
                 userEmail = pendingOwner?.email ?? ""
             }
-            userName = name || `${ownerUser?.firstname ?? ""} ${ownerUser?.lastname ?? ""}`
+            userName =
+                name ||
+                `${ownerUser?.firstname ?? ""} ${ownerUser?.lastname ?? ""}`
         } else if (user) {
             // Clerk user flow - find by clerkId
             const clerkUser = await prisma.user.findUnique({
                 where: { clerkId: user.id },
-                select: { id: true, razorpayCustomerId: true, firstname: true, lastname: true, email: true },
+                select: {
+                    id: true,
+                    razorpayCustomerId: true,
+                    firstname: true,
+                    lastname: true,
+                    email: true,
+                },
             })
 
             if (!clerkUser) {
-                console.error("User not found in database for clerkId:", user.id)
+                console.error(
+                    "User not found in database for clerkId:",
+                    user.id,
+                )
                 return NextResponse.json(
-                    { success: false, error: "User profile not found. Please try signing out and back in." },
+                    {
+                        success: false,
+                        error: "User profile not found. Please try signing out and back in.",
+                    },
                     { status: 404 },
                 )
             }
@@ -92,8 +106,11 @@ export async function POST(req: NextRequest) {
                 })
             }
 
-            userEmail = clerkUser.email || user.emailAddresses[0]?.emailAddress || ""
-            userName = name || `${clerkUser.firstname || user.firstName || ""} ${clerkUser.lastname || user.lastName || ""}`.trim()
+            userEmail =
+                clerkUser.email || user.emailAddresses[0]?.emailAddress || ""
+            userName =
+                name ||
+                `${clerkUser.firstname || user.firstName || ""} ${clerkUser.lastname || user.lastName || ""}`.trim()
         }
 
         // Ensure userName is not empty (Razorpay requires a name)
@@ -101,7 +118,11 @@ export async function POST(req: NextRequest) {
             userName = "Customer"
         }
 
-        console.log("Creating Razorpay customer with:", { userName, userEmail, phone })
+        console.log("Creating Razorpay customer with:", {
+            userName,
+            userEmail,
+            phone,
+        })
 
         // Create Razorpay customer
         const customer = await razorpay.customers.create({
@@ -142,7 +163,12 @@ export async function POST(req: NextRequest) {
         console.error("Error creating customer:", error)
         console.error("Error details:", JSON.stringify(error, null, 2))
         return NextResponse.json(
-            { success: false, error: error.message || "Failed to create customer. Please try again." },
+            {
+                success: false,
+                error:
+                    error.message ||
+                    "Failed to create customer. Please try again.",
+            },
             { status: 500 },
         )
     }

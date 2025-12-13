@@ -36,7 +36,9 @@ export const UserAvatar = ({ image, groupid, userid }: UserWidgetProps) => {
                 const data = await response.json()
                 if (data.status === 200 && data.data) {
                     setUserInfo({
-                        name: `${data.data.firstname || ""} ${data.data.lastname || ""}`.trim() || "User",
+                        name:
+                            `${data.data.firstname || ""} ${data.data.lastname || ""}`.trim() ||
+                            "User",
                         email: data.data.email || "",
                         image: data.data.image || "",
                     })
@@ -49,7 +51,9 @@ export const UserAvatar = ({ image, groupid, userid }: UserWidgetProps) => {
             // Fall back to Clerk user if DB fetch fails
             if (clerkUser) {
                 setUserInfo({
-                    name: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || "User",
+                    name:
+                        `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() ||
+                        "User",
                     email: clerkUser.emailAddresses[0]?.emailAddress || "",
                 })
                 return
@@ -74,8 +78,10 @@ export const UserAvatar = ({ image, groupid, userid }: UserWidgetProps) => {
 
     const onLogout = async () => {
         // Clear owner session cookies
-        document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-        document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        document.cookie =
+            "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        document.cookie =
+            "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
 
         // If Clerk user, use Clerk signOut, otherwise just redirect
         if (clerkUser) {

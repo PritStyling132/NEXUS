@@ -2,9 +2,23 @@
 
 import GradientText from "@/components/global/gradient-text"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Crown, Users, BookOpen, MessageSquare, BarChart3, Shield, Sparkles } from "lucide-react"
+import {
+    Crown,
+    Users,
+    BookOpen,
+    MessageSquare,
+    BarChart3,
+    Shield,
+    Sparkles,
+} from "lucide-react"
 import Link from "next/link"
 
 export default function PricingPage() {
@@ -20,7 +34,8 @@ export default function PricingPage() {
                         Simple, Transparent Pricing
                     </GradientText>
                     <p className="text-base sm:text-lg text-muted-foreground mt-4 max-w-2xl mx-auto">
-                        Everything you need to build and grow your community on NeXuS
+                        Everything you need to build and grow your community on
+                        NeXuS
                     </p>
                 </div>
 
@@ -36,17 +51,24 @@ export default function PricingPage() {
                             <div className="p-2 rounded-lg bg-purple-500/10">
                                 <Crown className="w-6 h-6 text-purple-500" />
                             </div>
-                            <CardTitle className="text-2xl">Owner Plan</CardTitle>
+                            <CardTitle className="text-2xl">
+                                Owner Plan
+                            </CardTitle>
                         </div>
                         <CardDescription className="text-muted-foreground text-base">
-                            Build and monetize your community with all features included
+                            Build and monetize your community with all features
+                            included
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="flex items-baseline gap-1">
-                            <span className="text-xl text-muted-foreground">₹</span>
+                            <span className="text-xl text-muted-foreground">
+                                ₹
+                            </span>
                             <span className="text-5xl font-bold">4,999</span>
-                            <span className="text-muted-foreground text-lg">/month</span>
+                            <span className="text-muted-foreground text-lg">
+                                /month
+                            </span>
                         </div>
 
                         <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-center">
@@ -76,37 +98,49 @@ export default function PricingPage() {
                                     <div className="p-1 rounded bg-purple-500/10">
                                         <Users className="w-4 h-4 text-purple-500" />
                                     </div>
-                                    <span className="text-foreground">Create unlimited groups</span>
+                                    <span className="text-foreground">
+                                        Create unlimited groups
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm">
                                     <div className="p-1 rounded bg-purple-500/10">
                                         <BookOpen className="w-4 h-4 text-purple-500" />
                                     </div>
-                                    <span className="text-foreground">Unlimited courses & modules</span>
+                                    <span className="text-foreground">
+                                        Unlimited courses & modules
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm">
                                     <div className="p-1 rounded bg-purple-500/10">
                                         <MessageSquare className="w-4 h-4 text-purple-500" />
                                     </div>
-                                    <span className="text-foreground">Real-time messaging & channels</span>
+                                    <span className="text-foreground">
+                                        Real-time messaging & channels
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm">
                                     <div className="p-1 rounded bg-purple-500/10">
                                         <BarChart3 className="w-4 h-4 text-purple-500" />
                                     </div>
-                                    <span className="text-foreground">Analytics dashboard</span>
+                                    <span className="text-foreground">
+                                        Analytics dashboard
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm">
                                     <div className="p-1 rounded bg-purple-500/10">
                                         <Sparkles className="w-4 h-4 text-purple-500" />
                                     </div>
-                                    <span className="text-foreground">Custom subscription pricing for members</span>
+                                    <span className="text-foreground">
+                                        Custom subscription pricing for members
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm">
                                     <div className="p-1 rounded bg-purple-500/10">
                                         <Shield className="w-4 h-4 text-purple-500" />
                                     </div>
-                                    <span className="text-foreground">Dedicated support</span>
+                                    <span className="text-foreground">
+                                        Dedicated support
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -115,12 +149,19 @@ export default function PricingPage() {
 
                 {/* Learner Section */}
                 <div className="mt-16 text-center">
-                    <h2 className="text-2xl font-bold mb-4">Want to join as a Learner?</h2>
+                    <h2 className="text-2xl font-bold mb-4">
+                        Want to join as a Learner?
+                    </h2>
                     <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                        Joining groups as a learner is free! Group owners may set their own pricing for premium content.
+                        Joining groups as a learner is free! Group owners may
+                        set their own pricing for premium content.
                     </p>
                     <Link href="/sign-up?tab=learner">
-                        <Button variant="outline" className="rounded-xl" size="lg">
+                        <Button
+                            variant="outline"
+                            className="rounded-xl"
+                            size="lg"
+                        >
                             Sign Up as Learner - Free
                         </Button>
                     </Link>

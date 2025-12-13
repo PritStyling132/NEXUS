@@ -51,13 +51,20 @@ export async function POST(request: NextRequest) {
         if (existingApplication) {
             if (existingApplication.status === "PENDING") {
                 return NextResponse.json(
-                    { error: "An application with this email is already pending review" },
+                    {
+                        error: "An application with this email is already pending review",
+                    },
                     { status: 400 },
                 )
             }
-            if (existingApplication.status === "APPROVED" || existingApplication.status === "COMPLETED") {
+            if (
+                existingApplication.status === "APPROVED" ||
+                existingApplication.status === "COMPLETED"
+            ) {
                 return NextResponse.json(
-                    { error: "This email has already been approved. Please login instead." },
+                    {
+                        error: "This email has already been approved. Please login instead.",
+                    },
                     { status: 400 },
                 )
             }

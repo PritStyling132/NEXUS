@@ -31,7 +31,7 @@ export default async function LearnerGroupPage({ params }: Props) {
             groupId={groupid}
             groupInfo={groupInfo.group as any}
             channels={channels?.channels || []}
-            courses={courses?.courses as any || []}
+            courses={(courses?.courses as any) || []}
         />
     )
 }

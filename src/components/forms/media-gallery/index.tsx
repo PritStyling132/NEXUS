@@ -60,7 +60,8 @@ const MediaGalleryForm = ({ groupid }: Props) => {
                     type="text"
                 />
                 <p className="text-xs text-muted-foreground">
-                    Paste a YouTube or Loom video URL to embed it in your gallery
+                    Paste a YouTube or Loom video URL to embed it in your
+                    gallery
                 </p>
             </div>
 
@@ -70,7 +71,9 @@ const MediaGalleryForm = ({ groupid }: Props) => {
                     <span className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or</span>
+                    <span className="bg-background px-2 text-muted-foreground">
+                        Or
+                    </span>
                 </div>
             </div>
 
@@ -98,7 +101,9 @@ const MediaGalleryForm = ({ groupid }: Props) => {
                             <X className="h-4 w-4" />
                         </Button>
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
-                            <p className="text-white text-sm font-medium">Image ready to upload</p>
+                            <p className="text-white text-sm font-medium">
+                                Image ready to upload
+                            </p>
                         </div>
                     </div>
                 ) : (
@@ -114,8 +119,12 @@ const MediaGalleryForm = ({ groupid }: Props) => {
                             <div className="p-3 rounded-full bg-primary/10 mb-3">
                                 <BadgePlus className="h-6 w-6 text-primary" />
                             </div>
-                            <p className="text-sm font-medium text-foreground">Click to upload an image</p>
-                            <p className="text-xs text-muted-foreground mt-1">PNG, JPG, GIF up to 10MB</p>
+                            <p className="text-sm font-medium text-foreground">
+                                Click to upload an image
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                PNG, JPG, GIF up to 10MB
+                            </p>
                         </div>
                     </Label>
                 )}
@@ -131,11 +140,7 @@ const MediaGalleryForm = ({ groupid }: Props) => {
                 />
             </div>
 
-            <Button
-                className="w-full mt-2"
-                disabled={isPending}
-                type="submit"
-            >
+            <Button className="w-full mt-2" disabled={isPending} type="submit">
                 <Loader loading={isPending}>Upload to Gallery</Loader>
             </Button>
         </form>

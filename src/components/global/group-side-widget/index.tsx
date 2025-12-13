@@ -16,7 +16,12 @@ type Props = {
     isMember?: boolean
 }
 
-const GroupSideWidget = ({ groupid, light, userid, isMember = false }: Props) => {
+const GroupSideWidget = ({
+    groupid,
+    light,
+    userid,
+    isMember = false,
+}: Props) => {
     const { group } = useGroupInfo()
 
     // Check if user is logged in (userid is defined means logged in)

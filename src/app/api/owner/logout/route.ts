@@ -12,14 +12,17 @@ export async function POST() {
 
         return NextResponse.json({
             success: true,
-            message: "Owner session cleared"
+            message: "Owner session cleared",
         })
     } catch (error) {
         console.error("Error clearing owner session:", error)
-        return NextResponse.json({
-            success: false,
-            error: "Failed to clear session"
-        }, { status: 500 })
+        return NextResponse.json(
+            {
+                success: false,
+                error: "Failed to clear session",
+            },
+            { status: 500 },
+        )
     }
 }
 

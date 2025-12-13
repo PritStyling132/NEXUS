@@ -61,8 +61,9 @@ export const Footer = () => {
                             />
                         </Link>
                         <p className="text-sm text-muted-foreground mb-4 max-w-xs">
-                            Empowering communities to learn, grow, and succeed together.
-                            Join thousands of creators and learners on NeXuS.
+                            Empowering communities to learn, grow, and succeed
+                            together. Join thousands of creators and learners on
+                            NeXuS.
                         </p>
                         <div className="flex gap-3">
                             {socialLinks.map((social) => {

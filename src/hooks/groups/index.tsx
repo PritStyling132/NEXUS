@@ -502,7 +502,9 @@ export const useGroupSettings = (groupid: string) => {
             console.log("🔄 Refetching group data...")
 
             // Refetch the group data after successful update FIRST
-            await queryClient.invalidateQueries({ queryKey: ["group-info", groupid] })
+            await queryClient.invalidateQueries({
+                queryKey: ["group-info", groupid],
+            })
 
             // Then clear preview states after the new data has been fetched
             setPreviewIcon(undefined)
@@ -577,7 +579,7 @@ export const useGroupInfo = () => {
                 userId: "",
                 htmlDescription: "",
                 jsonDescription: "",
-            }
+            },
         }
     }
 

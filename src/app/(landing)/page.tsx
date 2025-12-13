@@ -70,22 +70,26 @@ const bentoItems = [
 const features = [
     {
         title: "Community-First Approach",
-        description: "Build and nurture meaningful connections with like-minded individuals.",
+        description:
+            "Build and nurture meaningful connections with like-minded individuals.",
         icon: Heart,
     },
     {
         title: "Creator Economy",
-        description: "Monetize your expertise and build a sustainable income stream.",
+        description:
+            "Monetize your expertise and build a sustainable income stream.",
         icon: Trophy,
     },
     {
         title: "Global Reach",
-        description: "Connect with learners and creators from around the world.",
+        description:
+            "Connect with learners and creators from around the world.",
         icon: Globe,
     },
     {
         title: "Rich Content",
-        description: "Access courses, discussions, and resources curated by experts.",
+        description:
+            "Access courses, discussions, and resources curated by experts.",
         icon: BookOpen,
     },
 ]
@@ -155,7 +159,10 @@ export default function Home() {
             <section className="px-4 sm:px-6 md:px-10 lg:px-12 pt-8 sm:pt-10 md:pt-12 pb-16 sm:pb-20">
                 <div className="max-w-6xl mx-auto">
                     <div className="flex flex-col items-center text-center">
-                        <Badge variant="outline" className="mb-6 px-4 py-1.5 border-primary/30">
+                        <Badge
+                            variant="outline"
+                            className="mb-6 px-4 py-1.5 border-primary/30"
+                        >
                             <Sparkles className="w-3.5 h-3.5 mr-1.5" />
                             The Future of Learning Communities
                         </Badge>
@@ -172,8 +179,9 @@ export default function Home() {
                             Together
                         </GradientText>
                         <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mt-6 leading-relaxed">
-                            NeXuS is a vibrant online platform that empowers communities to
-                            collaborate, learn, and cultivate meaningful relationships
+                            NeXuS is a vibrant online platform that empowers
+                            communities to collaborate, learn, and cultivate
+                            meaningful relationships
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
@@ -182,7 +190,8 @@ export default function Home() {
                                     size="lg"
                                     className="rounded-xl text-base gap-2 shadow-lg hover:shadow-xl transition-all px-8"
                                 >
-                                    <BadgePlus className="w-5 h-5" /> Get Started Free
+                                    <BadgePlus className="w-5 h-5" /> Get
+                                    Started Free
                                 </Button>
                             </Link>
                             <Link href="/explore">
@@ -191,7 +200,8 @@ export default function Home() {
                                     size="lg"
                                     className="rounded-xl text-base gap-2 px-8"
                                 >
-                                    <Play className="w-5 h-5" /> Explore Communities
+                                    <Play className="w-5 h-5" /> Explore
+                                    Communities
                                 </Button>
                             </Link>
                         </div>
@@ -206,9 +216,13 @@ export default function Home() {
                                     <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                                         <Layers className="w-10 h-10 text-primary" />
                                     </div>
-                                    <h3 className="text-xl font-semibold mb-2">Platform Preview</h3>
+                                    <h3 className="text-xl font-semibold mb-2">
+                                        Platform Preview
+                                    </h3>
                                     <p className="text-muted-foreground text-sm max-w-md">
-                                        Experience our intuitive dashboard, course builder, and community management tools
+                                        Experience our intuitive dashboard,
+                                        course builder, and community management
+                                        tools
                                     </p>
                                 </div>
                             </div>
@@ -243,7 +257,8 @@ export default function Home() {
                             Everything You Need
                         </h2>
                         <p className="text-muted-foreground max-w-2xl mx-auto">
-                            A complete platform for building, growing, and monetizing your community
+                            A complete platform for building, growing, and
+                            monetizing your community
                         </p>
                     </div>
 
@@ -255,11 +270,15 @@ export default function Home() {
                                     key={index}
                                     className={`${item.className} bg-card dark:bg-themeBlack border-border dark:border-themeGray overflow-hidden group hover:border-primary/50 transition-all duration-300`}
                                 >
-                                    <CardContent className={`p-6 h-full bg-gradient-to-br ${item.gradient} flex flex-col justify-end min-h-[200px]`}>
+                                    <CardContent
+                                        className={`p-6 h-full bg-gradient-to-br ${item.gradient} flex flex-col justify-end min-h-[200px]`}
+                                    >
                                         <div className="w-12 h-12 rounded-xl bg-background/80 dark:bg-themeBlack/80 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                                             <Icon className="w-6 h-6 text-primary" />
                                         </div>
-                                        <h3 className="text-lg font-semibold mb-1">{item.title}</h3>
+                                        <h3 className="text-lg font-semibold mb-1">
+                                            {item.title}
+                                        </h3>
                                         <p className="text-sm text-muted-foreground">
                                             {item.description}
                                         </p>
@@ -279,7 +298,8 @@ export default function Home() {
                             Why Choose NeXuS?
                         </h2>
                         <p className="text-muted-foreground max-w-2xl mx-auto">
-                            Join thousands of creators and learners who trust NeXuS
+                            Join thousands of creators and learners who trust
+                            NeXuS
                         </p>
                     </div>
 
@@ -295,7 +315,9 @@ export default function Home() {
                                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                                             <Icon className="w-6 h-6 text-primary" />
                                         </div>
-                                        <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                                        <h3 className="text-lg font-semibold mb-2">
+                                            {feature.title}
+                                        </h3>
                                         <p className="text-sm text-muted-foreground">
                                             {feature.description}
                                         </p>
@@ -315,7 +337,8 @@ export default function Home() {
                             What Makes Us Different
                         </h2>
                         <p className="text-muted-foreground max-w-2xl mx-auto">
-                            See why creators and learners choose NeXuS over other platforms
+                            See why creators and learners choose NeXuS over
+                            other platforms
                         </p>
                     </div>
 
@@ -327,10 +350,14 @@ export default function Home() {
                             >
                                 <CardContent className="p-6">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                                        <div className="font-semibold text-lg">{diff.title}</div>
+                                        <div className="font-semibold text-lg">
+                                            {diff.title}
+                                        </div>
                                         <div className="flex items-center gap-2 text-sm">
                                             <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                                            <span className="text-foreground">{diff.ours}</span>
+                                            <span className="text-foreground">
+                                                {diff.ours}
+                                            </span>
                                         </div>
                                         <div className="text-sm text-muted-foreground">
                                             {diff.others}
@@ -363,9 +390,15 @@ export default function Home() {
                             >
                                 <button
                                     className="w-full p-5 flex items-center justify-between text-left hover:bg-muted/50 dark:hover:bg-themeGray/30 transition-colors"
-                                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                                    onClick={() =>
+                                        setOpenFaq(
+                                            openFaq === index ? null : index,
+                                        )
+                                    }
                                 >
-                                    <span className="font-medium pr-4">{faq.question}</span>
+                                    <span className="font-medium pr-4">
+                                        {faq.question}
+                                    </span>
                                     {openFaq === index ? (
                                         <ChevronUp className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                                     ) : (
@@ -395,17 +428,26 @@ export default function Home() {
                                 Ready to Start Your Journey?
                             </h2>
                             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-                                Join thousands of learners and creators building their future on
-                                NeXuS. Get started for free today.
+                                Join thousands of learners and creators building
+                                their future on NeXuS. Get started for free
+                                today.
                             </p>
                             <div className="flex gap-4 justify-center flex-wrap">
                                 <Link href="/sign-up?tab=learner">
-                                    <Button size="lg" className="rounded-xl gap-2">
-                                        Join as Learner <ArrowRight className="w-4 h-4" />
+                                    <Button
+                                        size="lg"
+                                        className="rounded-xl gap-2"
+                                    >
+                                        Join as Learner{" "}
+                                        <ArrowRight className="w-4 h-4" />
                                     </Button>
                                 </Link>
                                 <Link href="/sign-up?tab=owner">
-                                    <Button size="lg" variant="outline" className="rounded-xl">
+                                    <Button
+                                        size="lg"
+                                        variant="outline"
+                                        className="rounded-xl"
+                                    >
                                         Become an Owner
                                     </Button>
                                 </Link>

@@ -12,7 +12,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, CreditCard, CheckCircle, ShieldCheck, IndianRupee } from "lucide-react"
+import {
+    Loader2,
+    CreditCard,
+    CheckCircle,
+    ShieldCheck,
+    IndianRupee,
+} from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
@@ -101,29 +107,42 @@ export const MemberPaymentModal = ({
                 handler: async (response: any) => {
                     try {
                         // Verify payment
-                        const verifyRes = await fetch("/api/member-payment/verify", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_signature: response.razorpay_signature,
-                                groupId,
-                                planId: orderData.planId,
-                            }),
-                        })
+                        const verifyRes = await fetch(
+                            "/api/member-payment/verify",
+                            {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    razorpay_payment_id:
+                                        response.razorpay_payment_id,
+                                    razorpay_order_id:
+                                        response.razorpay_order_id,
+                                    razorpay_signature:
+                                        response.razorpay_signature,
+                                    groupId,
+                                    planId: orderData.planId,
+                                }),
+                            },
+                        )
 
                         const verifyData = await verifyRes.json()
 
                         if (verifyData.success) {
-                            toast.success("Payment successful! Welcome to the group.")
+                            toast.success(
+                                "Payment successful! Welcome to the group.",
+                            )
                             onClose()
                             router.push("/dashboard")
                         } else {
-                            toast.error(verifyData.error || "Payment verification failed")
+                            toast.error(
+                                verifyData.error ||
+                                    "Payment verification failed",
+                            )
                         }
                     } catch (error) {
-                        toast.error("Payment verification failed. Please contact support.")
+                        toast.error(
+                            "Payment verification failed. Please contact support.",
+                        )
                     } finally {
                         setIsProcessing(false)
                     }
@@ -153,7 +172,10 @@ export const MemberPaymentModal = ({
             // Handle payment failure
             razorpayInstance.on("payment.failed", function (response: any) {
                 console.error("Payment failed:", response.error)
-                toast.error(response.error?.description || "Payment failed. Please try again.")
+                toast.error(
+                    response.error?.description ||
+                        "Payment failed. Please try again.",
+                )
                 setIsProcessing(false)
             })
 
@@ -170,7 +192,10 @@ export const MemberPaymentModal = ({
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && !isProcessing && onClose()}>
+        <Dialog
+            open={isOpen}
+            onOpenChange={(open) => !open && !isProcessing && onClose()}
+        >
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
@@ -187,14 +212,18 @@ export const MemberPaymentModal = ({
                     <Card className="border-primary/30 bg-primary/5">
                         <CardContent className="pt-6">
                             <div className="text-center space-y-2">
-                                <p className="text-sm text-muted-foreground">{planName}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {planName}
+                                </p>
                                 <div className="flex items-center justify-center gap-1">
                                     <IndianRupee className="w-8 h-8 text-foreground" />
                                     <span className="text-4xl font-bold text-foreground">
                                         {price.toLocaleString()}
                                     </span>
                                 </div>
-                                <p className="text-sm text-muted-foreground">One-time payment</p>
+                                <p className="text-sm text-muted-foreground">
+                                    One-time payment
+                                </p>
                             </div>
                         </CardContent>
                     </Card>
@@ -215,7 +244,9 @@ export const MemberPaymentModal = ({
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                             <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span>Lifetime membership - no recurring charges</span>
+                            <span>
+                                Lifetime membership - no recurring charges
+                            </span>
                         </div>
                     </div>
 
@@ -230,7 +261,9 @@ export const MemberPaymentModal = ({
                             placeholder="9876543210"
                             maxLength={10}
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                            onChange={(e) =>
+                                setPhone(e.target.value.replace(/\D/g, ""))
+                            }
                             disabled={isProcessing}
                             className="h-10"
                         />
@@ -259,9 +292,7 @@ export const MemberPaymentModal = ({
                                 Processing...
                             </>
                         ) : (
-                            <>
-                                Pay ₹{price.toLocaleString()} & Join
-                            </>
+                            <>Pay ₹{price.toLocaleString()} & Join</>
                         )}
                     </Button>
                     <Button

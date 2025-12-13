@@ -321,19 +321,19 @@ export const onGetLearnerDashboardData = async () => {
         // Count total courses across all unique joined groups
         const totalCoursesAvailable = uniqueMemberships.reduce(
             (acc, m) => acc + (m.group?._count?.courses || 0),
-            0
+            0,
         )
 
         // Count total channels across all unique joined groups
         const totalChannelsAvailable = uniqueMemberships.reduce(
             (acc, m) => acc + (m.group?._count?.channels || 0),
-            0
+            0,
         )
 
         // Count total members across all unique joined groups (for community size)
         const totalCommunityMembers = uniqueMemberships.reduce(
             (acc, m) => acc + (m.group?._count?.members || 0),
-            0
+            0,
         )
 
         return {
@@ -733,7 +733,10 @@ export const onDeleteFromGallery = async (
         // Verify the user is the group owner
         const user = await onAuthenticatedUser()
         if (user.status !== 200 || user.id !== group.userId) {
-            return { status: 403, message: "Only the group owner can delete gallery items" }
+            return {
+                status: 403,
+                message: "Only the group owner can delete gallery items",
+            }
         }
 
         // Filter out the media URL to delete
@@ -806,7 +809,8 @@ export const onJoinGroup = async (groupid: string) => {
             await client.notification.create({
                 data: {
                     title: "New Member Joined",
-                    message: `${joiningUser?.firstname || "Someone"} ${joiningUser?.lastname || ""} has joined your group "${group.name}"`.trim(),
+                    message:
+                        `${joiningUser?.firstname || "Someone"} ${joiningUser?.lastname || ""} has joined your group "${group.name}"`.trim(),
                     type: "MEMBER_JOINED",
                     userId: group.userId, // Notify the owner
                     groupId: groupid,

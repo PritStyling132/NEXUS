@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json(
                 { success: false, error: "Unauthorized" },
-                { status: 401 }
+                { status: 401 },
             )
         }
 
@@ -26,8 +26,11 @@ export async function POST(req: NextRequest) {
         // Validate required fields
         if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
             return NextResponse.json(
-                { success: false, error: "Missing payment verification fields" },
-                { status: 400 }
+                {
+                    success: false,
+                    error: "Missing payment verification fields",
+                },
+                { status: 400 },
             )
         }
 
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
         if (!dbUser) {
             return NextResponse.json(
                 { success: false, error: "User not found" },
-                { status: 404 }
+                { status: 404 },
             )
         }
 
@@ -60,7 +63,7 @@ export async function POST(req: NextRequest) {
 
             return NextResponse.json(
                 { success: false, error: "Invalid payment signature" },
-                { status: 400 }
+                { status: 400 },
             )
         }
 
@@ -85,7 +88,7 @@ export async function POST(req: NextRequest) {
         if (!payment) {
             return NextResponse.json(
                 { success: false, error: "Payment record not found" },
-                { status: 404 }
+                { status: 404 },
             )
         }
 
@@ -93,7 +96,7 @@ export async function POST(req: NextRequest) {
         if (payment.groupId !== groupId || payment.planId !== planId) {
             return NextResponse.json(
                 { success: false, error: "Group or plan mismatch" },
-                { status: 400 }
+                { status: 400 },
             )
         }
 
@@ -166,8 +169,11 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Error verifying member payment:", error)
         return NextResponse.json(
-            { success: false, error: error.message || "Failed to verify payment" },
-            { status: 500 }
+            {
+                success: false,
+                error: error.message || "Failed to verify payment",
+            },
+            { status: 500 },
         )
     }
 }

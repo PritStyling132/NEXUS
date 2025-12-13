@@ -128,7 +128,7 @@ export const onGetUserProfile = async () => {
                 image: user.image,
                 isOwner,
                 firstGroupId,
-            }
+            },
         }
     } catch (error) {
         console.error("onGetUserProfile Error:", error)
@@ -147,7 +147,11 @@ export const onUpdateUserProfile = async (data: {
             return { status: 401, message: "Unauthorized" }
         }
 
-        const updateData: { firstname: string; lastname: string; image?: string } = {
+        const updateData: {
+            firstname: string
+            lastname: string
+            image?: string
+        } = {
             firstname: data.firstname,
             lastname: data.lastname,
         }
@@ -172,7 +176,7 @@ export const onUpdateUserProfile = async (data: {
         return {
             status: 200,
             message: "Profile updated successfully",
-            data: updatedUser
+            data: updatedUser,
         }
     } catch (error) {
         console.error("onUpdateUserProfile Error:", error)

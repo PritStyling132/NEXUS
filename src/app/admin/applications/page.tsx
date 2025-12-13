@@ -177,25 +177,37 @@ export default function AdminApplicationsPage() {
         switch (status) {
             case "PENDING":
                 return (
-                    <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700">
+                    <Badge
+                        variant="outline"
+                        className="bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700"
+                    >
                         <Clock className="w-3 h-3 mr-1" /> Pending
                     </Badge>
                 )
             case "APPROVED":
                 return (
-                    <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700">
+                    <Badge
+                        variant="outline"
+                        className="bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700"
+                    >
                         <CheckCircle className="w-3 h-3 mr-1" /> Approved
                     </Badge>
                 )
             case "REJECTED":
                 return (
-                    <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700">
+                    <Badge
+                        variant="outline"
+                        className="bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700"
+                    >
                         <XCircle className="w-3 h-3 mr-1" /> Rejected
                     </Badge>
                 )
             case "COMPLETED":
                 return (
-                    <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700">
+                    <Badge
+                        variant="outline"
+                        className="bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700"
+                    >
                         <CheckCircle className="w-3 h-3 mr-1" /> Completed
                     </Badge>
                 )
@@ -344,8 +356,12 @@ export default function AdminApplicationsPage() {
                                                         <div className="space-y-2">
                                                             <div className="flex items-center gap-2">
                                                                 <h3 className="font-semibold text-lg">
-                                                                    {app.firstname}{" "}
-                                                                    {app.lastname}
+                                                                    {
+                                                                        app.firstname
+                                                                    }{" "}
+                                                                    {
+                                                                        app.lastname
+                                                                    }
                                                                 </h3>
                                                                 {getStatusBadge(
                                                                     app.status,
@@ -387,7 +403,12 @@ export default function AdminApplicationsPage() {
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
-                                                                onClick={() => handleDownloadCV(app.cvUrl, app.cvFileName)}
+                                                                onClick={() =>
+                                                                    handleDownloadCV(
+                                                                        app.cvUrl,
+                                                                        app.cvFileName,
+                                                                    )
+                                                                }
                                                             >
                                                                 <Eye className="w-4 h-4 mr-1" />
                                                                 View CV

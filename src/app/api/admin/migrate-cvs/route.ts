@@ -23,16 +23,13 @@ export async function POST(_request: NextRequest) {
         const adminSession = cookieStore.get("admin_session")
 
         if (!adminSession?.value) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            )
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
         if (!cloudName || !apiKey || !apiSecret) {
             return NextResponse.json(
                 { error: "Cloudinary credentials not configured" },
-                { status: 500 }
+                { status: 500 },
             )
         }
 
@@ -40,18 +37,23 @@ export async function POST(_request: NextRequest) {
         const applications = await client.pendingOwner.findMany({
             where: {
                 cvUrl: {
-                    contains: "cloudinary.com"
-                }
+                    contains: "cloudinary.com",
+                },
             },
             select: {
                 id: true,
                 cvUrl: true,
                 firstname: true,
-                lastname: true
-            }
+                lastname: true,
+            },
         })
 
-        const results: { id: string; name: string; status: string; error?: string }[] = []
+        const results: {
+            id: string
+            name: string
+            status: string
+            error?: string
+        }[] = []
 
         for (const app of applications) {
             const publicId = extractPublicId(app.cvUrl)
@@ -61,7 +63,7 @@ export async function POST(_request: NextRequest) {
                     id: app.id,
                     name: `${app.firstname} ${app.lastname}`,
                     status: "skipped",
-                    error: "Could not extract public_id"
+                    error: "Could not extract public_id",
                 })
                 continue
             }
@@ -77,19 +79,19 @@ export async function POST(_request: NextRequest) {
                 const response = await fetch(updateUrl, {
                     method: "POST",
                     headers: {
-                        "Authorization": `Basic ${authHeader}`,
-                        "Content-Type": "application/json"
+                        Authorization: `Basic ${authHeader}`,
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        access_mode: "public"
-                    })
+                        access_mode: "public",
+                    }),
                 })
 
                 if (response.ok) {
                     results.push({
                         id: app.id,
                         name: `${app.firstname} ${app.lastname}`,
-                        status: "migrated"
+                        status: "migrated",
                     })
                 } else {
                     const errorData = await response.json().catch(() => ({}))
@@ -97,7 +99,9 @@ export async function POST(_request: NextRequest) {
                         id: app.id,
                         name: `${app.firstname} ${app.lastname}`,
                         status: "failed",
-                        error: errorData.error?.message || `HTTP ${response.status}`
+                        error:
+                            errorData.error?.message ||
+                            `HTTP ${response.status}`,
                     })
                 }
             } catch (err) {
@@ -105,7 +109,7 @@ export async function POST(_request: NextRequest) {
                     id: app.id,
                     name: `${app.firstname} ${app.lastname}`,
                     status: "failed",
-                    error: String(err)
+                    error: String(err),
                 })
             }
         }
@@ -113,15 +117,15 @@ export async function POST(_request: NextRequest) {
         return NextResponse.json({
             total: applications.length,
             results,
-            migrated: results.filter(r => r.status === "migrated").length,
-            failed: results.filter(r => r.status === "failed").length,
-            skipped: results.filter(r => r.status === "skipped").length
+            migrated: results.filter((r) => r.status === "migrated").length,
+            failed: results.filter((r) => r.status === "failed").length,
+            skipped: results.filter((r) => r.status === "skipped").length,
         })
     } catch (error) {
         console.error("CV migration error:", error)
         return NextResponse.json(
             { error: "Failed to migrate CVs" },
-            { status: 500 }
+            { status: 500 },
         )
     }
 }

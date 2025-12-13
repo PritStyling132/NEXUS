@@ -74,9 +74,11 @@ export function UserMenu() {
           ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
           : ""
 
-    const displayEmail = userProfile?.email || user?.emailAddresses[0]?.emailAddress || ""
+    const displayEmail =
+        userProfile?.email || user?.emailAddresses[0]?.emailAddress || ""
 
-    const displayInitial = userProfile?.firstname?.[0]?.toUpperCase() ||
+    const displayInitial =
+        userProfile?.firstname?.[0]?.toUpperCase() ||
         user?.firstName?.[0] ||
         user?.emailAddresses[0]?.emailAddress[0]?.toUpperCase() ||
         "U"

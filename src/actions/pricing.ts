@@ -87,7 +87,7 @@ export const onUpdatePricingPlan = async (
         name?: string
         description?: string
         price?: number // in rupees
-    }
+    },
 ) => {
     try {
         const user = await onAuthenticatedUser()
@@ -106,8 +106,10 @@ export const onUpdatePricingPlan = async (
 
         const updateData: any = {}
         if (data.name !== undefined) updateData.name = data.name
-        if (data.description !== undefined) updateData.description = data.description
-        if (data.price !== undefined) updateData.price = Math.round(data.price * 100)
+        if (data.description !== undefined)
+            updateData.description = data.description
+        if (data.price !== undefined)
+            updateData.price = Math.round(data.price * 100)
 
         const plan = await client.ownerPricingPlan.update({
             where: { id: planId },
@@ -152,7 +154,8 @@ export const onDeletePricingPlan = async (planId: string) => {
         if (paymentsCount > 0) {
             return {
                 status: 400,
-                message: "Cannot delete plan with existing payments. Deactivate it instead.",
+                message:
+                    "Cannot delete plan with existing payments. Deactivate it instead.",
             }
         }
 

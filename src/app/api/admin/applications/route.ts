@@ -26,10 +26,7 @@ export async function GET(request: NextRequest) {
         const admin = await verifyAdmin()
 
         if (!admin) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 },
-            )
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
         const { searchParams } = new URL(request.url)

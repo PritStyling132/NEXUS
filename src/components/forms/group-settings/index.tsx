@@ -28,13 +28,17 @@ const GroupSettingsForm = ({ groupId }: Props) => {
 
     // Memoize URLs to prevent unnecessary re-renders when typing in form fields
     const iconUrl = useMemo(
-        () => previewIcon || getGroupIconUrl(data?.group?.icon, data?.group?.category),
-        [previewIcon, data?.group?.icon, data?.group?.category]
+        () =>
+            previewIcon ||
+            getGroupIconUrl(data?.group?.icon, data?.group?.category),
+        [previewIcon, data?.group?.icon, data?.group?.category],
     )
 
     const thumbnailUrl = useMemo(
-        () => previewThumbnail || getGroupThumbnailUrl(data?.group?.thumbnail, data?.group?.category),
-        [previewThumbnail, data?.group?.thumbnail, data?.group?.category]
+        () =>
+            previewThumbnail ||
+            getGroupThumbnailUrl(data?.group?.thumbnail, data?.group?.category),
+        [previewThumbnail, data?.group?.thumbnail, data?.group?.category],
     )
 
     return (

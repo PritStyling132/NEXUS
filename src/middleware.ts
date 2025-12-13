@@ -19,14 +19,10 @@ const isPublicRoute = createRouteMatcher([
 ])
 
 // Admin routes - only admin can access
-const isAdminRoute = createRouteMatcher([
-    "/admin(.*)",
-])
+const isAdminRoute = createRouteMatcher(["/admin(.*)"])
 
 // Admin API routes - only admin can access
-const isAdminApiRoute = createRouteMatcher([
-    "/api/admin/(.*)",
-])
+const isAdminApiRoute = createRouteMatcher(["/api/admin/(.*)"])
 
 // Owner auth routes - public for authentication
 const isOwnerAuthRoute = createRouteMatcher([
@@ -54,19 +50,13 @@ const isOwnerApiRoute = createRouteMatcher([
 ])
 
 // Learner routes - only learners (Clerk users) can access
-const isLearnerRoute = createRouteMatcher([
-    "/dashboard(.*)",
-])
+const isLearnerRoute = createRouteMatcher(["/dashboard(.*)"])
 
 // Learner API routes - Clerk users can access these
-const isLearnerApiRoute = createRouteMatcher([
-    "/api/member-payment/(.*)",
-])
+const isLearnerApiRoute = createRouteMatcher(["/api/member-payment/(.*)"])
 
 // Account settings route - accessible by both Clerk users and owners
-const isAccountSettingsRoute = createRouteMatcher([
-    "/account-settings(.*)",
-])
+const isAccountSettingsRoute = createRouteMatcher(["/account-settings(.*)"])
 
 export default clerkMiddleware(async (auth, req) => {
     const { pathname } = req.nextUrl
@@ -90,7 +80,9 @@ export default clerkMiddleware(async (auth, req) => {
         }
         // Not authenticated - redirect to owner login if there's a pending owner
         if (ownerPendingId) {
-            return NextResponse.redirect(new URL("/owner/login?redirect_url=/account-settings", req.url))
+            return NextResponse.redirect(
+                new URL("/owner/login?redirect_url=/account-settings", req.url),
+            )
         }
         const signInUrl = new URL("/sign-in", req.url)
         signInUrl.searchParams.set("redirect_url", pathname)
@@ -115,7 +107,10 @@ export default clerkMiddleware(async (auth, req) => {
         if (!adminSession) {
             // Redirect to admin login if not admin
             if (isAdminApiRoute(req)) {
-                return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+                return NextResponse.json(
+                    { error: "Unauthorized" },
+                    { status: 401 },
+                )
             }
             return NextResponse.redirect(new URL("/admin/login", req.url))
         }

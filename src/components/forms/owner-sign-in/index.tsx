@@ -97,7 +97,9 @@ const OwnerSignInForm = () => {
                     />
                 </div>
                 {errors.email && (
-                    <p className="text-xs text-red-500">{errors.email.message}</p>
+                    <p className="text-xs text-red-500">
+                        {errors.email.message}
+                    </p>
                 )}
             </div>
 
@@ -116,7 +118,9 @@ const OwnerSignInForm = () => {
                     />
                 </div>
                 {errors.password && (
-                    <p className="text-xs text-red-500">{errors.password.message}</p>
+                    <p className="text-xs text-red-500">
+                        {errors.password.message}
+                    </p>
                 )}
             </div>
 

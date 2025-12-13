@@ -26,10 +26,13 @@ const SignupPage = () => {
         }
     }, [tabParam])
 
-    const handleTabChange = useCallback((value: string) => {
-        setActiveTab(value)
-        router.push(`/sign-up?tab=${value}`, { scroll: false })
-    }, [router])
+    const handleTabChange = useCallback(
+        (value: string) => {
+            setActiveTab(value)
+            router.push(`/sign-up?tab=${value}`, { scroll: false })
+        },
+        [router],
+    )
 
     return (
         <div className="w-full space-y-4 sm:space-y-6">
@@ -42,7 +45,11 @@ const SignupPage = () => {
                 </p>
             </div>
 
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <Tabs
+                value={activeTab}
+                onValueChange={handleTabChange}
+                className="w-full"
+            >
                 <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50 dark:bg-themeGray/30">
                     <TabsTrigger
                         value="learner"

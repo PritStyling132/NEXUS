@@ -1,10 +1,26 @@
 "use client"
 
 import { useState } from "react"
-import { CreditCard, Plus, Trash2, Edit2, Check, X, IndianRupee, Users, AlertCircle } from "lucide-react"
+import {
+    CreditCard,
+    Plus,
+    Trash2,
+    Edit2,
+    Check,
+    X,
+    IndianRupee,
+    Users,
+    AlertCircle,
+} from "lucide-react"
 import { useOwnerPricingPlans } from "@/hooks/pricing"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import {
     Dialog,
     DialogContent,
@@ -64,7 +80,7 @@ const SubscriptionsPage = ({ params }: Props) => {
                 onSuccess: () => {
                     setIsCreateDialogOpen(false)
                 },
-            }
+            },
         )
     }
 
@@ -83,7 +99,7 @@ const SubscriptionsPage = ({ params }: Props) => {
                 onSuccess: () => {
                     setEditingPlan(null)
                 },
-            }
+            },
         )
     }
 
@@ -124,7 +140,10 @@ const SubscriptionsPage = ({ params }: Props) => {
                         </h3>
                     </div>
 
-                    <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                    <Dialog
+                        open={isCreateDialogOpen}
+                        onOpenChange={setIsCreateDialogOpen}
+                    >
                         <DialogTrigger asChild>
                             <Button>
                                 <Plus className="w-4 h-4 mr-2" />
@@ -135,7 +154,9 @@ const SubscriptionsPage = ({ params }: Props) => {
                             <DialogHeader>
                                 <DialogTitle>Create Pricing Plan</DialogTitle>
                                 <DialogDescription>
-                                    Create a new pricing plan for your groups. Members will need to pay this amount to join.
+                                    Create a new pricing plan for your groups.
+                                    Members will need to pay this amount to
+                                    join.
                                 </DialogDescription>
                             </DialogHeader>
                             <PricingPlanForm
@@ -147,7 +168,8 @@ const SubscriptionsPage = ({ params }: Props) => {
                     </Dialog>
                 </div>
                 <p className="text-sm sm:text-base text-muted-foreground dark:text-themeTextGray leading-relaxed">
-                    Set up pricing plans for new members joining your groups. Only one plan can be active at a time.
+                    Set up pricing plans for new members joining your groups.
+                    Only one plan can be active at a time.
                 </p>
             </div>
 
@@ -164,10 +186,15 @@ const SubscriptionsPage = ({ params }: Props) => {
                                     Active Plan: {activePlan.name}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                    New members will pay ₹{(activePlan.price / 100).toLocaleString()} to join your groups
+                                    New members will pay ₹
+                                    {(activePlan.price / 100).toLocaleString()}{" "}
+                                    to join your groups
                                 </p>
                             </div>
-                            <Badge variant="default" className="bg-green-500 hover:bg-green-600">
+                            <Badge
+                                variant="default"
+                                className="bg-green-500 hover:bg-green-600"
+                            >
                                 Active
                             </Badge>
                         </div>
@@ -188,7 +215,8 @@ const SubscriptionsPage = ({ params }: Props) => {
                                     No Active Plan
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                    Your groups are currently free to join. Activate a plan to start charging members.
+                                    Your groups are currently free to join.
+                                    Activate a plan to start charging members.
                                 </p>
                             </div>
                         </div>
@@ -207,8 +235,9 @@ const SubscriptionsPage = ({ params }: Props) => {
                             No Pricing Plans Yet
                         </h4>
                         <p className="text-sm text-muted-foreground text-center max-w-md mb-4">
-                            Create your first pricing plan to start charging members who want to join your groups.
-                            Until then, your groups are free to join.
+                            Create your first pricing plan to start charging
+                            members who want to join your groups. Until then,
+                            your groups are free to join.
                         </p>
                         <Button onClick={() => setIsCreateDialogOpen(true)}>
                             <Plus className="w-4 h-4 mr-2" />
@@ -235,9 +264,12 @@ const SubscriptionsPage = ({ params }: Props) => {
                             <CardHeader className="pb-3">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <CardTitle className="text-lg">{plan.name}</CardTitle>
+                                        <CardTitle className="text-lg">
+                                            {plan.name}
+                                        </CardTitle>
                                         <CardDescription className="mt-1">
-                                            {plan.description || "No description"}
+                                            {plan.description ||
+                                                "No description"}
                                         </CardDescription>
                                     </div>
                                 </div>
@@ -254,7 +286,10 @@ const SubscriptionsPage = ({ params }: Props) => {
 
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <Users className="w-4 h-4" />
-                                    <span>{plan._count?.memberPayments || 0} members paid</span>
+                                    <span>
+                                        {plan._count?.memberPayments || 0}{" "}
+                                        members paid
+                                    </span>
                                 </div>
 
                                 <div className="flex items-center justify-between pt-2 border-t">
@@ -263,7 +298,10 @@ const SubscriptionsPage = ({ params }: Props) => {
                                             id={`active-${plan.id}`}
                                             checked={plan.isActive}
                                             onCheckedChange={(checked) =>
-                                                handleSetActivePlan(plan.id, checked)
+                                                handleSetActivePlan(
+                                                    plan.id,
+                                                    checked,
+                                                )
                                             }
                                             disabled={isSettingActive}
                                         />
@@ -271,7 +309,9 @@ const SubscriptionsPage = ({ params }: Props) => {
                                             htmlFor={`active-${plan.id}`}
                                             className="text-sm cursor-pointer"
                                         >
-                                            {plan.isActive ? "Active" : "Inactive"}
+                                            {plan.isActive
+                                                ? "Active"
+                                                : "Inactive"}
                                         </Label>
                                     </div>
 
@@ -287,8 +327,12 @@ const SubscriptionsPage = ({ params }: Props) => {
                                             variant="ghost"
                                             size="icon"
                                             className="text-destructive hover:text-destructive"
-                                            onClick={() => setDeletingPlanId(plan.id)}
-                                            disabled={plan._count?.memberPayments > 0}
+                                            onClick={() =>
+                                                setDeletingPlanId(plan.id)
+                                            }
+                                            disabled={
+                                                plan._count?.memberPayments > 0
+                                            }
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
@@ -301,7 +345,10 @@ const SubscriptionsPage = ({ params }: Props) => {
             )}
 
             {/* Edit Dialog */}
-            <Dialog open={!!editingPlan} onOpenChange={(open) => !open && setEditingPlan(null)}>
+            <Dialog
+                open={!!editingPlan}
+                onOpenChange={(open) => !open && setEditingPlan(null)}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Edit Pricing Plan</DialogTitle>
@@ -325,16 +372,24 @@ const SubscriptionsPage = ({ params }: Props) => {
             </Dialog>
 
             {/* Delete Confirmation */}
-            <AlertDialog open={!!deletingPlanId} onOpenChange={(open) => !open && setDeletingPlanId(null)}>
+            <AlertDialog
+                open={!!deletingPlanId}
+                onOpenChange={(open) => !open && setDeletingPlanId(null)}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Pricing Plan?</AlertDialogTitle>
+                        <AlertDialogTitle>
+                            Delete Pricing Plan?
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the pricing plan.
+                            This action cannot be undone. This will permanently
+                            delete the pricing plan.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel disabled={isDeleting}>
+                            Cancel
+                        </AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDeletePlan}
                             disabled={isDeleting}
@@ -353,16 +408,31 @@ const SubscriptionsPage = ({ params }: Props) => {
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm text-muted-foreground">
                     <p>
-                        <strong className="text-foreground">1. Create Plans:</strong> Set up one or more pricing plans with different prices.
+                        <strong className="text-foreground">
+                            1. Create Plans:
+                        </strong>{" "}
+                        Set up one or more pricing plans with different prices.
                     </p>
                     <p>
-                        <strong className="text-foreground">2. Activate One:</strong> Only one plan can be active at a time. The active plan determines what new members pay.
+                        <strong className="text-foreground">
+                            2. Activate One:
+                        </strong>{" "}
+                        Only one plan can be active at a time. The active plan
+                        determines what new members pay.
                     </p>
                     <p>
-                        <strong className="text-foreground">3. Members Pay:</strong> When someone tries to join any of your groups, they'll be prompted to pay the active plan price.
+                        <strong className="text-foreground">
+                            3. Members Pay:
+                        </strong>{" "}
+                        When someone tries to join any of your groups, they'll
+                        be prompted to pay the active plan price.
                     </p>
                     <p>
-                        <strong className="text-foreground">4. Existing Members:</strong> Members who already joined before you set up pricing don't need to pay.
+                        <strong className="text-foreground">
+                            4. Existing Members:
+                        </strong>{" "}
+                        Members who already joined before you set up pricing
+                        don't need to pay.
                     </p>
                 </CardContent>
             </Card>

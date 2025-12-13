@@ -64,7 +64,9 @@ export default function ChannelClient({
         onSuccess: (result) => {
             if (result.status === 200) {
                 // Invalidate and refetch messages
-                queryClient.invalidateQueries({ queryKey: ["channel-messages", channelid] })
+                queryClient.invalidateQueries({
+                    queryKey: ["channel-messages", channelid],
+                })
             } else {
                 toast.error(result.message || "Failed to send message")
             }
@@ -220,7 +222,9 @@ export default function ChannelClient({
                     <Button
                         type="submit"
                         size="icon"
-                        disabled={!message.trim() || sendMessageMutation.isPending}
+                        disabled={
+                            !message.trim() || sendMessageMutation.isPending
+                        }
                         className="rounded-xl bg-primary hover:bg-primary/90 shadow-lg disabled:opacity-50 h-[60px] w-[60px]"
                     >
                         {sendMessageMutation.isPending ? (

@@ -49,7 +49,9 @@ export default function LearnerCourseContent({
         return (
             <div className="flex flex-col items-center justify-center h-full gap-4 min-h-[400px]">
                 <BookOpen className="h-16 w-16 text-muted-foreground" />
-                <p className="text-xl text-muted-foreground">Course not found</p>
+                <p className="text-xl text-muted-foreground">
+                    Course not found
+                </p>
                 <Button asChild>
                     <Link href={`/dashboard/group/${groupId}`}>
                         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -76,12 +78,15 @@ export default function LearnerCourseContent({
                         </Link>
                     </Button>
                     <div className="flex-1">
-                        <p className="text-xs text-muted-foreground">{groupName}</p>
+                        <p className="text-xs text-muted-foreground">
+                            {groupName}
+                        </p>
                         <h1 className="text-xl sm:text-2xl font-bold line-clamp-1">
                             {course.title}
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            {course.videos?.length || 0} videos • {course.resources?.length || 0} resources
+                            {course.videos?.length || 0} videos •{" "}
+                            {course.resources?.length || 0} resources
                         </p>
                     </div>
                 </div>
@@ -166,13 +171,16 @@ export default function LearnerCourseContent({
                                         >
                                             <div className="flex items-center gap-3 flex-1">
                                                 <div className="p-2 rounded-lg bg-primary/10">
-                                                    {resource.type === "YOUTUBE" && (
+                                                    {resource.type ===
+                                                        "YOUTUBE" && (
                                                         <Youtube className="h-4 w-4 text-primary" />
                                                     )}
-                                                    {resource.type === "LINK" && (
+                                                    {resource.type ===
+                                                        "LINK" && (
                                                         <Link2 className="h-4 w-4 text-primary" />
                                                     )}
-                                                    {resource.type === "DOCUMENT" && (
+                                                    {resource.type ===
+                                                        "DOCUMENT" && (
                                                         <FileText className="h-4 w-4 text-primary" />
                                                     )}
                                                 </div>
@@ -182,7 +190,9 @@ export default function LearnerCourseContent({
                                                     </p>
                                                     {resource.description && (
                                                         <p className="text-sm text-muted-foreground line-clamp-1">
-                                                            {resource.description}
+                                                            {
+                                                                resource.description
+                                                            }
                                                         </p>
                                                     )}
                                                 </div>
@@ -204,9 +214,15 @@ export default function LearnerCourseContent({
                                         <Play className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <CardTitle className="text-lg">Course Content</CardTitle>
+                                        <CardTitle className="text-lg">
+                                            Course Content
+                                        </CardTitle>
                                         <CardDescription className="text-xs">
-                                            {course.videos?.length || 0} video{(course.videos?.length || 0) !== 1 ? "s" : ""} in this course
+                                            {course.videos?.length || 0} video
+                                            {(course.videos?.length || 0) !== 1
+                                                ? "s"
+                                                : ""}{" "}
+                                            in this course
                                         </CardDescription>
                                     </div>
                                 </div>
@@ -246,11 +262,14 @@ export default function LearnerCourseContent({
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className={`font-medium line-clamp-2 text-sm ${
-                                                selectedVideo?.id === video.id
-                                                    ? "text-primary"
-                                                    : "text-foreground"
-                                            }`}>
+                                            <p
+                                                className={`font-medium line-clamp-2 text-sm ${
+                                                    selectedVideo?.id ===
+                                                    video.id
+                                                        ? "text-primary"
+                                                        : "text-foreground"
+                                                }`}
+                                            >
                                                 {video.title}
                                             </p>
                                             {video.caption && (
@@ -270,7 +289,8 @@ export default function LearnerCourseContent({
                                             No videos yet
                                         </p>
                                         <p className="text-xs text-muted-foreground/70 text-center">
-                                            Videos will appear here once the instructor adds them
+                                            Videos will appear here once the
+                                            instructor adds them
                                         </p>
                                     </div>
                                 )}

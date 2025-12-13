@@ -36,8 +36,10 @@ export const useAuthSignIn = () => {
             // Clear via API (server-side cookie deletion)
             await fetch("/api/owner/logout", { method: "POST" })
             // Also clear client-side cookies as backup
-            document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-            document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
         } catch (error) {
             console.error("Failed to clear owner session:", error)
         }
@@ -139,8 +141,10 @@ export const useAuthSignUp = () => {
     const clearOwnerSession = async () => {
         try {
             await fetch("/api/owner/logout", { method: "POST" })
-            document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-            document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
         } catch (error) {
             console.error("Failed to clear owner session:", error)
         }
@@ -359,8 +363,10 @@ export const useGoogleAuth = () => {
     const clearOwnerSession = async () => {
         try {
             await fetch("/api/owner/logout", { method: "POST" })
-            document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-            document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie =
+                "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
         } catch (error) {
             console.error("Failed to clear owner session:", error)
         }

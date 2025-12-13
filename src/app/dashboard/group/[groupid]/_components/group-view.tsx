@@ -1,6 +1,12 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Hash, BookOpen, ArrowLeft, Play, MessageSquare } from "lucide-react"
@@ -37,13 +43,21 @@ type Props = {
     courses: Course[]
 }
 
-export const LearnerGroupView = ({ groupId, groupInfo, channels, courses }: Props) => {
+export const LearnerGroupView = ({
+    groupId,
+    groupInfo,
+    channels,
+    courses,
+}: Props) => {
     const publishedCourses = courses.filter((c) => c.published)
 
     return (
         <div className="container py-6 px-4 sm:px-6">
             {/* Back Button */}
-            <Link href="/dashboard" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
+            <Link
+                href="/dashboard"
+                className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6"
+            >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Dashboard
             </Link>
@@ -52,7 +66,10 @@ export const LearnerGroupView = ({ groupId, groupInfo, channels, courses }: Prop
             <div className="relative rounded-xl overflow-hidden mb-8">
                 <div className="aspect-[3/1] sm:aspect-[4/1]">
                     <img
-                        src={getGroupThumbnailUrl(groupInfo.thumbnail, groupInfo.category)}
+                        src={getGroupThumbnailUrl(
+                            groupInfo.thumbnail,
+                            groupInfo.category,
+                        )}
                         alt={groupInfo.name}
                         className="w-full h-full object-cover"
                     />
@@ -74,15 +91,24 @@ export const LearnerGroupView = ({ groupId, groupInfo, channels, courses }: Prop
             {/* Tabs for Channels and Courses */}
             <Tabs defaultValue="channels" className="w-full">
                 <TabsList className="grid w-full max-w-lg grid-cols-3 mb-6">
-                    <TabsTrigger value="channels" className="flex items-center gap-2">
+                    <TabsTrigger
+                        value="channels"
+                        className="flex items-center gap-2"
+                    >
                         <Hash className="h-4 w-4" />
                         Channels ({channels.length})
                     </TabsTrigger>
-                    <TabsTrigger value="courses" className="flex items-center gap-2">
+                    <TabsTrigger
+                        value="courses"
+                        className="flex items-center gap-2"
+                    >
                         <BookOpen className="h-4 w-4" />
                         Courses ({publishedCourses.length})
                     </TabsTrigger>
-                    <TabsTrigger value="messages" className="flex items-center gap-2">
+                    <TabsTrigger
+                        value="messages"
+                        className="flex items-center gap-2"
+                    >
                         <MessageSquare className="h-4 w-4" />
                         Messages
                     </TabsTrigger>
@@ -93,7 +119,9 @@ export const LearnerGroupView = ({ groupId, groupInfo, channels, courses }: Prop
                     {channels.length === 0 ? (
                         <Card className="p-8 text-center">
                             <Hash className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                            <h3 className="text-lg font-semibold mb-2">No channels yet</h3>
+                            <h3 className="text-lg font-semibold mb-2">
+                                No channels yet
+                            </h3>
                             <p className="text-muted-foreground">
                                 This group doesn't have any channels yet.
                             </p>
@@ -134,9 +162,12 @@ export const LearnerGroupView = ({ groupId, groupInfo, channels, courses }: Prop
                     {publishedCourses.length === 0 ? (
                         <Card className="p-8 text-center">
                             <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                            <h3 className="text-lg font-semibold mb-2">No courses yet</h3>
+                            <h3 className="text-lg font-semibold mb-2">
+                                No courses yet
+                            </h3>
                             <p className="text-muted-foreground">
-                                This group doesn't have any published courses yet.
+                                This group doesn't have any published courses
+                                yet.
                             </p>
                         </Card>
                     ) : (
@@ -170,7 +201,8 @@ export const LearnerGroupView = ({ groupId, groupInfo, channels, courses }: Prop
                                                 {course.title}
                                             </CardTitle>
                                             <CardDescription className="line-clamp-2">
-                                                {course.description || "No description"}
+                                                {course.description ||
+                                                    "No description"}
                                             </CardDescription>
                                         </CardHeader>
                                     </Card>
@@ -184,9 +216,12 @@ export const LearnerGroupView = ({ groupId, groupInfo, channels, courses }: Prop
                 <TabsContent value="messages">
                     <Card className="p-8 text-center">
                         <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                        <h3 className="text-lg font-semibold mb-2">Direct Messages</h3>
+                        <h3 className="text-lg font-semibold mb-2">
+                            Direct Messages
+                        </h3>
                         <p className="text-muted-foreground mb-4">
-                            Send and receive private messages from the group owner.
+                            Send and receive private messages from the group
+                            owner.
                         </p>
                         <Link href={`/dashboard/group/${groupId}/messages`}>
                             <Button>

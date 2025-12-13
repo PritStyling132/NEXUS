@@ -48,7 +48,9 @@ export const PricingPlanForm = ({
                     disabled={isLoading}
                 />
                 {errors.name && (
-                    <p className="text-sm text-red-500">{errors.name.message}</p>
+                    <p className="text-sm text-red-500">
+                        {errors.name.message}
+                    </p>
                 )}
             </div>
 
@@ -62,7 +64,9 @@ export const PricingPlanForm = ({
                     disabled={isLoading}
                 />
                 {errors.description && (
-                    <p className="text-sm text-red-500">{errors.description.message}</p>
+                    <p className="text-sm text-red-500">
+                        {errors.description.message}
+                    </p>
                 )}
             </div>
 
@@ -86,7 +90,9 @@ export const PricingPlanForm = ({
                     />
                 </div>
                 {errors.price && (
-                    <p className="text-sm text-red-500">{errors.price.message}</p>
+                    <p className="text-sm text-red-500">
+                        {errors.price.message}
+                    </p>
                 )}
                 <p className="text-xs text-muted-foreground">
                     This is the one-time fee members pay to join your groups

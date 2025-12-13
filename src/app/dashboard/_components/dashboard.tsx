@@ -1,8 +1,21 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, BookOpen, Compass, ArrowRight, Hash, MessageSquare } from "lucide-react"
+import {
+    Users,
+    BookOpen,
+    Compass,
+    ArrowRight,
+    Hash,
+    MessageSquare,
+} from "lucide-react"
 import Link from "next/link"
 import { getGroupThumbnailUrl } from "@/lib/default-group-assets"
 
@@ -138,9 +151,12 @@ export const LearnerDashboard = ({ username, dashboardData }: Props) => {
             <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20 mb-8">
                 <CardContent className="flex items-center justify-between py-4">
                     <div>
-                        <h3 className="font-semibold text-foreground">Discover More Groups</h3>
+                        <h3 className="font-semibold text-foreground">
+                            Discover More Groups
+                        </h3>
                         <p className="text-sm text-muted-foreground">
-                            Explore new learning communities and expand your knowledge
+                            Explore new learning communities and expand your
+                            knowledge
                         </p>
                     </div>
                     <Link href="/explore">
@@ -156,7 +172,9 @@ export const LearnerDashboard = ({ username, dashboardData }: Props) => {
             {/* Joined Groups Section */}
             <div>
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-foreground">Your Groups</h2>
+                    <h2 className="text-xl font-semibold text-foreground">
+                        Your Groups
+                    </h2>
                     <Link href="/explore">
                         <Button variant="ghost" size="sm">
                             Browse more
@@ -168,7 +186,9 @@ export const LearnerDashboard = ({ username, dashboardData }: Props) => {
                 {joinedGroups.length === 0 ? (
                     <Card className="p-8 text-center">
                         <div className="text-5xl mb-4">📚</div>
-                        <h3 className="text-lg font-semibold mb-2">No groups yet</h3>
+                        <h3 className="text-lg font-semibold mb-2">
+                            No groups yet
+                        </h3>
                         <p className="text-muted-foreground mb-4">
                             Start your learning journey by joining a group
                         </p>
@@ -189,7 +209,10 @@ export const LearnerDashboard = ({ username, dashboardData }: Props) => {
                                 <Card className="overflow-hidden hover:border-primary/50 transition-colors cursor-pointer h-full">
                                     <div className="aspect-video relative">
                                         <img
-                                            src={getGroupThumbnailUrl(group.thumbnail, group.category)}
+                                            src={getGroupThumbnailUrl(
+                                                group.thumbnail,
+                                                group.category,
+                                            )}
                                             alt={group.name}
                                             className="w-full h-full object-cover"
                                         />
@@ -205,7 +228,8 @@ export const LearnerDashboard = ({ username, dashboardData }: Props) => {
                                             {group.name}
                                         </CardTitle>
                                         <CardDescription className="line-clamp-2">
-                                            {group.description || "No description"}
+                                            {group.description ||
+                                                "No description"}
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="pt-0">

@@ -128,7 +128,10 @@ export default function AboutPage() {
             <section className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-5xl mx-auto text-center">
                     <BackdropGradient className="w-10/12 h-full opacity-40 flex flex-col items-center mx-auto">
-                        <Badge variant="outline" className="mb-4 px-4 py-1 border-primary/30">
+                        <Badge
+                            variant="outline"
+                            className="mb-4 px-4 py-1 border-primary/30"
+                        >
                             About NeXuS
                         </Badge>
                         <GradientText
@@ -144,18 +147,24 @@ export default function AboutPage() {
                             to Learn & Grow Together
                         </GradientText>
                         <p className="text-lg sm:text-xl text-muted-foreground mt-6 max-w-3xl mx-auto leading-relaxed">
-                            NeXuS is a vibrant online community platform that empowers people
-                            to connect, learn, and cultivate meaningful relationships through
-                            shared knowledge and experiences.
+                            NeXuS is a vibrant online community platform that
+                            empowers people to connect, learn, and cultivate
+                            meaningful relationships through shared knowledge
+                            and experiences.
                         </p>
                         <div className="flex gap-4 mt-8 flex-wrap justify-center">
                             <Link href="/sign-up">
                                 <Button size="lg" className="rounded-xl gap-2">
-                                    Get Started <ArrowRight className="w-4 h-4" />
+                                    Get Started{" "}
+                                    <ArrowRight className="w-4 h-4" />
                                 </Button>
                             </Link>
                             <Link href="/explore">
-                                <Button size="lg" variant="outline" className="rounded-xl">
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="rounded-xl"
+                                >
                                     Explore Communities
                                 </Button>
                             </Link>
@@ -190,7 +199,8 @@ export default function AboutPage() {
                             Why Choose NeXuS?
                         </h2>
                         <p className="text-muted-foreground max-w-2xl mx-auto">
-                            Everything you need to build, grow, and monetize your community
+                            Everything you need to build, grow, and monetize
+                            your community
                         </p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -235,7 +245,9 @@ export default function AboutPage() {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-border dark:border-themeGray">
-                                        <th className="text-left p-4 font-medium">Feature</th>
+                                        <th className="text-left p-4 font-medium">
+                                            Feature
+                                        </th>
                                         <th className="text-center p-4 font-medium text-primary">
                                             NeXuS
                                         </th>
@@ -250,7 +262,9 @@ export default function AboutPage() {
                                             key={index}
                                             className="border-b border-border dark:border-themeGray last:border-0"
                                         >
-                                            <td className="p-4 text-sm">{item.feature}</td>
+                                            <td className="p-4 text-sm">
+                                                {item.feature}
+                                            </td>
                                             <td className="p-4 text-center">
                                                 {item.nexus === true ? (
                                                     <CheckCircle2 className="w-5 h-5 text-green-500 mx-auto" />
@@ -290,8 +304,12 @@ export default function AboutPage() {
                                 className="bg-card dark:bg-themeBlack border-border dark:border-themeGray"
                             >
                                 <CardContent className="p-6">
-                                    <h3 className="font-semibold mb-2">{faq.question}</h3>
-                                    <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                                    <h3 className="font-semibold mb-2">
+                                        {faq.question}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        {faq.answer}
+                                    </p>
                                 </CardContent>
                             </Card>
                         ))}
@@ -307,8 +325,8 @@ export default function AboutPage() {
                         Ready to Start Your Journey?
                     </h2>
                     <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-                        Join thousands of learners and creators building their future on
-                        NeXuS
+                        Join thousands of learners and creators building their
+                        future on NeXuS
                     </p>
                     <div className="flex gap-4 justify-center flex-wrap">
                         <Link href="/sign-up?tab=learner">
@@ -317,7 +335,11 @@ export default function AboutPage() {
                             </Button>
                         </Link>
                         <Link href="/sign-up?tab=owner">
-                            <Button size="lg" variant="outline" className="rounded-xl">
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="rounded-xl"
+                            >
                                 Become an Owner
                             </Button>
                         </Link>

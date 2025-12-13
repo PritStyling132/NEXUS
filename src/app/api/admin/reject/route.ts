@@ -27,10 +27,7 @@ export async function POST(request: NextRequest) {
         const admin = await verifyAdmin()
 
         if (!admin) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 },
-            )
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
         const { applicationId, reason } = await request.json()
@@ -44,7 +41,9 @@ export async function POST(request: NextRequest) {
 
         if (!reason || reason.trim().length < 10) {
             return NextResponse.json(
-                { error: "Please provide a valid rejection reason (at least 10 characters)" },
+                {
+                    error: "Please provide a valid rejection reason (at least 10 characters)",
+                },
                 { status: 400 },
             )
         }
@@ -83,7 +82,10 @@ export async function POST(request: NextRequest) {
         await sendEmail({
             to: pendingOwner.email,
             subject: "Update on Your NeXuS Application",
-            html: getRejectionEmailTemplate(pendingOwner.firstname, reason.trim()),
+            html: getRejectionEmailTemplate(
+                pendingOwner.firstname,
+                reason.trim(),
+            ),
         })
 
         return NextResponse.json({

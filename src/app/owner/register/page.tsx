@@ -387,9 +387,10 @@ export default function OwnerRegisterPage() {
                                                     {isUploadingCV && (
                                                         <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
                                                     )}
-                                                    {cvUrl && !isUploadingCV && (
-                                                        <CheckCircle className="w-5 h-5 text-green-500" />
-                                                    )}
+                                                    {cvUrl &&
+                                                        !isUploadingCV && (
+                                                            <CheckCircle className="w-5 h-5 text-green-500" />
+                                                        )}
                                                     <button
                                                         type="button"
                                                         onClick={removeCV}

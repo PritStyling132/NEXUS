@@ -224,7 +224,9 @@ const OwnerRegistrationForm = () => {
                     />
                 </div>
                 {errors.email && (
-                    <p className="text-xs text-red-500">{errors.email.message}</p>
+                    <p className="text-xs text-red-500">
+                        {errors.email.message}
+                    </p>
                 )}
             </div>
 
@@ -247,7 +249,9 @@ const OwnerRegistrationForm = () => {
                     />
                 </div>
                 {errors.phone && (
-                    <p className="text-xs text-red-500">{errors.phone.message}</p>
+                    <p className="text-xs text-red-500">
+                        {errors.phone.message}
+                    </p>
                 )}
             </div>
 
@@ -274,7 +278,8 @@ const OwnerRegistrationForm = () => {
                                         {cvFile.name}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                        {(cvFile.size / 1024 / 1024).toFixed(2)} MB
+                                        {(cvFile.size / 1024 / 1024).toFixed(2)}{" "}
+                                        MB
                                     </p>
                                 </div>
                             </div>

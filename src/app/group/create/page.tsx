@@ -26,7 +26,10 @@ export default async function CreateGroupPage() {
 
         // If owner session exists, get owner's user data
         if (ownerSessionId) {
-            console.log("🔍 [GROUP CREATE] Looking up owner user:", ownerSessionId)
+            console.log(
+                "🔍 [GROUP CREATE] Looking up owner user:",
+                ownerSessionId,
+            )
 
             try {
                 dbUser = (await Promise.race([
@@ -49,7 +52,10 @@ export default async function CreateGroupPage() {
                     ),
                 ])) as any
             } catch (dbError: any) {
-                console.error("❌ [GROUP CREATE] Database error:", dbError.message)
+                console.error(
+                    "❌ [GROUP CREATE] Database error:",
+                    dbError.message,
+                )
 
                 return (
                     <div className="min-h-screen flex items-center justify-center p-4">
@@ -58,8 +64,8 @@ export default async function CreateGroupPage() {
                                 Database Connection Error
                             </h2>
                             <p className="text-red-700 mb-4">
-                                Unable to connect to the database. Please try again
-                                in a few moments.
+                                Unable to connect to the database. Please try
+                                again in a few moments.
                             </p>
                             <details className="text-sm text-red-600">
                                 <summary className="cursor-pointer font-medium">
@@ -112,7 +118,10 @@ export default async function CreateGroupPage() {
                     ),
                 ])) as any
             } catch (dbError: any) {
-                console.error("❌ [GROUP CREATE] Database error:", dbError.message)
+                console.error(
+                    "❌ [GROUP CREATE] Database error:",
+                    dbError.message,
+                )
 
                 return (
                     <div className="min-h-screen flex items-center justify-center p-4">
@@ -121,8 +130,8 @@ export default async function CreateGroupPage() {
                                 Database Connection Error
                             </h2>
                             <p className="text-red-700 mb-4">
-                                Unable to connect to the database. Please try again
-                                in a few moments.
+                                Unable to connect to the database. Please try
+                                again in a few moments.
                             </p>
                             <details className="text-sm text-red-600">
                                 <summary className="cursor-pointer font-medium">
@@ -147,7 +156,9 @@ export default async function CreateGroupPage() {
 
             // If user doesn't exist in DB, create them (for OAuth users)
             if (!dbUser) {
-                console.log("⚠️ [GROUP CREATE] User not in database, creating...")
+                console.log(
+                    "⚠️ [GROUP CREATE] User not in database, creating...",
+                )
 
                 try {
                     await prisma.user.create({
@@ -159,7 +170,9 @@ export default async function CreateGroupPage() {
                         },
                     })
 
-                    console.log("✅ [GROUP CREATE] User created, redirecting...")
+                    console.log(
+                        "✅ [GROUP CREATE] User created, redirecting...",
+                    )
                     redirect("/group/create")
                 } catch (createError: any) {
                     console.error(
@@ -214,9 +227,9 @@ export default async function CreateGroupPage() {
                                 </GradientText>
 
                                 <p className="text-sm sm:text-base text-muted-foreground dark:text-themeTextGray mt-4 leading-relaxed">
-                                    Free for 14 days, then INR 4,999/month. Cancel
-                                    anytime. All features. Unlimited everything.
-                                    No hidden fees.
+                                    Free for 14 days, then INR 4,999/month.
+                                    Cancel anytime. All features. Unlimited
+                                    everything. No hidden fees.
                                 </p>
 
                                 <div className="flex flex-col gap-3 sm:gap-4 mt-8 sm:mt-12 lg:mt-16 pl-2 sm:pl-5">

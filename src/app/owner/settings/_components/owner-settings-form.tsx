@@ -1,7 +1,13 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -36,7 +42,9 @@ export function OwnerSettingsForm({ initialData }: Props) {
         fileInputRef.current?.click()
     }
 
-    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         const file = e.target.files?.[0]
         if (!file) return
 
@@ -104,7 +112,11 @@ export function OwnerSettingsForm({ initialData }: Props) {
                 <CardHeader>
                     <div className="flex items-center gap-4">
                         <Link href="/">
-                            <Button variant="ghost" size="icon" className="rounded-lg">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-lg"
+                            >
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
                         </Link>

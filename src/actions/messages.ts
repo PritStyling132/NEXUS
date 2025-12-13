@@ -5,7 +5,10 @@ import { onAuthenticatedUser } from "./auth"
 
 // ============ CHANNEL MESSAGES ============
 
-export const onSendChannelMessage = async (channelId: string, message: string) => {
+export const onSendChannelMessage = async (
+    channelId: string,
+    message: string,
+) => {
     try {
         const user = await onAuthenticatedUser()
         if (user.status !== 200 || !user.id) {
@@ -44,7 +47,7 @@ export const onSendChannelMessage = async (channelId: string, message: string) =
 export const onGetChannelMessages = async (
     channelId: string,
     limit: number = 50,
-    cursor?: string
+    cursor?: string,
 ) => {
     try {
         const user = await onAuthenticatedUser()
@@ -90,7 +93,10 @@ export const onGetChannelMessages = async (
 
 // ============ DIRECT MESSAGES ============
 
-export const onSendDirectMessage = async (receiverId: string, message: string) => {
+export const onSendDirectMessage = async (
+    receiverId: string,
+    message: string,
+) => {
     try {
         const user = await onAuthenticatedUser()
         if (user.status !== 200 || !user.id) {
@@ -137,7 +143,7 @@ export const onSendDirectMessage = async (receiverId: string, message: string) =
 export const onGetDirectMessages = async (
     otherUserId: string,
     limit: number = 50,
-    cursor?: string
+    cursor?: string,
 ) => {
     try {
         const user = await onAuthenticatedUser()
@@ -248,14 +254,17 @@ export const onGetConversations = async () => {
         })
 
         // Combine and deduplicate conversations
-        const conversationMap = new Map<string, {
-            id: string
-            firstname: string
-            lastname: string
-            image: string | null
-            lastMessage: string
-            lastMessageAt: Date
-        }>()
+        const conversationMap = new Map<
+            string,
+            {
+                id: string
+                firstname: string
+                lastname: string
+                image: string | null
+                lastMessage: string
+                lastMessageAt: Date
+            }
+        >()
 
         sentMessages.forEach((msg) => {
             if (msg.receiverId && msg.receiver) {
@@ -291,7 +300,7 @@ export const onGetConversations = async () => {
 
         // Sort by last message date
         const conversations = Array.from(conversationMap.values()).sort(
-            (a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime()
+            (a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime(),
         )
 
         return { status: 200, data: conversations }

@@ -1,6 +1,14 @@
 "use client"
 
-import { Bell, Check, CheckCheck, Users, MessageSquare, BookOpen, Hash } from "lucide-react"
+import {
+    Bell,
+    Check,
+    CheckCheck,
+    Users,
+    MessageSquare,
+    BookOpen,
+    Hash,
+} from "lucide-react"
 import { useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@/components/ui/badge"
@@ -55,7 +63,9 @@ export const Notification = () => {
         queryFn: async () => {
             const response = await fetch("/api/notifications")
             const result = await response.json()
-            return result.status === 200 ? result.data : { notifications: [], unreadCount: 0 }
+            return result.status === 200
+                ? result.data
+                : { notifications: [], unreadCount: 0 }
         },
         refetchInterval: 30000, // Poll every 30 seconds
     })
@@ -99,11 +109,7 @@ export const Notification = () => {
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-                className="w-80 p-0"
-                align="end"
-                forceMount
-            >
+            <DropdownMenuContent className="w-80 p-0" align="end" forceMount>
                 <div className="flex items-center justify-between px-4 py-3 border-b">
                     <h4 className="font-semibold text-sm">Notifications</h4>
                     {unreadCount > 0 && (
@@ -145,12 +151,16 @@ export const Notification = () => {
                                 >
                                     <div
                                         className={`flex gap-3 p-3 hover:bg-accent/50 transition-colors cursor-pointer ${
-                                            !notification.isRead ? "bg-primary/5" : ""
+                                            !notification.isRead
+                                                ? "bg-primary/5"
+                                                : ""
                                         }`}
                                     >
                                         <div className="flex-shrink-0 mt-1">
                                             <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                                                <NotificationIcon type={notification.type} />
+                                                <NotificationIcon
+                                                    type={notification.type}
+                                                />
                                             </div>
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -162,13 +172,21 @@ export const Notification = () => {
                                             </p>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <span className="text-xs text-muted-foreground">
-                                                    {formatDistanceToNow(new Date(notification.createdAt), {
-                                                        addSuffix: true,
-                                                    })}
+                                                    {formatDistanceToNow(
+                                                        new Date(
+                                                            notification.createdAt,
+                                                        ),
+                                                        {
+                                                            addSuffix: true,
+                                                        },
+                                                    )}
                                                 </span>
                                                 {notification.group && (
                                                     <span className="text-xs text-primary truncate">
-                                                        {notification.group.name}
+                                                        {
+                                                            notification.group
+                                                                .name
+                                                        }
                                                     </span>
                                                 )}
                                             </div>

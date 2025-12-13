@@ -3,7 +3,11 @@
 import { GlassModal } from "@/components/global/glass-model"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { validateURLString, getYouTubeEmbedUrl, getLoomEmbedUrl } from "@/lib/utils"
+import {
+    validateURLString,
+    getYouTubeEmbedUrl,
+    getLoomEmbedUrl,
+} from "@/lib/utils"
 import { BadgePlus, Trash2, Play, Image as ImageIcon } from "lucide-react"
 import MediaGalleryForm from "@/components/forms/media-gallery"
 import React, { useState } from "react"
@@ -216,7 +220,9 @@ export const MediaGallery = ({
                                     <div className="p-2 rounded-full bg-primary/10 mb-2">
                                         <BadgePlus className="h-5 w-5 text-primary" />
                                     </div>
-                                    <p className="text-xs text-muted-foreground">Add Media</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        Add Media
+                                    </p>
                                 </CardContent>
                             </Card>
                         }
@@ -227,16 +233,22 @@ export const MediaGallery = ({
             </div>
 
             {/* Delete Confirmation Dialog */}
-            <AlertDialog open={!!deleteUrl} onOpenChange={() => setDeleteUrl(null)}>
+            <AlertDialog
+                open={!!deleteUrl}
+                onOpenChange={() => setDeleteUrl(null)}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete Media?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently remove this media from your gallery.
+                            This action cannot be undone. This will permanently
+                            remove this media from your gallery.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel disabled={isDeleting}>
+                            Cancel
+                        </AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDelete}
                             disabled={isDeleting}

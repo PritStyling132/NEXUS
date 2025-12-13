@@ -106,7 +106,8 @@ export default function OwnerPaymentSetupPage() {
             if (!scriptLoaded) {
                 toast({
                     title: "Error",
-                    description: "Failed to load payment gateway. Please try again.",
+                    description:
+                        "Failed to load payment gateway. Please try again.",
                     variant: "destructive",
                 })
                 return
@@ -122,7 +123,9 @@ export default function OwnerPaymentSetupPage() {
             const customerData = await customerRes.json()
 
             if (!customerData.success) {
-                throw new Error(customerData.error || "Failed to create customer")
+                throw new Error(
+                    customerData.error || "Failed to create customer",
+                )
             }
 
             // Create order for ₹1
@@ -148,35 +151,47 @@ export default function OwnerPaymentSetupPage() {
                 order_id: orderData.orderId,
                 handler: async function (response: any) {
                     try {
-                        const tokenRes = await fetch("/api/razorpay/save-token", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_signature: response.razorpay_signature,
-                                customerId: customerData.customerId,
-                                ownerUserId: userId,
-                            }),
-                        })
+                        const tokenRes = await fetch(
+                            "/api/razorpay/save-token",
+                            {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    razorpay_payment_id:
+                                        response.razorpay_payment_id,
+                                    razorpay_order_id:
+                                        response.razorpay_order_id,
+                                    razorpay_signature:
+                                        response.razorpay_signature,
+                                    customerId: customerData.customerId,
+                                    ownerUserId: userId,
+                                }),
+                            },
+                        )
 
                         const tokenData = await tokenRes.json()
 
                         if (tokenData.success) {
                             toast({
                                 title: "Success!",
-                                description: "Payment method added. ₹1 will be refunded shortly.",
+                                description:
+                                    "Payment method added. ₹1 will be refunded shortly.",
                             })
                             setTimeout(() => {
                                 router.push("/group/create")
                             }, 1000)
                         } else {
-                            throw new Error(tokenData.error || "Failed to save payment method")
+                            throw new Error(
+                                tokenData.error ||
+                                    "Failed to save payment method",
+                            )
                         }
                     } catch (error: any) {
                         toast({
                             title: "Error",
-                            description: error.message || "Failed to save payment method",
+                            description:
+                                error.message ||
+                                "Failed to save payment method",
                             variant: "destructive",
                         })
                     } finally {
@@ -250,27 +265,36 @@ export default function OwnerPaymentSetupPage() {
                         <div className="flex gap-4 items-start p-4 bg-muted rounded-lg">
                             <span className="text-2xl">💳</span>
                             <div>
-                                <h3 className="font-semibold">₹1 Verification</h3>
+                                <h3 className="font-semibold">
+                                    ₹1 Verification
+                                </h3>
                                 <p className="text-muted-foreground text-sm">
-                                    We charge ₹1 to verify your card. This is refunded immediately.
+                                    We charge ₹1 to verify your card. This is
+                                    refunded immediately.
                                 </p>
                             </div>
                         </div>
                         <div className="flex gap-4 items-start p-4 bg-muted rounded-lg">
                             <span className="text-2xl">✨</span>
                             <div>
-                                <h3 className="font-semibold">14-Day Free Trial</h3>
+                                <h3 className="font-semibold">
+                                    14-Day Free Trial
+                                </h3>
                                 <p className="text-muted-foreground text-sm">
-                                    After verification, enjoy all features free for 14 days.
+                                    After verification, enjoy all features free
+                                    for 14 days.
                                 </p>
                             </div>
                         </div>
                         <div className="flex gap-4 items-start p-4 bg-muted rounded-lg">
                             <span className="text-2xl">📅</span>
                             <div>
-                                <h3 className="font-semibold">₹4,999/month After Trial</h3>
+                                <h3 className="font-semibold">
+                                    ₹4,999/month After Trial
+                                </h3>
                                 <p className="text-muted-foreground text-sm">
-                                    Cancel anytime before trial ends to avoid charges.
+                                    Cancel anytime before trial ends to avoid
+                                    charges.
                                 </p>
                             </div>
                         </div>
@@ -283,20 +307,24 @@ export default function OwnerPaymentSetupPage() {
                         <CardHeader>
                             <CardTitle>Add Payment Method</CardTitle>
                             <CardDescription>
-                                We'll charge ₹1 to verify your card (refunded immediately)
+                                We'll charge ₹1 to verify your card (refunded
+                                immediately)
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">
-                                        Full Name <span className="text-red-500">*</span>
+                                        Full Name{" "}
+                                        <span className="text-red-500">*</span>
                                     </Label>
                                     <Input
                                         id="name"
                                         placeholder="John Doe"
                                         value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        onChange={(e) =>
+                                            setName(e.target.value)
+                                        }
                                         disabled={loading}
                                         required
                                     />
@@ -304,7 +332,8 @@ export default function OwnerPaymentSetupPage() {
 
                                 <div className="space-y-2">
                                     <Label htmlFor="phone">
-                                        Phone Number <span className="text-red-500">*</span>
+                                        Phone Number{" "}
+                                        <span className="text-red-500">*</span>
                                     </Label>
                                     <Input
                                         id="phone"
@@ -313,7 +342,12 @@ export default function OwnerPaymentSetupPage() {
                                         maxLength={10}
                                         value={phone}
                                         onChange={(e) =>
-                                            setPhone(e.target.value.replace(/\D/g, ""))
+                                            setPhone(
+                                                e.target.value.replace(
+                                                    /\D/g,
+                                                    "",
+                                                ),
+                                            )
                                         }
                                         disabled={loading}
                                         required
@@ -340,7 +374,10 @@ export default function OwnerPaymentSetupPage() {
                                     </Button>
 
                                     <div className="text-xs text-center text-muted-foreground space-y-1">
-                                        <p>🔒 Secure payment powered by Razorpay</p>
+                                        <p>
+                                            🔒 Secure payment powered by
+                                            Razorpay
+                                        </p>
                                     </div>
                                 </div>
                             </form>

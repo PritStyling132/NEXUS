@@ -8,7 +8,11 @@ const apiSecret = process.env.CLOUDINARY_API_SECRET
 export async function POST(request: NextRequest) {
     try {
         if (!cloudName || !apiKey || !apiSecret) {
-            console.error("Cloudinary config missing:", { cloudName: !!cloudName, apiKey: !!apiKey, apiSecret: !!apiSecret })
+            console.error("Cloudinary config missing:", {
+                cloudName: !!cloudName,
+                apiKey: !!apiKey,
+                apiSecret: !!apiSecret,
+            })
             return NextResponse.json(
                 { error: "Cloudinary is not configured" },
                 { status: 500 },
@@ -33,7 +37,8 @@ export async function POST(request: NextRequest) {
         if (
             fileType === "application/pdf" ||
             fileType === "application/msword" ||
-            fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            fileType ===
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ) {
             resourceType = "raw"
         }
@@ -67,7 +72,7 @@ export async function POST(request: NextRequest) {
             fileType,
             resourceType,
             fileName: file.name,
-            fileSize: file.size
+            fileSize: file.size,
         })
 
         const response = await fetch(uploadUrl, {

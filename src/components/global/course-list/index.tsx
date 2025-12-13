@@ -21,13 +21,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
-import {
-    BookOpen,
-    Video,
-    Link as LinkIcon,
-    Trash2,
-    Eye,
-} from "lucide-react"
+import { BookOpen, Video, Link as LinkIcon, Trash2, Eye } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 

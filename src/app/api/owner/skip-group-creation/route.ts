@@ -20,7 +20,7 @@ export async function POST() {
             if (user.groups && user.groups.length > 0) {
                 return NextResponse.json({
                     success: true,
-                    redirectUrl: `/group/${user.groups[0].id}`
+                    redirectUrl: `/group/${user.groups[0].id}`,
                 })
             }
 
@@ -43,18 +43,18 @@ export async function POST() {
             if (user.groups && user.groups.length > 0) {
                 return NextResponse.json({
                     success: true,
-                    redirectUrl: `/group/${user.groups[0].id}`
+                    redirectUrl: `/group/${user.groups[0].id}`,
                 })
             }
 
             // Otherwise redirect to owner dashboard
-            return NextResponse.json({ success: true, redirectUrl: "/owner/dashboard" })
+            return NextResponse.json({
+                success: true,
+                redirectUrl: "/owner/dashboard",
+            })
         }
 
-        return NextResponse.json(
-            { error: "Unauthorized" },
-            { status: 401 },
-        )
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     } catch (error: any) {
         console.error("Skip group creation error:", error)
         return NextResponse.json(

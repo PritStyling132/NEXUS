@@ -25,8 +25,14 @@ const passwordSchema = z
         newPassword: z
             .string()
             .min(8, "Password must be at least 8 characters")
-            .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-            .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+            .regex(
+                /[A-Z]/,
+                "Password must contain at least one uppercase letter",
+            )
+            .regex(
+                /[a-z]/,
+                "Password must contain at least one lowercase letter",
+            )
             .regex(/[0-9]/, "Password must contain at least one number")
             .regex(
                 /[^A-Za-z0-9]/,
@@ -144,17 +150,23 @@ export default function ChangePasswordPage() {
                             className="space-y-4"
                         >
                             <div className="space-y-2">
-                                <Label htmlFor="newPassword">New Password</Label>
+                                <Label htmlFor="newPassword">
+                                    New Password
+                                </Label>
                                 <div className="relative">
                                     <Input
                                         id="newPassword"
-                                        type={showPassword ? "text" : "password"}
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
                                         {...register("newPassword")}
                                         placeholder="Enter new password"
                                     />
                                     <button
                                         type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
+                                        onClick={() =>
+                                            setShowPassword(!showPassword)
+                                        }
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     >
                                         {showPassword ? (
@@ -178,14 +190,20 @@ export default function ChangePasswordPage() {
                                 <div className="relative">
                                     <Input
                                         id="confirmPassword"
-                                        type={showConfirmPassword ? "text" : "password"}
+                                        type={
+                                            showConfirmPassword
+                                                ? "text"
+                                                : "password"
+                                        }
                                         {...register("confirmPassword")}
                                         placeholder="Confirm new password"
                                     />
                                     <button
                                         type="button"
                                         onClick={() =>
-                                            setShowConfirmPassword(!showConfirmPassword)
+                                            setShowConfirmPassword(
+                                                !showConfirmPassword,
+                                            )
                                         }
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     >

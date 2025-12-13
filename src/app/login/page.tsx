@@ -78,8 +78,8 @@ export default function LoginChoicePage() {
                                     Admin
                                 </h3>
                                 <p className="text-muted-foreground text-sm mb-6 flex-grow">
-                                    Platform administration and owner application
-                                    management
+                                    Platform administration and owner
+                                    application management
                                 </p>
                                 <div className="mt-auto">
                                     <span className="inline-block bg-red-600 text-white px-6 py-2 rounded-lg font-medium group-hover:bg-red-700 transition-colors">
@@ -92,9 +92,7 @@ export default function LoginChoicePage() {
 
                     {/* Additional Links */}
                     <div className="mt-12 text-center space-y-4">
-                        <p className="text-muted-foreground">
-                            New to NeXuS?
-                        </p>
+                        <p className="text-muted-foreground">New to NeXuS?</p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <Link
                                 href="/sign-up"

@@ -6,7 +6,15 @@ import BlockTextEditor from "@/components/global/rich-text-editor"
 import { Button } from "@/components/ui/button"
 import Loader from "@/components/global/loader"
 import { Card } from "@/components/ui/card"
-import { Users, Hash, BookOpen, CheckCircle, Star, Zap, FileText } from "lucide-react"
+import {
+    Users,
+    Hash,
+    BookOpen,
+    CheckCircle,
+    Star,
+    Zap,
+    FileText,
+} from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { onGetGroupPublicStats } from "@/actions/groups"
 import { getYouTubeEmbedUrl, getLoomEmbedUrl } from "@/lib/utils"
@@ -22,7 +30,11 @@ const AboutGroup = ({ groupid, userid }: Props) => {
         queryFn: () => onGetGroupPublicStats(groupid),
     })
 
-    const stats = statsData?.data || { memberCount: 0, channelCount: 0, courseCount: 0 }
+    const stats = statsData?.data || {
+        memberCount: 0,
+        channelCount: 0,
+        courseCount: 0,
+    }
 
     const {
         setJsonDescription,
@@ -91,8 +103,12 @@ const AboutGroup = ({ groupid, userid }: Props) => {
                             <Hash className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-foreground">{stats.channelCount}</p>
-                            <p className="text-sm text-muted-foreground">Channels</p>
+                            <p className="text-2xl font-bold text-foreground">
+                                {stats.channelCount}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Channels
+                            </p>
                         </div>
                     </div>
                 </Card>
@@ -102,8 +118,12 @@ const AboutGroup = ({ groupid, userid }: Props) => {
                             <BookOpen className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-foreground">{stats.courseCount}</p>
-                            <p className="text-sm text-muted-foreground">Courses</p>
+                            <p className="text-2xl font-bold text-foreground">
+                                {stats.courseCount}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Courses
+                            </p>
                         </div>
                     </div>
                 </Card>
@@ -113,8 +133,12 @@ const AboutGroup = ({ groupid, userid }: Props) => {
                             <Users className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-foreground">{stats.memberCount}</p>
-                            <p className="text-sm text-muted-foreground">Members</p>
+                            <p className="text-2xl font-bold text-foreground">
+                                {stats.memberCount}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Members
+                            </p>
                         </div>
                     </div>
                 </Card>
@@ -122,27 +146,43 @@ const AboutGroup = ({ groupid, userid }: Props) => {
 
             {/* Why Join Section */}
             <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-foreground">Why Join This Group?</h3>
+                <h3 className="text-xl font-semibold text-foreground">
+                    Why Join This Group?
+                </h3>
                 <div className="grid gap-3">
                     <div className="flex items-start gap-3 p-3 rounded-lg bg-card/30 border border-border">
                         <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                         <div>
-                            <p className="font-medium text-foreground">Access Exclusive Content</p>
-                            <p className="text-sm text-muted-foreground">Get access to premium courses and learning materials</p>
+                            <p className="font-medium text-foreground">
+                                Access Exclusive Content
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Get access to premium courses and learning
+                                materials
+                            </p>
                         </div>
                     </div>
                     <div className="flex items-start gap-3 p-3 rounded-lg bg-card/30 border border-border">
                         <Star className="w-5 h-5 text-yellow-500 mt-0.5" />
                         <div>
-                            <p className="font-medium text-foreground">Community Interaction</p>
-                            <p className="text-sm text-muted-foreground">Connect with like-minded learners in channels</p>
+                            <p className="font-medium text-foreground">
+                                Community Interaction
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Connect with like-minded learners in channels
+                            </p>
                         </div>
                     </div>
                     <div className="flex items-start gap-3 p-3 rounded-lg bg-card/30 border border-border">
                         <Zap className="w-5 h-5 text-blue-500 mt-0.5" />
                         <div>
-                            <p className="font-medium text-foreground">Learn at Your Pace</p>
-                            <p className="text-sm text-muted-foreground">Flexible learning with courses you can take anytime</p>
+                            <p className="font-medium text-foreground">
+                                Learn at Your Pace
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Flexible learning with courses you can take
+                                anytime
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -194,7 +234,9 @@ const AboutGroup = ({ groupid, userid }: Props) => {
                     <Card className="p-6 bg-card/50 border-border">
                         <div className="flex items-center gap-2 mb-4">
                             <FileText className="w-5 h-5 text-primary" />
-                            <h3 className="text-xl font-semibold text-foreground">About This Group</h3>
+                            <h3 className="text-xl font-semibold text-foreground">
+                                About This Group
+                            </h3>
                         </div>
                         <div
                             className="prose prose-sm dark:prose-invert max-w-none text-foreground"
@@ -209,10 +251,13 @@ const AboutGroup = ({ groupid, userid }: Props) => {
                 <Card className="p-6 bg-card/50 border-border">
                     <div className="flex items-center gap-2 mb-4">
                         <FileText className="w-5 h-5 text-primary" />
-                        <h3 className="text-xl font-semibold text-foreground">Group Description</h3>
+                        <h3 className="text-xl font-semibold text-foreground">
+                            Group Description
+                        </h3>
                     </div>
                     <p className="text-sm text-muted-foreground mb-4">
-                        Write a detailed description about your group. This will be visible to all visitors.
+                        Write a detailed description about your group. This will
+                        be visible to all visitors.
                     </p>
                     <form
                         ref={editor}
@@ -245,7 +290,9 @@ const AboutGroup = ({ groupid, userid }: Props) => {
                                 disabled={isPending}
                                 type="submit"
                             >
-                                <Loader loading={isPending}>Save Changes</Loader>
+                                <Loader loading={isPending}>
+                                    Save Changes
+                                </Loader>
                             </Button>
                         </div>
                     </form>

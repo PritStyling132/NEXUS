@@ -380,9 +380,17 @@ export default function CourseDetailContent({
                                             <Play className="h-5 w-5 text-primary" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-lg">Course Content</CardTitle>
+                                            <CardTitle className="text-lg">
+                                                Course Content
+                                            </CardTitle>
                                             <CardDescription className="text-xs">
-                                                {course.videos?.length || 0} video{(course.videos?.length || 0) !== 1 ? "s" : ""} in this course
+                                                {course.videos?.length || 0}{" "}
+                                                video
+                                                {(course.videos?.length ||
+                                                    0) !== 1
+                                                    ? "s"
+                                                    : ""}{" "}
+                                                in this course
                                             </CardDescription>
                                         </div>
                                     </div>
@@ -448,11 +456,14 @@ export default function CourseDetailContent({
                                             </Badge>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className={`font-medium line-clamp-2 mb-1 text-sm ${
-                                                selectedVideo?.id === video.id
-                                                    ? "text-primary"
-                                                    : "text-foreground dark:text-themeTextWhite"
-                                            }`}>
+                                            <p
+                                                className={`font-medium line-clamp-2 mb-1 text-sm ${
+                                                    selectedVideo?.id ===
+                                                    video.id
+                                                        ? "text-primary"
+                                                        : "text-foreground dark:text-themeTextWhite"
+                                                }`}
+                                            >
                                                 {video.title}
                                             </p>
                                             {video.caption && (

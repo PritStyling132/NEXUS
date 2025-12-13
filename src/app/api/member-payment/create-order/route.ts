@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json(
                 { success: false, error: "Unauthorized. Please sign in." },
-                { status: 401 }
+                { status: 401 },
             )
         }
 
@@ -19,14 +19,17 @@ export async function POST(req: NextRequest) {
         if (!groupId) {
             return NextResponse.json(
                 { success: false, error: "Group ID is required" },
-                { status: 400 }
+                { status: 400 },
             )
         }
 
         if (!phone || phone.length !== 10) {
             return NextResponse.json(
-                { success: false, error: "Valid 10-digit phone number is required" },
-                { status: 400 }
+                {
+                    success: false,
+                    error: "Valid 10-digit phone number is required",
+                },
+                { status: 400 },
             )
         }
 
@@ -43,20 +46,26 @@ export async function POST(req: NextRequest) {
         if (!group) {
             return NextResponse.json(
                 { success: false, error: "Group not found" },
-                { status: 404 }
+                { status: 404 },
             )
         }
 
         // Get the DB user
         const dbUser = await prisma.user.findUnique({
             where: { clerkId: user.id },
-            select: { id: true, email: true, firstname: true, lastname: true, phone: true },
+            select: {
+                id: true,
+                email: true,
+                firstname: true,
+                lastname: true,
+                phone: true,
+            },
         })
 
         if (!dbUser) {
             return NextResponse.json(
                 { success: false, error: "User not found in database" },
-                { status: 404 }
+                { status: 404 },
             )
         }
 
@@ -71,7 +80,7 @@ export async function POST(req: NextRequest) {
         if (existingMember) {
             return NextResponse.json(
                 { success: false, error: "Already a member of this group" },
-                { status: 400 }
+                { status: 400 },
             )
         }
 
@@ -79,7 +88,7 @@ export async function POST(req: NextRequest) {
         if (group.userId === dbUser.id) {
             return NextResponse.json(
                 { success: false, error: "You are the owner of this group" },
-                { status: 400 }
+                { status: 400 },
             )
         }
 
@@ -93,8 +102,11 @@ export async function POST(req: NextRequest) {
 
         if (!activePlan) {
             return NextResponse.json(
-                { success: false, error: "No active pricing plan. Group is free to join." },
-                { status: 400 }
+                {
+                    success: false,
+                    error: "No active pricing plan. Group is free to join.",
+                },
+                { status: 400 },
             )
         }
 
@@ -110,12 +122,14 @@ export async function POST(req: NextRequest) {
         if (existingPayment) {
             return NextResponse.json(
                 { success: false, error: "Already paid for this group" },
-                { status: 400 }
+                { status: 400 },
             )
         }
 
-        const customerName = `${dbUser.firstname} ${dbUser.lastname}`.trim() || "Customer"
-        const customerEmail = dbUser.email || user.emailAddresses[0]?.emailAddress || ""
+        const customerName =
+            `${dbUser.firstname} ${dbUser.lastname}`.trim() || "Customer"
+        const customerEmail =
+            dbUser.email || user.emailAddresses[0]?.emailAddress || ""
 
         // Create Razorpay order (simple payment - no customer_id needed)
         // Note: All notes values must be strings for Razorpay
@@ -172,8 +186,11 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Error creating member payment order:", error)
         return NextResponse.json(
-            { success: false, error: error.message || "Failed to create order" },
-            { status: 500 }
+            {
+                success: false,
+                error: error.message || "Failed to create order",
+            },
+            { status: 500 },
         )
     }
 }

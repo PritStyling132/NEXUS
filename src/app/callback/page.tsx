@@ -14,9 +14,10 @@ export default async function CallbackPage() {
     console.log("📧 Email addresses:", user.emailAddresses)
 
     // Get primary email from Clerk user
-    const primaryEmail = user.emailAddresses?.find(
-        (email) => email.id === user.primaryEmailAddressId
-    )?.emailAddress || user.emailAddresses?.[0]?.emailAddress
+    const primaryEmail =
+        user.emailAddresses?.find(
+            (email) => email.id === user.primaryEmailAddressId,
+        )?.emailAddress || user.emailAddresses?.[0]?.emailAddress
 
     console.log("📧 Primary email:", primaryEmail)
 

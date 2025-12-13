@@ -29,7 +29,9 @@ export const useOwnerPricingPlans = () => {
         onSuccess: (result) => {
             if (result.status === 200) {
                 toast.success("Pricing plan created successfully")
-                queryClient.invalidateQueries({ queryKey: ["owner-pricing-plans"] })
+                queryClient.invalidateQueries({
+                    queryKey: ["owner-pricing-plans"],
+                })
             } else {
                 toast.error(result.message)
             }
@@ -46,7 +48,9 @@ export const useOwnerPricingPlans = () => {
         onSuccess: (result) => {
             if (result.status === 200) {
                 toast.success("Plan updated successfully")
-                queryClient.invalidateQueries({ queryKey: ["owner-pricing-plans"] })
+                queryClient.invalidateQueries({
+                    queryKey: ["owner-pricing-plans"],
+                })
             } else {
                 toast.error(result.message)
             }
@@ -62,7 +66,9 @@ export const useOwnerPricingPlans = () => {
         onSuccess: (result) => {
             if (result.status === 200) {
                 toast.success("Plan deleted successfully")
-                queryClient.invalidateQueries({ queryKey: ["owner-pricing-plans"] })
+                queryClient.invalidateQueries({
+                    queryKey: ["owner-pricing-plans"],
+                })
             } else {
                 toast.error(result.message)
             }
@@ -78,7 +84,9 @@ export const useOwnerPricingPlans = () => {
         onSuccess: (result) => {
             if (result.status === 200) {
                 toast.success(result.message)
-                queryClient.invalidateQueries({ queryKey: ["owner-pricing-plans"] })
+                queryClient.invalidateQueries({
+                    queryKey: ["owner-pricing-plans"],
+                })
             } else {
                 toast.error(result.message)
             }
@@ -175,7 +183,11 @@ export const useMemberPayment = (groupId: string) => {
             const orderRes = await fetch("/api/member-payment/create-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ groupId, phone, customerId: customerData.customerId }),
+                body: JSON.stringify({
+                    groupId,
+                    phone,
+                    customerId: customerData.customerId,
+                }),
             })
 
             const orderData = await orderRes.json()
@@ -197,27 +209,42 @@ export const useMemberPayment = (groupId: string) => {
                     handler: async (response: any) => {
                         try {
                             // Verify payment
-                            const verifyRes = await fetch("/api/member-payment/verify", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    razorpay_payment_id: response.razorpay_payment_id,
-                                    razorpay_order_id: response.razorpay_order_id,
-                                    razorpay_signature: response.razorpay_signature,
-                                    groupId,
-                                    planId: orderData.planId,
-                                }),
-                            })
+                            const verifyRes = await fetch(
+                                "/api/member-payment/verify",
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        razorpay_payment_id:
+                                            response.razorpay_payment_id,
+                                        razorpay_order_id:
+                                            response.razorpay_order_id,
+                                        razorpay_signature:
+                                            response.razorpay_signature,
+                                        groupId,
+                                        planId: orderData.planId,
+                                    }),
+                                },
+                            )
 
                             const verifyData = await verifyRes.json()
 
                             if (verifyData.success) {
-                                toast.success("Payment successful! Welcome to the group.")
-                                queryClient.invalidateQueries({ queryKey: ["member-payment-check", groupId] })
+                                toast.success(
+                                    "Payment successful! Welcome to the group.",
+                                )
+                                queryClient.invalidateQueries({
+                                    queryKey: ["member-payment-check", groupId],
+                                })
                                 router.push("/dashboard")
                                 resolve(true)
                             } else {
-                                toast.error(verifyData.error || "Payment verification failed")
+                                toast.error(
+                                    verifyData.error ||
+                                        "Payment verification failed",
+                                )
                                 resolve(false)
                             }
                         } catch (error) {

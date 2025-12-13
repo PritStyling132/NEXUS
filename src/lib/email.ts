@@ -58,7 +58,10 @@ export function getApprovalEmailTemplate(
 </div></body></html>`
 }
 
-export function getRejectionEmailTemplate(firstname: string, reason: string): string {
+export function getRejectionEmailTemplate(
+    firstname: string,
+    reason: string,
+): string {
     return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Application Update</title></head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
