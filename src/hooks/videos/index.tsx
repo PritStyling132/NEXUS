@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { z } from "zod"
 import { toast } from "sonner"
-import { uploadFileAndGetPath } from "@/lib/uploadcare"
+import { uploadFileAndGetPath } from "@/lib/cloudinary"
 import {
     onCreateVideo,
     onGetGroupVideos,

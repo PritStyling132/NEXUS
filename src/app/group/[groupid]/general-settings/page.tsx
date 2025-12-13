@@ -16,7 +16,7 @@ const GroupSettingsPage = async ({ params }: Props) => {
                         <Settings className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
                     </div>
                     <h3 className="text-2xl sm:text-3xl font-bold text-foreground dark:text-themeTextWhite">
-                        Group Settings
+                        General Settings
                     </h3>
                 </div>
                 <p className="text-sm sm:text-base text-muted-foreground dark:text-themeTextGray leading-relaxed">

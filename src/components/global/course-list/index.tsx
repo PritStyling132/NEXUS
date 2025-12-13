@@ -26,7 +26,6 @@ import {
     Video,
     Link as LinkIcon,
     Trash2,
-    Edit,
     Eye,
 } from "lucide-react"
 import Link from "next/link"
@@ -88,7 +87,7 @@ export default function CourseList({ groupId, isOwner }: CourseListProps) {
                                 <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-primary/5 overflow-hidden">
                                     {course.thumbnail ? (
                                         <img
-                                            src={`https://ucarecdn.com/${course.thumbnail}/`}
+                                            src={course.thumbnail}
                                             alt={course.title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
@@ -169,30 +168,16 @@ export default function CourseList({ groupId, isOwner }: CourseListProps) {
                                     </Button>
 
                                     {isOwner && (
-                                        <>
-                                            <Button
-                                                asChild
-                                                variant="outline"
-                                                size="sm"
-                                            >
-                                                <Link
-                                                    href={`/group/${groupId}/courses/${course.id}/edit`}
-                                                >
-                                                    <Edit className="h-4 w-4" />
-                                                </Link>
-                                            </Button>
-
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() =>
-                                                    setCourseToDelete(course.id)
-                                                }
-                                                disabled={isDeleting}
-                                            >
-                                                <Trash2 className="h-4 w-4 text-destructive" />
-                                            </Button>
-                                        </>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() =>
+                                                setCourseToDelete(course.id)
+                                            }
+                                            disabled={isDeleting}
+                                        >
+                                            <Trash2 className="h-4 w-4 text-destructive" />
+                                        </Button>
                                     )}
                                 </div>
                             </CardContent>

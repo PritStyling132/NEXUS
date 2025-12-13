@@ -43,7 +43,6 @@ import {
     Link2,
     FileText,
     ArrowLeft,
-    Edit,
     Eye,
     EyeOff,
 } from "lucide-react"
@@ -205,8 +204,8 @@ export default function CourseDetailContent({
                                 <CardContent className="p-0">
                                     <video
                                         key={selectedVideo.videoUrl}
-                                        src={`https://ucarecdn.com/${selectedVideo.videoUrl}/`}
-                                        poster={`https://ucarecdn.com/${selectedVideo.thumbnailUrl}/`}
+                                        src={selectedVideo.videoUrl}
+                                        poster={selectedVideo.thumbnailUrl}
                                         controls
                                         className="w-full aspect-video rounded-t-lg"
                                     />
@@ -373,19 +372,29 @@ export default function CourseDetailContent({
 
                     {/* Video List Sidebar */}
                     <div className="space-y-4">
-                        <Card>
-                            <CardHeader>
-                                <div className="flex items-center justify-between">
-                                    <CardTitle>Course Content</CardTitle>
+                        <Card className="border-border dark:border-themeGray overflow-hidden">
+                            <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5 border-b border-border dark:border-themeGray">
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
+                                            <Play className="h-5 w-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <CardTitle className="text-lg">Course Content</CardTitle>
+                                            <CardDescription className="text-xs">
+                                                {course.videos?.length || 0} video{(course.videos?.length || 0) !== 1 ? "s" : ""} in this course
+                                            </CardDescription>
+                                        </div>
+                                    </div>
                                     {isOwner && (
                                         <Dialog
                                             open={showVideoDialog}
                                             onOpenChange={setShowVideoDialog}
                                         >
                                             <DialogTrigger asChild>
-                                                <Button size="sm">
+                                                <Button className="w-full bg-primary hover:bg-primary/90 shadow-md">
                                                     <Plus className="mr-2 h-4 w-4" />
-                                                    Add Video
+                                                    Add New Video
                                                 </Button>
                                             </DialogTrigger>
                                             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -409,36 +418,45 @@ export default function CourseDetailContent({
                                     )}
                                 </div>
                             </CardHeader>
-                            <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
+                            <CardContent className="p-0 max-h-[600px] overflow-y-auto">
                                 {course.videos?.map((video, index) => (
                                     <div
                                         key={video.id}
                                         onClick={() => setSelectedVideo(video)}
-                                        className={`group flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
+                                        className={`group flex items-start gap-3 p-4 border-b border-border dark:border-themeGray last:border-b-0 cursor-pointer transition-all ${
                                             selectedVideo?.id === video.id
-                                                ? "border-primary bg-primary/5"
-                                                : "hover:bg-muted/50"
+                                                ? "bg-primary/5 dark:bg-primary/10"
+                                                : "hover:bg-muted/50 dark:hover:bg-themeGray/30"
                                         }`}
                                     >
-                                        <div className="relative flex-shrink-0 w-32 aspect-video rounded overflow-hidden bg-muted">
+                                        <div className="relative flex-shrink-0 w-28 aspect-video rounded-lg overflow-hidden bg-muted shadow-sm">
                                             <img
-                                                src={`https://ucarecdn.com/${video.thumbnailUrl}/`}
+                                                src={video.thumbnailUrl}
                                                 alt={video.title}
                                                 className="w-full h-full object-cover"
                                             />
                                             <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
-                                                <Play className="h-8 w-8 text-white fill-white" />
+                                                <div className="p-1.5 rounded-full bg-white/90 shadow-lg">
+                                                    <Play className="h-4 w-4 text-primary fill-primary" />
+                                                </div>
                                             </div>
-                                            <Badge className="absolute top-1 left-1 text-xs">
+                                            <Badge
+                                                variant="secondary"
+                                                className="absolute top-1 left-1 text-[10px] px-1.5 py-0 h-5 bg-black/70 text-white border-0"
+                                            >
                                                 {index + 1}
                                             </Badge>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-medium line-clamp-2 mb-1">
+                                            <p className={`font-medium line-clamp-2 mb-1 text-sm ${
+                                                selectedVideo?.id === video.id
+                                                    ? "text-primary"
+                                                    : "text-foreground dark:text-themeTextWhite"
+                                            }`}>
                                                 {video.title}
                                             </p>
                                             {video.caption && (
-                                                <p className="text-xs text-muted-foreground line-clamp-2">
+                                                <p className="text-xs text-muted-foreground dark:text-themeTextGray line-clamp-2">
                                                     {video.caption}
                                                 </p>
                                             )}
@@ -446,7 +464,7 @@ export default function CourseDetailContent({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="mt-2 h-7 text-xs text-destructive hover:text-destructive"
+                                                    className="mt-2 h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         setVideoToDelete(
@@ -463,9 +481,19 @@ export default function CourseDetailContent({
                                     </div>
                                 ))}
                                 {!hasVideos && (
-                                    <p className="text-sm text-muted-foreground text-center py-8">
-                                        No videos added yet
-                                    </p>
+                                    <div className="flex flex-col items-center justify-center py-12 px-4">
+                                        <div className="p-4 rounded-full bg-muted/50 dark:bg-themeGray/30 mb-4">
+                                            <Play className="h-8 w-8 text-muted-foreground" />
+                                        </div>
+                                        <p className="text-sm font-medium text-muted-foreground dark:text-themeTextGray text-center mb-1">
+                                            No videos yet
+                                        </p>
+                                        <p className="text-xs text-muted-foreground/70 dark:text-themeTextGray/70 text-center">
+                                            {isOwner
+                                                ? "Click 'Add New Video' above to get started"
+                                                : "Videos will appear here once added"}
+                                        </p>
+                                    </div>
                                 )}
                             </CardContent>
                         </Card>

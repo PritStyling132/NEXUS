@@ -69,22 +69,15 @@ export function getDefaultThumbnail(category?: string | null): string {
 
 /**
  * Get icon URL with fallback to default based on category
+ * Now stores full Cloudinary URLs directly in database
  */
 export function getGroupIconUrl(
     icon?: string | null,
     category?: string | null,
 ): string {
+    // If icon exists, return it directly (it's already a full URL)
     if (icon) {
-        // If icon is already a full URL, return it
-        if (icon.startsWith("http://") || icon.startsWith("https://")) {
-            return icon
-        }
-        // Otherwise, assume it's an uploadcare UUID
-        // Use your specific CDN subdomain from your UploadCare project
-        const cdnSubdomain =
-            process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN || "339qsoofdz"
-        // UploadCare automatically includes the sanitized filename in the URL
-        return `https://${cdnSubdomain}.ucarecd.net/${icon}/`
+        return icon
     }
 
     return getDefaultIcon(category)
@@ -92,25 +85,15 @@ export function getGroupIconUrl(
 
 /**
  * Get thumbnail URL with fallback to default based on category
+ * Now stores full Cloudinary URLs directly in database
  */
 export function getGroupThumbnailUrl(
     thumbnail?: string | null,
     category?: string | null,
 ): string {
+    // If thumbnail exists, return it directly (it's already a full URL)
     if (thumbnail) {
-        // If thumbnail is already a full URL, return it
-        if (
-            thumbnail.startsWith("http://") ||
-            thumbnail.startsWith("https://")
-        ) {
-            return thumbnail
-        }
-        // Otherwise, assume it's an uploadcare UUID
-        // Use your specific CDN subdomain from your UploadCare project
-        const cdnSubdomain =
-            process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN || "339qsoofdz"
-        // UploadCare automatically includes the sanitized filename in the URL
-        return `https://${cdnSubdomain}.ucarecd.net/${thumbnail}/`
+        return thumbnail
     }
 
     return getDefaultThumbnail(category)

@@ -2,7 +2,34 @@
 
 import { prisma } from "@/lib/prisma"
 import { currentUser } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 import { revalidatePath } from "next/cache"
+
+// Helper function to get authenticated user (supports both Clerk and owner session)
+async function getAuthenticatedUser() {
+    // First try Clerk authentication
+    const clerkUser = await currentUser()
+    if (clerkUser) {
+        const user = await prisma.user.findUnique({
+            where: { clerkId: clerkUser.id },
+            select: { id: true },
+        })
+        return user
+    }
+
+    // If no Clerk user, check for owner session
+    const cookieStore = await cookies()
+    const ownerSessionId = cookieStore.get("owner_session")?.value
+    if (ownerSessionId) {
+        const user = await prisma.user.findUnique({
+            where: { id: ownerSessionId },
+            select: { id: true },
+        })
+        return user
+    }
+
+    return null
+}
 
 // ============================================================================
 // COURSE CRUD OPERATIONS
@@ -15,19 +42,9 @@ export const onCreateCourse = async (
     thumbnail?: string,
 ) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify group ownership
@@ -71,19 +88,9 @@ export const onUpdateCourse = async (
     },
 ) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify ownership through course -> group
@@ -119,19 +126,9 @@ export const onUpdateCourse = async (
 
 export const onDeleteCourse = async (courseId: string) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify ownership
@@ -161,7 +158,7 @@ export const onDeleteCourse = async (courseId: string) => {
 
 export const onGetCourse = async (courseId: string) => {
     try {
-        const clerkUser = await currentUser()
+        const authUser = await getAuthenticatedUser()
 
         const course = await prisma.course.findUnique({
             where: { id: courseId },
@@ -198,14 +195,9 @@ export const onGetCourse = async (courseId: string) => {
         }
 
         // Filter videos based on ownership - owners see all, others see only published
-        if (clerkUser) {
-            const user = await prisma.user.findUnique({
-                where: { clerkId: clerkUser.id },
-                select: { id: true },
-            })
-
+        if (authUser) {
             // If not the owner, filter to published videos only
-            if (!user || course.group.userId !== user.id) {
+            if (course.group.userId !== authUser.id) {
                 course.videos = course.videos.filter((v) => v.published)
             }
         } else {
@@ -258,19 +250,9 @@ export const onCreateCourseVideo = async (
     caption?: string,
 ) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify ownership
@@ -332,19 +314,9 @@ export const onUpdateCourseVideo = async (
     },
 ) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify ownership
@@ -378,19 +350,9 @@ export const onUpdateCourseVideo = async (
 
 export const onDeleteCourseVideo = async (videoId: string) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify ownership
@@ -433,19 +395,9 @@ export const onCreateCourseResource = async (
     description?: string,
 ) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify ownership
@@ -493,19 +445,9 @@ export const onCreateCourseResource = async (
 
 export const onDeleteCourseResource = async (resourceId: string) => {
     try {
-        const clerkUser = await currentUser()
-        if (!clerkUser) {
-            return { status: 401, message: "Unauthorized" }
-        }
-
-        // Get Prisma user from Clerk ID
-        const user = await prisma.user.findUnique({
-            where: { clerkId: clerkUser.id },
-            select: { id: true },
-        })
-
+        const user = await getAuthenticatedUser()
         if (!user) {
-            return { status: 401, message: "User not found" }
+            return { status: 401, message: "Unauthorized" }
         }
 
         // Verify ownership

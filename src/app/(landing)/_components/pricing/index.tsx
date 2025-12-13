@@ -30,7 +30,7 @@ export const PricingSection = (props: Props) => {
             </BackdropGradient>
             <Card className="bg-themeBlack border border-themeGray shadow-card hover:shadow-glow transition mt-5 p-5">
                 <div className="=flex flex-col gap-3">
-                    <CardTitle>99/m</CardTitle>
+                    <CardTitle>₹4,999/m</CardTitle>
                     <CardDescription className="text-[#B4B0AE] mt-2 mb-2">
                         Great if you're just getting started
                     </CardDescription>

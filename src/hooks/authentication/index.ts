@@ -30,6 +30,19 @@ export const useAuthSignIn = () => {
         mode: "onBlur",
     })
 
+    // Helper function to clear any existing owner session before learner sign-in
+    const clearOwnerSession = async () => {
+        try {
+            // Clear via API (server-side cookie deletion)
+            await fetch("/api/owner/logout", { method: "POST" })
+            // Also clear client-side cookies as backup
+            document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        } catch (error) {
+            console.error("Failed to clear owner session:", error)
+        }
+    }
+
     const onClerkAuth = async (email: string, password: string) => {
         if (!isLoaded) {
             toast.error("Oops! something went wrong")
@@ -37,6 +50,9 @@ export const useAuthSignIn = () => {
         }
 
         try {
+            // Clear any existing owner session before learner sign-in
+            await clearOwnerSession()
+
             const authenticated = await signIn.create({
                 identifier: email,
                 password,
@@ -53,7 +69,7 @@ export const useAuthSignIn = () => {
 
                 // Small delay to ensure session is set
                 setTimeout(() => {
-                    router.push("/group/create")
+                    router.push("/explore")
                 }, 100)
             }
         } catch (error: any) {
@@ -119,6 +135,17 @@ export const useAuthSignUp = () => {
         mode: "onBlur",
     })
 
+    // Helper function to clear any existing owner session
+    const clearOwnerSession = async () => {
+        try {
+            await fetch("/api/owner/logout", { method: "POST" })
+            document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        } catch (error) {
+            console.error("Failed to clear owner session:", error)
+        }
+    }
+
     // Step 1️⃣: Create account and send email verification
     const onGenerateCode = async () => {
         if (!isLoaded) {
@@ -138,6 +165,9 @@ export const useAuthSignUp = () => {
 
         try {
             setCreating(true)
+
+            // Clear any existing owner session before learner sign-up
+            await clearOwnerSession()
 
             await signUp.create({
                 emailAddress: email,
@@ -179,7 +209,11 @@ export const useAuthSignUp = () => {
     }
 
     // Step 2️⃣: Verify code and create user in database
-    const onInitiateUserRegistration = handleSubmit(async (values) => {
+    const onInitiateUserRegistration = async (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault()
+        }
+
         if (!isLoaded) {
             toast.error("Clerk not initialized properly")
             return
@@ -189,6 +223,8 @@ export const useAuthSignUp = () => {
             toast.error("Please enter a valid 6-digit code")
             return
         }
+
+        const values = getValues()
 
         try {
             setCreating(true)
@@ -231,6 +267,7 @@ export const useAuthSignUp = () => {
             const user = await onSignUpUser({
                 firstname: values.firstname,
                 lastname: values.lastname,
+                email: values.email,
                 clerkId: signUp.createdUserId,
                 image: "",
             })
@@ -249,7 +286,7 @@ export const useAuthSignUp = () => {
 
                 // Redirect after successful creation
                 setTimeout(() => {
-                    router.push("/group/create")
+                    router.push("/explore")
                 }, 100)
             } else {
                 toast.error(
@@ -280,7 +317,7 @@ export const useAuthSignUp = () => {
         } finally {
             setCreating(false)
         }
-    })
+    }
 
     const onResendCode = async () => {
         if (!isLoaded || !signUp) {
@@ -318,13 +355,26 @@ export const useGoogleAuth = () => {
     const { signIn, isLoaded: LoadedSignIn } = useSignIn()
     const { signUp, isLoaded: LoadedSignUp } = useSignUp()
 
-    const signInWith = (strategy: OAuthStrategy) => {
+    // Helper function to clear any existing owner session
+    const clearOwnerSession = async () => {
+        try {
+            await fetch("/api/owner/logout", { method: "POST" })
+            document.cookie = "owner_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+            document.cookie = "owner_pending_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        } catch (error) {
+            console.error("Failed to clear owner session:", error)
+        }
+    }
+
+    const signInWith = async (strategy: OAuthStrategy) => {
         if (!LoadedSignIn) return
         try {
+            // Clear owner session before Google sign-in
+            await clearOwnerSession()
             return signIn.authenticateWithRedirect({
                 strategy,
                 redirectUrl: "/callback",
-                redirectUrlComplete: "/group/create",
+                redirectUrlComplete: "/callback",
             })
         } catch (error) {
             console.error(error)
@@ -332,13 +382,15 @@ export const useGoogleAuth = () => {
         }
     }
 
-    const signUpWith = (strategy: OAuthStrategy) => {
+    const signUpWith = async (strategy: OAuthStrategy) => {
         if (!LoadedSignUp) return
         try {
+            // Clear owner session before Google sign-up
+            await clearOwnerSession()
             return signUp.authenticateWithRedirect({
                 strategy,
                 redirectUrl: "/callback",
-                redirectUrlComplete: "/group/create",
+                redirectUrlComplete: "/callback",
             })
         } catch (error) {
             console.error(error)

@@ -30,11 +30,7 @@ const SignUpForm = () => {
     } = useAuthSignUp()
 
     return (
-        <form
-            onSubmit={onInitiateUserRegistration}
-            className="flex flex-col gap-4 sm:gap-5 mt-6 sm:mt-8 md:mt-10 w-full"
-        >
-            <div id="clerk-captcha"></div>
+        <div className="flex flex-col gap-4 sm:gap-5 mt-6 sm:mt-8 md:mt-10 w-full">
             {verifying ? (
                 <div className="flex flex-col items-center mb-5 gap-6 py-4">
                     <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-4">
@@ -60,39 +56,38 @@ const SignUpForm = () => {
                     >
                         Didn't receive code? Resend
                     </Button>
+                    <Button
+                        type="button"
+                        size="lg"
+                        className="rounded-2xl w-full mt-2 bg-primary hover:bg-primary/90 transition-all shadow-lg"
+                        onClick={() => onInitiateUserRegistration()}
+                        disabled={creating || code.length !== 6}
+                    >
+                        <Loader loading={creating}>Verify & Sign Up</Loader>
+                    </Button>
                 </div>
             ) : (
-                NEXUS_CONSTANTS.signUpForm.map((field) => (
-                    <FormGenerator
-                        {...field}
-                        key={field.id}
-                        register={register}
-                        errors={errors}
-                    />
-                ))
+                <>
+                    {NEXUS_CONSTANTS.signUpForm.map((field) => (
+                        <FormGenerator
+                            {...field}
+                            key={field.id}
+                            register={register}
+                            errors={errors}
+                        />
+                    ))}
+                    <Button
+                        type="button"
+                        size="lg"
+                        className="rounded-2xl w-full mt-2 bg-primary hover:bg-primary/90 transition-all shadow-lg"
+                        onClick={onGenerateCode}
+                        disabled={creating}
+                    >
+                        <Loader loading={creating}>Generate Code</Loader>
+                    </Button>
+                </>
             )}
-
-            {verifying ? (
-                <Button
-                    type="submit"
-                    size="lg"
-                    className="rounded-2xl w-full mt-2 bg-primary hover:bg-primary/90 transition-all shadow-lg"
-                    disabled={creating || code.length !== 6}
-                >
-                    <Loader loading={creating}>Verify & Sign Up</Loader>
-                </Button>
-            ) : (
-                <Button
-                    type="button"
-                    size="lg"
-                    className="rounded-2xl w-full mt-2 bg-primary hover:bg-primary/90 transition-all shadow-lg"
-                    onClick={onGenerateCode}
-                    disabled={creating}
-                >
-                    <Loader loading={creating}>Generate Code</Loader>
-                </Button>
-            )}
-        </form>
+        </div>
     )
 }
 

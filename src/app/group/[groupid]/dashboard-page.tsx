@@ -5,6 +5,7 @@ import {
     MessageSquare,
     TrendingUp,
     Crown,
+    Settings,
 } from "lucide-react"
 import {
     Card,
@@ -214,14 +215,14 @@ export const GroupDashboard = ({
                         </Card>
                     </Link>
 
-                    <Link href={`/group/${groupid}/settings`}>
+                    <Link href={`/group/${groupid}/general-settings`}>
                         <Card className="border-border dark:border-themeGray bg-card/50 dark:bg-themeGray/20 hover:bg-accent/50 dark:hover:bg-themeGray/40 transition-colors cursor-pointer h-full">
                             <CardHeader>
                                 <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20 w-fit">
-                                    <TrendingUp className="w-6 h-6 text-primary" />
+                                    <Settings className="w-6 h-6 text-primary" />
                                 </div>
                                 <CardTitle className="text-foreground dark:text-themeTextWhite">
-                                    Group Settings
+                                    General Settings
                                 </CardTitle>
                                 <CardDescription className="text-muted-foreground dark:text-themeTextGray">
                                     Manage your group

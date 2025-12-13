@@ -1,33 +1,3 @@
-// import { useGoogleAuth } from "@/hooks/authentication"
-// import { Loader } from "lucide-react"
-// import { Button } from "react-day-picker"
-
-// type GoogleAuthButtonProps = {
-//   method: "signup" | "signin"
-// }
-
-// export const GoogleAuthButton = ({ method }: GoogleAuthButtonProps) => {
-//   const { signUpWith, signInWith } = useGoogleAuth()
-//   return (
-//     <Button
-//       {...(method === "signin"
-//         ? {
-//             onClick: () => signInWith("oauth_google"),
-//           }
-//         : {
-//             onClick: () => signUpWith("oauth_google"),
-//           })}
-//       className="w-full rounded-2xl flex gap-3 bg-themeBlack border-themeGray"
-
-//     >
-//       <Loader loading= {false}>
-//         <Google/>
-//         Google
-//       </Loader>
-//     </Button>
-//   )
-// }
-
 "use client"
 
 import Loader from "@/components/global/loader"
@@ -50,12 +20,13 @@ export const GoogleAuthButton = ({ method }: GoogleAuthButtonProps) => {
     return (
         <Button
             onClick={handleClick}
-            className="w-full rounded-2xl flex items-center justify-center gap-3 bg-themeBlack border border-themeGray text-white"
+            variant="outline"
+            className="w-full rounded-2xl flex items-center justify-center gap-3 bg-card dark:bg-themeBlack border border-border dark:border-themeGray text-foreground dark:text-white hover:bg-muted dark:hover:bg-themeGray/50 transition-colors"
         >
             <Loader loading={false}>
                 <div className="flex items-center">
                     <FcGoogle className="w-5 h-5 mr-3" />
-                    Google
+                    Continue with Google
                 </div>
             </Loader>
         </Button>

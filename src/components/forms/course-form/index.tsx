@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Image as ImageIcon, Upload } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Progress } from "@/components/ui/progress"
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 type CourseFormProps = {
     groupId: string
@@ -20,15 +20,24 @@ export default function CourseForm({ groupId, onSuccess }: CourseFormProps) {
     const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(
         null,
     )
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
-    const { register, errors, onSubmit, isPending, uploadProgress, watch } =
+    const { register, errors, onSubmit, isPending, uploadProgress, setValue } =
         useCreateCourse(groupId, onSuccess)
 
-    // Watch thumbnail file for preview
-    const thumbnailFile = watch("thumbnail")
-    if (thumbnailFile?.[0] && !thumbnailPreview) {
-        const url = URL.createObjectURL(thumbnailFile[0])
-        setThumbnailPreview(url)
+    // Handle thumbnail file selection
+    const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files
+        if (files && files[0]) {
+            // Update form value
+            setValue("thumbnail", files, { shouldValidate: true })
+            // Create preview URL
+            const url = URL.createObjectURL(files[0])
+            setThumbnailPreview(url)
+        } else {
+            setValue("thumbnail", undefined)
+            setThumbnailPreview(null)
+        }
     }
 
     return (
@@ -125,15 +134,9 @@ export default function CourseForm({ groupId, onSuccess }: CourseFormProps) {
                             type="file"
                             accept="image/png,image/jpg,image/jpeg,image/webp"
                             className="hidden"
-                            {...register("thumbnail")}
+                            ref={fileInputRef}
+                            onChange={handleThumbnailChange}
                             disabled={isPending}
-                            onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) {
-                                    const url = URL.createObjectURL(file)
-                                    setThumbnailPreview(url)
-                                }
-                            }}
                         />
                     </CardContent>
                 </Card>

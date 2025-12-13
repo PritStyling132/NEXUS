@@ -1,11 +1,16 @@
 import { razorpay } from "@/lib/razorpay"
 import { currentUser } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
     try {
+        // Check for Clerk user or owner session
         const user = await currentUser()
-        if (!user) {
+        const cookieStore = await cookies()
+        const ownerSessionId = cookieStore.get("owner_session")?.value
+
+        if (!user && !ownerSessionId) {
             return NextResponse.json(
                 { success: false, error: "Unauthorized" },
                 { status: 401 },
@@ -21,7 +26,9 @@ export async function POST(req: NextRequest) {
             customer_id: customerId,
             notes: {
                 purpose: "card_validation",
-                clerkId: user.id,
+                ...(ownerSessionId
+                    ? { ownerId: ownerSessionId }
+                    : { clerkId: user!.id }),
             },
         })
 

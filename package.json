@@ -3,15 +3,21 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "node scripts/seed.js && next dev",
         "build": "prisma generate && next build",
         "start": "next start",
         "lint": "next lint",
         "format": "prettier --write .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "seed": "node scripts/seed.js",
+        "postinstall": "prisma generate"
+    },
+    "prisma": {
+        "seed": "npx tsx prisma/seed-admin.ts"
     },
     "dependencies": {
         "@clerk/nextjs": "^6.35.1",
+        "@clerk/types": "^4.101.6",
         "@hookform/error-message": "^2.0.1",
         "@hookform/resolvers": "^3.9.0",
         "@prisma/client": "^6.19.0",
@@ -44,16 +50,19 @@
         "@radix-ui/react-tooltip": "^1.1.2",
         "@reduxjs/toolkit": "^2.2.7",
         "@tanstack/react-query": "^5.51.24",
-        "@uploadcare/react-uploader": "^1.11.0",
+        "@tiptap/core": "^2.27.1",
+        "bcryptjs": "^3.0.3",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "cmdk": "1.0.0",
         "date-fns": "^3.6.0",
         "embla-carousel-react": "^8.2.0",
+        "html-react-parser": "^5.2.10",
         "input-otp": "^1.2.4",
         "lucide-react": "^0.428.0",
         "next": "^15.0.0-rc.0",
         "next-themes": "^0.3.0",
+        "nodemailer": "^7.0.11",
         "novel": "^1.0.2",
         "pnpm": "^10.22.0",
         "razorpay": "^2.9.6",
@@ -76,7 +85,9 @@
     "devDependencies": {
         "@commitlint/cli": "^19.4.0",
         "@commitlint/config-conventional": "^19.2.2",
+        "@types/bcryptjs": "^3.0.0",
         "@types/node": "^20.16.1",
+        "@types/nodemailer": "^7.0.4",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18",
         "@types/uuid": "^11.0.0",
@@ -87,6 +98,7 @@
         "prettier": "^3.3.3",
         "prisma": "^6.19.0",
         "tailwindcss": "^3.4.1",
+        "tsx": "^4.21.0",
         "typescript": "^5.4.5"
     },
     "engines": {

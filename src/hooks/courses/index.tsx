@@ -17,7 +17,7 @@ import {
     CourseResourceSchema,
     type CourseResourceFormData,
 } from "@/components/forms/course-resource-form/schema"
-import { uploadFile } from "@/lib/uploadcare"
+import { uploadFile } from "@/lib/cloudinary"
 import {
     onCreateCourse,
     onUpdateCourse,
@@ -49,6 +49,7 @@ export const useCreateCourse = (
         formState: { errors },
         reset,
         watch,
+        setValue,
     } = useForm<CourseFormData>({
         resolver: zodResolver(CourseSchema),
     })
@@ -104,6 +105,7 @@ export const useCreateCourse = (
         isPending,
         uploadProgress,
         watch,
+        setValue,
     }
 }
 

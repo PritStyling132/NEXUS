@@ -2,12 +2,12 @@ import {
     Compass,
     CreditCard,
     Home,
-    icons,
     Target,
     Zap,
     Globe,
     Layers,
     Settings,
+    BookOpen,
 } from "lucide-react"
 
 export type MenuProps = {
@@ -25,57 +25,60 @@ export const LANDING_PAGE_MENU: MenuProps[] = [
         label: "Home",
         icon: <Home />,
         path: "/",
-        section: true,
     },
     {
         id: 1,
-        label: "Pricing",
-        icon: <CreditCard />,
-        path: "#pricing",
-        section: true,
-    },
-    {
-        id: 2,
         label: "Explore",
         icon: <Compass />,
         path: "/explore",
+    },
+    {
+        id: 2,
+        label: "Pricing",
+        icon: <CreditCard />,
+        path: "/pricing",
     },
     {
         id: 3,
         label: "Marketing",
         icon: <Target />,
         path: "/marketing",
-        section: true,
     },
 ]
 
 export const SIDEBAR_SETTINGS_MENU: MenuProps[] = [
     {
         id: 0,
-        label: "General",
+        label: "General Settings",
         icon: <Settings />,
-        path: "settings",
+        path: "general-settings",
     },
     {
         id: 1,
+        label: "Courses",
+        icon: <BookOpen />,
+        path: "courses",
+    },
+    {
+        id: 2,
         label: "Subscriptions",
         icon: <CreditCard />,
         path: "subscriptions",
     },
     {
-        id: 2,
+        id: 3,
         label: "Affiliates",
         icon: <Layers />,
         path: "affiliates",
     },
     {
-        id: 3,
+        id: 4,
         label: "Domain Config",
         icon: <Globe />,
         path: "domains",
     },
     {
-        id: 4,
+        id: 5,
         label: "Integration",
         icon: <Zap />,
         path: "integrations",

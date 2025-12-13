@@ -80,13 +80,18 @@
 import { prisma } from "@/lib/prisma"
 import { razorpay, TRIAL_DAYS } from "@/lib/razorpay"
 import { currentUser } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 import crypto from "crypto"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
     try {
+        // Check for Clerk user or owner session
         const user = await currentUser()
-        if (!user) {
+        const cookieStore = await cookies()
+        const ownerSessionId = cookieStore.get("owner_session")?.value
+
+        if (!user && !ownerSessionId) {
             return NextResponse.json(
                 { success: false, error: "Unauthorized" },
                 { status: 401 },
@@ -104,6 +109,7 @@ export async function POST(req: NextRequest) {
             razorpay_payment_id,
             razorpay_order_id,
             customerId,
+            isOwner: !!ownerSessionId,
         })
 
         // Verify signature
@@ -170,24 +176,43 @@ export async function POST(req: NextRequest) {
             Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000,
         )
 
-        console.log("📝 Updating user with:", {
-            clerkId: user.id,
-            razorpayTokenId: tokenId,
-            razorpayCustomerId: customerId,
-            trialEndsAt: trialEndsAt,
-        })
-
-        // Save in database
-        const updatedUser = await prisma.user.update({
-            where: { clerkId: user.id },
-            data: {
+        // Save in database based on user type
+        let updatedUser
+        if (ownerSessionId) {
+            console.log("📝 Updating owner user with:", {
+                ownerId: ownerSessionId,
                 razorpayTokenId: tokenId,
                 razorpayCustomerId: customerId,
                 trialEndsAt: trialEndsAt,
-            },
-        })
+            })
 
-        console.log("✅ User updated:", updatedUser.id)
+            updatedUser = await prisma.user.update({
+                where: { id: ownerSessionId },
+                data: {
+                    razorpayTokenId: tokenId,
+                    razorpayCustomerId: customerId,
+                    trialEndsAt: trialEndsAt,
+                },
+            })
+        } else if (user) {
+            console.log("📝 Updating clerk user with:", {
+                clerkId: user.id,
+                razorpayTokenId: tokenId,
+                razorpayCustomerId: customerId,
+                trialEndsAt: trialEndsAt,
+            })
+
+            updatedUser = await prisma.user.update({
+                where: { clerkId: user.id },
+                data: {
+                    razorpayTokenId: tokenId,
+                    razorpayCustomerId: customerId,
+                    trialEndsAt: trialEndsAt,
+                },
+            })
+        }
+
+        console.log("✅ User updated:", updatedUser?.id)
 
         // Refund the ₹1
         try {

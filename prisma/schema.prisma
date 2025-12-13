@@ -11,6 +11,7 @@ model User {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   firstname String
   lastname  String
+  email     String?
   createdAt DateTime @default(now())
   clerkId   String   @unique
   image     String?
@@ -21,6 +22,12 @@ model User {
   phone              String?   // Required for Razorpay
   trialEndsAt        DateTime? // When the 14-day trial ends
 
+  // Owner registration fields
+  isFirstLogin       Boolean   @default(true)  // Track if user needs password change
+  pendingOwnerId     String?   @unique @db.Uuid // Link to original application
+  ownerPassword      String?   // Hashed password for owner login (separate from Clerk)
+  skippedGroupCreation Boolean @default(false) // If owner skipped group creation
+
   // Relations
   groups        Group[]        @relation("UserGroups")
   memberships   Members[]
@@ -30,6 +37,9 @@ model User {
   messagesSent  Message[]      @relation("MessageSender")
   messagesRecv  Message[]      @relation("MessageReceiver")
   subscriptions Subscription[]
+  notifications Notification[]
+  ownerPricingPlans OwnerPricingPlan[] @relation("OwnerPricingPlans")
+  memberPayments    MemberPayment[]    @relation("MemberPayments")
 }
 
 model Group {
@@ -57,6 +67,8 @@ model Group {
   subscription Subscription?  // Changed to singular - one subscription per group
   modules      Module[]
   videos       Video[]        // NEW: Video uploads
+  notifications Notification[]
+  memberPayments MemberPayment[]
 }
 
 model Members {
@@ -186,8 +198,8 @@ model CourseVideo {
   id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title         String
   caption       String?  // Video description
-  videoUrl      String   // Uploadcare UUID for video
-  thumbnailUrl  String   // Uploadcare UUID for thumbnail
+  videoUrl      String   // Cloudinary public_id for video
+  thumbnailUrl  String   // Cloudinary public_id for thumbnail
   order         Int      @default(0) // For ordering videos in course
   duration      Float?   // Duration in seconds
   published     Boolean  @default(true)
@@ -287,8 +299,8 @@ model Video {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  videoUrl      String   // Uploadcare UUID
-  thumbnailUrl  String   // Uploadcare UUID for custom thumbnail
+  videoUrl      String   // Cloudinary public_id
+  thumbnailUrl  String   // Cloudinary public_id for custom thumbnail
   caption       String   // User-provided description
   order         Int      @default(0)
   videoSize     Int?     // Size in bytes
@@ -308,4 +320,164 @@ enum SubscriptionStatus {
   CANCELLED       // User cancelled
   EXPIRED         // Trial ended without payment
   PAUSED          // Temporarily paused
+}
+
+// Owner Registration System - PendingOwner model for approval workflow
+model PendingOwner {
+  id            String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  // Personal Info
+  firstname     String
+  lastname      String
+  email         String              @unique
+  phone         String
+
+  // CV/Resume
+  cvUrl         String              // Cloudinary URL for uploaded CV
+  cvFileName    String?             // Original filename
+
+  // Application Status
+  status        PendingOwnerStatus  @default(PENDING)
+
+  // Approval/Rejection Details
+  reviewedAt    DateTime?
+  reviewedBy    String?             @db.Uuid  // Admin user ID who reviewed
+  rejectionReason String?
+
+  // Temporary Password (for approved owners)
+  temporaryPassword String?         // Encrypted temp password
+  passwordExpiresAt DateTime?       // Password expiry time
+
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+}
+
+enum PendingOwnerStatus {
+  PENDING         // Awaiting admin review
+  APPROVED        // Approved, pending first login
+  REJECTED        // Application rejected
+  COMPLETED       // Owner has completed first login and set password
+}
+
+// Admin User model for managing the platform
+model Admin {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  email         String    @unique
+  password      String    // Hashed password
+  firstname     String
+  lastname      String
+
+  // Admin permissions
+  isSuperAdmin  Boolean   @default(false)
+  isActive      Boolean   @default(true)
+
+  lastLoginAt   DateTime?
+
+  @@index([email])
+}
+
+// Notification model for member join alerts and other notifications
+model Notification {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+
+  title     String
+  message   String
+  type      NotificationType @default(MEMBER_JOINED)
+
+  // Recipient (usually the group owner)
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Related group
+  groupId   String?  @db.Uuid
+  group     Group?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  // The user who triggered the notification (e.g., the member who joined)
+  relatedUserId String? @db.Uuid
+
+  // Read status
+  isRead    Boolean  @default(false)
+  readAt    DateTime?
+
+  @@index([userId])
+  @@index([groupId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  MEMBER_JOINED
+  NEW_MESSAGE
+  COURSE_ADDED
+  CHANNEL_CREATED
+}
+
+// Owner's pricing plans for group membership
+model OwnerPricingPlan {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Plan details
+  name        String   // e.g., "Basic", "Premium", "Monthly Access"
+  description String?  // Optional description
+  price       Int      // Price in paise (e.g., 49900 = ₹499)
+  currency    String   @default("INR")
+
+  // Only one plan can be active per owner
+  isActive    Boolean  @default(false)
+
+  // Owner relation - plans belong to a user (owner)
+  userId      String   @db.Uuid
+  user        User     @relation("OwnerPricingPlans", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Track member payments
+  memberPayments MemberPayment[]
+
+  @@index([userId])
+  @@index([isActive])
+}
+
+// Track payments made by members to join groups
+model MemberPayment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+
+  // Payment details
+  amount    Int      // Amount paid in paise
+  currency  String   @default("INR")
+  status    PaymentStatus @default(PENDING)
+
+  // Razorpay details
+  razorpayOrderId   String?  @unique
+  razorpayPaymentId String?  @unique
+  razorpaySignature String?
+
+  // Relations
+  userId    String   @db.Uuid  // The member who paid
+  user      User     @relation("MemberPayments", fields: [userId], references: [id], onDelete: Cascade)
+
+  groupId   String   @db.Uuid  // The group they're joining
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  planId    String   @db.Uuid  // The plan they purchased
+  plan      OwnerPricingPlan @relation(fields: [planId], references: [id])
+
+  @@index([userId])
+  @@index([groupId])
+  @@index([status])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }

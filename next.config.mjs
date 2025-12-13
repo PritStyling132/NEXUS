@@ -1,5 +1,3 @@
-import { hostname } from "os"
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
@@ -7,15 +5,15 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: "https",
-                hostname: "339qsoofdz.ucarecd.net",
+                hostname: "res.cloudinary.com",
             },
             {
                 protocol: "https",
-                hostname: "ucarecdn.com",
+                hostname: "api.dicebear.com",
             },
             {
                 protocol: "https",
-                hostname: "upload.uploadcare.com",
+                hostname: "images.unsplash.com",
             },
         ],
     },

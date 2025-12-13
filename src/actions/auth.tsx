@@ -1,39 +1,66 @@
 "use server"
 import { prisma } from "@/lib/prisma"
 import { currentUser } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 
 export const onAuthenticatedUser = async () => {
     try {
-        const clerk = await currentUser()
-        if (!clerk) {
-            console.log("⚠️ No authenticated user found")
-            return { status: 404 }
-        }
+        // First check for owner session (cookie-based auth)
+        // This must be checked BEFORE Clerk to avoid issues with owner sessions
+        const cookieStore = await cookies()
+        const ownerSessionId = cookieStore.get("owner_session")?.value
 
-        const user = await prisma.user.findUnique({
-            where: {
-                clerkId: clerk.id,
-            },
-            select: {
-                id: true,
-                firstname: true,
-                lastname: true,
-                image: true,
-            },
-        })
+        if (ownerSessionId) {
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: ownerSessionId,
+                },
+                select: {
+                    id: true,
+                    firstname: true,
+                    lastname: true,
+                    image: true,
+                },
+            })
 
-        if (user) {
-            return {
-                status: 200,
-                id: user.id,
-                image: user.image || clerk.imageUrl,
-                username: `${user.firstname} ${user.lastname}`,
+            if (user) {
+                return {
+                    status: 200,
+                    id: user.id,
+                    image: user.image || "",
+                    username: `${user.firstname} ${user.lastname}`,
+                }
             }
         }
 
-        return {
-            status: 404,
+        // Then try Clerk authentication for learners
+        const clerk = await currentUser()
+
+        if (clerk) {
+            const user = await prisma.user.findUnique({
+                where: {
+                    clerkId: clerk.id,
+                },
+                select: {
+                    id: true,
+                    firstname: true,
+                    lastname: true,
+                    image: true,
+                },
+            })
+
+            if (user) {
+                return {
+                    status: 200,
+                    id: user.id,
+                    image: user.image || clerk.imageUrl,
+                    username: `${user.firstname} ${user.lastname}`,
+                }
+            }
         }
+
+        console.log("⚠️ No authenticated user found")
+        return { status: 404 }
     } catch (error) {
         console.error(" onAuthenticatedUser Error:", error)
         return {
@@ -42,11 +69,123 @@ export const onAuthenticatedUser = async () => {
     }
 }
 
+export const onGetUserProfile = async () => {
+    try {
+        const auth = await onAuthenticatedUser()
+        if (auth.status !== 200 || !auth.id) {
+            return { status: 401, message: "Unauthorized" }
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: auth.id },
+            select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+                email: true,
+                image: true,
+                pendingOwnerId: true,
+                groups: {
+                    select: { id: true },
+                    take: 1,
+                },
+            },
+        })
+
+        if (!user) {
+            return { status: 404, message: "User not found" }
+        }
+
+        // Check if this is an owner (has pendingOwnerId)
+        const isOwner = !!user.pendingOwnerId
+        const firstGroupId = user.groups[0]?.id || null
+
+        // For owners without email in User table, fetch from PendingOwner
+        let email = user.email
+        if (!email && user.pendingOwnerId) {
+            const pendingOwner = await prisma.pendingOwner.findUnique({
+                where: { id: user.pendingOwnerId },
+                select: { email: true },
+            })
+            email = pendingOwner?.email || null
+
+            // Also update the user's email for future requests
+            if (email) {
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { email },
+                })
+            }
+        }
+
+        return {
+            status: 200,
+            data: {
+                id: user.id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email,
+                image: user.image,
+                isOwner,
+                firstGroupId,
+            }
+        }
+    } catch (error) {
+        console.error("onGetUserProfile Error:", error)
+        return { status: 400, message: "Failed to fetch profile" }
+    }
+}
+
+export const onUpdateUserProfile = async (data: {
+    firstname: string
+    lastname: string
+    image?: string
+}) => {
+    try {
+        const auth = await onAuthenticatedUser()
+        if (auth.status !== 200 || !auth.id) {
+            return { status: 401, message: "Unauthorized" }
+        }
+
+        const updateData: { firstname: string; lastname: string; image?: string } = {
+            firstname: data.firstname,
+            lastname: data.lastname,
+        }
+
+        // Only update image if provided
+        if (data.image !== undefined) {
+            updateData.image = data.image
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: auth.id },
+            data: updateData,
+            select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+                email: true,
+                image: true,
+            },
+        })
+
+        return {
+            status: 200,
+            message: "Profile updated successfully",
+            data: updatedUser
+        }
+    } catch (error) {
+        console.error("onUpdateUserProfile Error:", error)
+        return { status: 400, message: "Failed to update profile" }
+    }
+}
+
 export const onSignUpUser = async (data: {
     firstname: string
     lastname: string
     image: string
     clerkId: string
+    email?: string
 }) => {
     try {
         console.log(" Starting user creation with data:", data)
@@ -74,6 +213,7 @@ export const onSignUpUser = async (data: {
                 lastname: data.lastname,
                 image: data.image || "",
                 clerkId: data.clerkId,
+                email: data.email || null,
             },
         })
 

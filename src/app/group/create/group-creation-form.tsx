@@ -208,8 +208,43 @@ export default function GroupCreationForm() {
                             )}
                         </Button>
 
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="w-full"
+                            disabled={loading}
+                            onClick={async () => {
+                                try {
+                                    setLoading(true)
+                                    const response = await fetch("/api/owner/skip-group-creation", {
+                                        method: "POST",
+                                    })
+                                    const data = await response.json()
+                                    if (response.ok) {
+                                        toast({
+                                            title: "Skipped",
+                                            description: "You can create a group later from your dashboard",
+                                        })
+                                        // Redirect to the appropriate dashboard based on user type
+                                        // If redirectUrl is provided by API, use that, otherwise go to owner dashboard
+                                        router.push(data.redirectUrl || "/owner/dashboard")
+                                    }
+                                } catch (error) {
+                                    toast({
+                                        title: "Error",
+                                        description: "Failed to skip. Please try again.",
+                                        variant: "destructive",
+                                    })
+                                } finally {
+                                    setLoading(false)
+                                }
+                            }}
+                        >
+                            Skip for now
+                        </Button>
+
                         <div className="text-xs text-center text-muted-foreground">
-                            <p>✨ 14-day free trial • ₹99/month after trial</p>
+                            <p>✨ 14-day free trial • ₹4,999/month after trial</p>
                             <p className="mt-1">
                                 You can cancel anytime from your settings
                             </p>

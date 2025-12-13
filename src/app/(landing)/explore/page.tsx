@@ -23,6 +23,7 @@ import {
 import GroupCard from "./_components/group-card"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useUser } from "@clerk/nextjs"
 
 const CATEGORIES = [
     { name: "All", icon: Grid3x3 },
@@ -57,6 +58,7 @@ type PaginationInfo = {
 }
 
 export default function ExplorePage() {
+    const { isSignedIn } = useUser()
     const [searchQuery, setSearchQuery] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("All")
@@ -130,17 +132,19 @@ export default function ExplorePage() {
                         Discover and join amazing communities around the world
                     </p>
 
-                    {/* Create Your Own Group CTA */}
-                    <Link href="/sign-in?redirect_url=/group/create">
-                        <Button
-                            size="lg"
-                            className="bg-gradient-to-r from-primary to-themeAccent2 hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl"
-                        >
-                            <Plus className="mr-2 h-5 w-5" />
-                            Create Your Own Group
-                            <Sparkles className="ml-2 h-4 w-4" />
-                        </Button>
-                    </Link>
+                    {/* Create Your Own Group CTA - Only show for non-logged-in users */}
+                    {!isSignedIn && (
+                        <Link href="/sign-in?redirect_url=/group/create">
+                            <Button
+                                size="lg"
+                                className="bg-gradient-to-r from-primary to-themeAccent2 hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl"
+                            >
+                                <Plus className="mr-2 h-5 w-5" />
+                                Create Your Own Group
+                                <Sparkles className="ml-2 h-4 w-4" />
+                            </Button>
+                        </Link>
+                    )}
                 </div>
 
                 {/* Search Bar - Centered */}
@@ -303,12 +307,14 @@ export default function ExplorePage() {
                                 Try adjusting your search or filters to find
                                 what you're looking for.
                             </p>
-                            <Link href="/sign-in?redirect_url=/group/create">
-                                <Button variant="outline">
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Create the First One
-                                </Button>
-                            </Link>
+                            {!isSignedIn && (
+                                <Link href="/sign-in?redirect_url=/group/create">
+                                    <Button variant="outline">
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Create the First One
+                                    </Button>
+                                </Link>
+                            )}
                         </Card>
                     ) : (
                         <>

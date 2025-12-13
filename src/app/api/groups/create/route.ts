@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { razorpay, PRICE_PER_GROUP, TRIAL_DAYS, PLAN_ID } from "@/lib/razorpay"
 import { currentUser } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 
 // Helper function to get or create plan with detailed debugging
@@ -76,18 +77,27 @@ export async function POST(req: NextRequest) {
     console.log("  - TRIAL_DAYS:", TRIAL_DAYS)
 
     try {
-        // Step 1: Get authenticated user
+        // Step 1: Get authenticated user (support both Clerk and owner session)
         console.log("\n📍 [STEP 1] Getting authenticated user...")
-        const user = await currentUser()
+        const clerkUser = await currentUser()
+        const cookieStore = await cookies()
+        const ownerSessionId = cookieStore.get("owner_session")?.value
 
-        if (!user) {
+        if (!clerkUser && !ownerSessionId) {
             console.error("❌ [STEP 1] No authenticated user!")
             return NextResponse.json(
                 { success: false, error: "Unauthorized" },
                 { status: 401 },
             )
         }
-        console.log("✅ [STEP 1] User authenticated:", user.id)
+
+        const authType = clerkUser ? "clerk" : "owner"
+        console.log("✅ [STEP 1] User authenticated via:", authType)
+        if (clerkUser) {
+            console.log("  - Clerk ID:", clerkUser.id)
+        } else {
+            console.log("  - Owner Session ID:", ownerSessionId)
+        }
 
         // Step 2: Parse request body
         console.log("\n📍 [STEP 2] Parsing request body...")
@@ -105,16 +115,31 @@ export async function POST(req: NextRequest) {
         }
         console.log("✅ [STEP 2] Request body valid")
 
-        // Step 3: Get user from database
+        // Step 3: Get user from database (support both Clerk and owner session)
         console.log("\n📍 [STEP 3] Fetching user from database...")
-        const dbUser = await prisma.user.findUnique({
-            where: { clerkId: user.id },
-            select: {
-                id: true,
-                razorpayCustomerId: true,
-                razorpayTokenId: true,
-            },
-        })
+        let dbUser
+
+        if (clerkUser) {
+            // Clerk user flow
+            dbUser = await prisma.user.findUnique({
+                where: { clerkId: clerkUser.id },
+                select: {
+                    id: true,
+                    razorpayCustomerId: true,
+                    razorpayTokenId: true,
+                },
+            })
+        } else if (ownerSessionId) {
+            // Owner session flow
+            dbUser = await prisma.user.findUnique({
+                where: { id: ownerSessionId },
+                select: {
+                    id: true,
+                    razorpayCustomerId: true,
+                    razorpayTokenId: true,
+                },
+            })
+        }
 
         if (!dbUser) {
             console.error("❌ [STEP 3] User not found in database!")

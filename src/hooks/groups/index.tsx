@@ -12,7 +12,7 @@
 // import { useForm } from "react-hook-form"
 // import { GroupSettingsSchema } from "@/components/forms/group-settings/schema"
 // import { z } from "zod"
-// import { upload } from "@/lib/uploadcare"
+// import { upload } from "@/lib/cloudinary"
 // import { toast } from "sonner"
 // import { useRouter } from "next/navigation"  // ✅ Fixed import
 
@@ -266,7 +266,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { GroupSettingsSchema } from "@/components/forms/group-settings/schema"
 import { z } from "zod"
-import { uploadFileAndGetPath, upload } from "@/lib/uploadcare"
+import { uploadFileAndGetPath, upload } from "@/lib/cloudinary"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { validateURLString } from "@/lib/utils"
@@ -380,27 +380,18 @@ export const useGroupSettings = (groupid: string) => {
                 description: data.group.description || "",
             })
 
-            // Log the constructed URLs for debugging
-            const iconUrl = data.group.icon
-                ? `https://ucarecdn.com/${data.group.icon}/`
-                : "default"
-            const thumbnailUrl = data.group.thumbnail
-                ? `https://ucarecdn.com/${data.group.thumbnail}/`
-                : "default"
-
+            // Log the URLs for debugging (now stored as full URLs)
             console.log("🖼️ Image URLs that will be used:", {
-                iconUrl,
-                thumbnailUrl,
-                iconRaw: data.group.icon,
-                thumbnailRaw: data.group.thumbnail,
+                iconUrl: data.group.icon || "default",
+                thumbnailUrl: data.group.thumbnail || "default",
             })
 
             // Test the URLs
             if (data.group.icon) {
-                console.log(`🌐 Testing icon URL: ${iconUrl}`)
+                console.log(`🌐 Testing icon URL: ${data.group.icon}`)
             }
             if (data.group.thumbnail) {
-                console.log(`🌐 Testing thumbnail URL: ${thumbnailUrl}`)
+                console.log(`🌐 Testing thumbnail URL: ${data.group.thumbnail}`)
             }
         }
     }, [data?.group, reset])
@@ -436,7 +427,7 @@ export const useGroupSettings = (groupid: string) => {
                     values.thumbnail[0],
                 )
                 console.log(
-                    "📦 Uploadcare thumbnail path to save:",
+                    "📦 Cloudinary thumbnail URL to save:",
                     uploadedPath,
                 )
                 const updated = await onUpdateGroupSettings(
@@ -455,7 +446,7 @@ export const useGroupSettings = (groupid: string) => {
             if (values.icon && values.icon.length > 0) {
                 console.log("📤 Uploading icon...")
                 const uploadedPath = await uploadFileAndGetPath(values.icon[0])
-                console.log("📦 Uploadcare icon path to save:", uploadedPath)
+                console.log("📦 Cloudinary icon URL to save:", uploadedPath)
                 const updated = await onUpdateGroupSettings(
                     groupid,
                     "ICON",
@@ -507,22 +498,20 @@ export const useGroupSettings = (groupid: string) => {
             console.log("✅ All updates completed successfully")
             return { success: true }
         },
-        onSuccess: () => {
+        onSuccess: async () => {
             console.log("🔄 Refetching group data...")
-            // Clear preview states to show the uploaded images from database
+
+            // Refetch the group data after successful update FIRST
+            await queryClient.invalidateQueries({ queryKey: ["group-info", groupid] })
+
+            // Then clear preview states after the new data has been fetched
             setPreviewIcon(undefined)
             setPreviewThumbnail(undefined)
 
-            // Reset the file input fields to clear them
-            reset({
-                name: undefined,
-                description: undefined,
-                icon: undefined,
-                thumbnail: undefined,
-            })
+            // Only reset file inputs, keep the text fields
+            setValue("icon", undefined)
+            setValue("thumbnail", undefined)
 
-            // Refetch the group data after successful update
-            queryClient.invalidateQueries({ queryKey: ["group-info", groupid] })
             toast("Success", {
                 description: "Group settings updated successfully",
             })
@@ -558,18 +547,42 @@ export const useGroupSettings = (groupid: string) => {
 export const useGroupInfo = () => {
     const router = useRouter()
 
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ["about-group-info"],
+        // This hook relies on prefetched data from HydrationBoundary
+        // The queryFn is a fallback in case data isn't prefetched
+        queryFn: async () => {
+            // Return cached/prefetched data if available - this shouldn't normally run
+            // as data is prefetched on the server
+            return null
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
     })
 
     // Check if data is missing/falsy
-    if (!data) {
-        router.push("/explore")
+    if (!data && !isLoading) {
+        // Only redirect if we're sure there's no data (not just loading)
         return { group: null, status: null }
     }
 
+    if (!data) {
+        // Still loading or no data - return empty group to prevent errors
+        return {
+            group: {
+                name: "",
+                description: "",
+                thumbnail: null,
+                category: "Other",
+                gallery: [],
+                userId: "",
+                htmlDescription: "",
+                jsonDescription: "",
+            }
+        }
+    }
+
     // Type assertion/destructuring: Assuming 'data' contains 'status' (number) and 'group' (GroupStateProps)
-    const { group, status } = data as any // Assuming type assertion/destructuring from line 10
+    const { group, status } = data as any
 
     // Check if the status is not successful (not 200)
     if (status !== 200) {
@@ -647,7 +660,7 @@ export const useGroupAbout = ({
         return () => {
             onSetDescriptions()
         }
-    }, [onJsonDescription, onDescription])
+    }, [onJsonDescription, onDescription, onHtmlDescription])
 
     const onEditTextEditor = (event: Event) => {
         if (editor.current) {
@@ -730,9 +743,17 @@ export const useGroupAbout = ({
         setActiveMedia(media)
     }
 
-    const onUpdateDescription = handleSubmit(async (values) => {
-        mutate(values)
-    })
+    const onUpdateDescription = async (e: React.FormEvent) => {
+        e.preventDefault()
+        // Directly use the current state values instead of form validation
+        // This bypasses the 100-char description validation which doesn't apply here
+        const values = {
+            description: onDescription,
+            jsondescription: JSON.stringify(onJsonDescription),
+            htmldescription: onHtmlDescription,
+        }
+        mutate(values as z.infer<typeof GroupSettingsSchema>)
+    }
 
     return {
         setOnDescription,
@@ -756,6 +777,7 @@ export const useMediaGallery = (groupid: string) => {
         register,
         formState: { errors },
         handleSubmit,
+        control,
     } = useForm<z.infer<typeof UpdateGallerySchema>>({
         resolver: zodResolver(UpdateGallerySchema),
     })
@@ -787,10 +809,10 @@ export const useMediaGallery = (groupid: string) => {
                     )
 
                     if (uploaded) {
-                        // Update the gallery with the uploaded UUID
+                        // Update the gallery with the uploaded URL
                         const update = await onUpdateGroupGallery(
                             groupid,
-                            uploaded.uuid,
+                            uploaded.url,
                         )
 
                         if (update?.status !== 200) {
@@ -828,5 +850,6 @@ export const useMediaGallery = (groupid: string) => {
         errors,
         onUpdateGallery,
         isPending,
+        control,
     }
 }

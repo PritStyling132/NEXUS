@@ -253,10 +253,10 @@ const SideBarMenu = ({
                 })}
             </div>
 
-            {/* Settings Menu Section */}
+            {/* Manage Group Section */}
             <div className="flex flex-col space-y-1">
-                <p className="text-xs font-semibold text-muted-foreground dark:text-[#F7ECE9] px-3 uppercase tracking-wider mb-1">
-                    Settings
+                <p className="text-xs font-semibold text-muted-foreground dark:text-[#F7ECE9] px-1 uppercase tracking-wider mb-1">
+                    Manage Group
                 </p>
                 {SIDEBAR_SETTINGS_MENU.map((item) => {
                     // Check if current tab is active - but NOT on the default landing page

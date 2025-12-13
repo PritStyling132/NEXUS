@@ -9,6 +9,7 @@ import {
     getGroupThumbnailUrl,
 } from "@/lib/default-group-assets"
 import { Textarea } from "@/components/ui/textarea"
+import { useMemo } from "react"
 
 type Props = {
     groupId: string
@@ -25,21 +26,16 @@ const GroupSettingsForm = ({ groupId }: Props) => {
         previewThumbnail,
     } = useGroupSettings(groupId)
 
-    // Calculate URLs that will be used for rendering
-    const iconUrl =
-        previewIcon || getGroupIconUrl(data?.group?.icon, data?.group?.category)
-    const thumbnailUrl =
-        previewThumbnail ||
-        getGroupThumbnailUrl(data?.group?.thumbnail, data?.group?.category)
+    // Memoize URLs to prevent unnecessary re-renders when typing in form fields
+    const iconUrl = useMemo(
+        () => previewIcon || getGroupIconUrl(data?.group?.icon, data?.group?.category),
+        [previewIcon, data?.group?.icon, data?.group?.category]
+    )
 
-    console.log("🎨 [GroupSettingsForm] Rendering with:", {
-        previewIcon,
-        previewThumbnail,
-        dbIcon: data?.group?.icon,
-        dbThumbnail: data?.group?.thumbnail,
-        finalIconUrl: iconUrl,
-        finalThumbnailUrl: thumbnailUrl,
-    })
+    const thumbnailUrl = useMemo(
+        () => previewThumbnail || getGroupThumbnailUrl(data?.group?.thumbnail, data?.group?.category),
+        [previewThumbnail, data?.group?.thumbnail, data?.group?.category]
+    )
 
     return (
         <form

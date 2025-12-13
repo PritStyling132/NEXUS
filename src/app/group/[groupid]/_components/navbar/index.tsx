@@ -46,8 +46,9 @@ import SideBar from "@/components/global/sidebar"
 import { UserWidget } from "@/components/global/user-widget"
 import { Button } from "@/components/ui/button"
 import { currentUser } from "@clerk/nextjs/server"
-import { BadgeCheck, Menu } from "lucide-react"
+import { Menu, Home } from "lucide-react"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/global/theme-toggle"
 
 type NavbarProps = {
     groupid: string
@@ -57,41 +58,55 @@ type NavbarProps = {
 export const Navbar = async ({ groupid, userid }: NavbarProps) => {
     const user = await currentUser()
     return (
-        <div className="bg-background/95 dark:bg-[#1A1A1D] backdrop-blur-sm border-b border-border dark:border-[#28282D] py-3 px-4 md:px-7 md:py-5 flex gap-3 md:gap-5 justify-between md:justify-end items-center sticky top-0 z-40">
-            <GlassSheet
-                trigger={
+        <div className="bg-background/95 dark:bg-[#1A1A1D] backdrop-blur-sm border-b border-border dark:border-[#28282D] py-3 px-4 md:px-7 md:py-5 flex gap-3 md:gap-5 items-center sticky top-0 z-40">
+            {/* Left side - Mobile menu and Home button */}
+            <div className="flex items-center gap-2">
+                <GlassSheet
+                    trigger={
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="md:hidden hover:bg-accent dark:hover:bg-transparent"
+                        >
+                            <Menu className="cursor-pointer w-5 h-5" />
+                        </Button>
+                    }
+                    triggerClass=""
+                >
+                    <SideBar groupid={groupid} userid={userid} mobile />
+                </GlassSheet>
+
+                {/* Home button to go back to group home - Left side */}
+                <Link href={`/group/${groupid}`}>
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="md:hidden hover:bg-accent dark:hover:bg-transparent"
+                        className="hover:bg-accent dark:hover:bg-themeGray transition-colors"
+                        title="Go to Group Home"
                     >
-                        <Menu className="cursor-pointer w-5 h-5" />
+                        <Home className="h-5 w-5" />
                     </Button>
-                }
-                triggerClass=""
-            >
-                <SideBar groupid={groupid} userid={userid} mobile />
-            </GlassSheet>
-            <Search
-                searchType="GROUPS"
-                className="rounded-full border-border dark:border-themeGray bg-background dark:bg-black !opacity-100 px-3 flex-1 md:flex-initial"
-                placeholder="Search groups..."
-            />
-            <Link href="/group/create" className="hidden lg:inline">
-                <Button
-                    variant="outline"
-                    className="bg-background dark:bg-themeBlack rounded-2xl flex gap-2 border-border dark:border-themeGray hover:bg-accent dark:hover:bg-themeGray transition-colors"
-                >
-                    <BadgeCheck className="h-4 w-4" />
-                    <span className="hidden xl:inline">Create Group</span>
-                </Button>
-            </Link>
+                </Link>
+            </div>
 
-            <UserWidget
-                userid={userid}
-                image={user?.imageUrl!}
-                groupid={groupid}
-            />
+            {/* Center - Search */}
+            <div className="flex-1 flex justify-center">
+                <Search
+                    searchType="GROUPS"
+                    className="rounded-full border-border dark:border-themeGray bg-background dark:bg-black !opacity-100 px-3 w-full max-w-md"
+                    placeholder="Search groups..."
+                />
+            </div>
+
+            {/* Right side - Theme toggle and User widget */}
+            <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <UserWidget
+                    userid={userid}
+                    image={user?.imageUrl!}
+                    groupid={groupid}
+                />
+            </div>
         </div>
     )
 }

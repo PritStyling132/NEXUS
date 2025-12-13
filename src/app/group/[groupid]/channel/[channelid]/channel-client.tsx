@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
-import { Hash, Send, Image, Smile, MoreVertical, Users } from "lucide-react"
+import { Hash, Send, MoreVertical, Users, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -12,6 +12,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { onGetChannelMessages, onSendChannelMessage } from "@/actions/messages"
+import { toast } from "sonner"
 
 interface Props {
     channelInfo: any
@@ -25,13 +28,25 @@ export default function ChannelClient({
     channelid,
 }: Props) {
     const [message, setMessage] = useState("")
-    const [messages, setMessages] = useState(channelInfo?.messages || [])
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const queryClient = useQueryClient()
 
     const channel =
         channelInfo && typeof channelInfo === "object" && "id" in channelInfo
             ? channelInfo
             : null
+
+    // Fetch messages with polling
+    const { data: messagesData, isLoading } = useQuery({
+        queryKey: ["channel-messages", channelid],
+        queryFn: async () => {
+            const result = await onGetChannelMessages(channelid)
+            return result.status === 200 ? result.data : { messages: [] }
+        },
+        refetchInterval: 5000, // Poll every 5 seconds
+    })
+
+    const messages = messagesData?.messages || []
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -41,23 +56,31 @@ export default function ChannelClient({
         scrollToBottom()
     }, [messages])
 
+    // Send message mutation
+    const sendMessageMutation = useMutation({
+        mutationFn: async (messageText: string) => {
+            return await onSendChannelMessage(channelid, messageText)
+        },
+        onSuccess: (result) => {
+            if (result.status === 200) {
+                // Invalidate and refetch messages
+                queryClient.invalidateQueries({ queryKey: ["channel-messages", channelid] })
+            } else {
+                toast.error(result.message || "Failed to send message")
+            }
+        },
+        onError: () => {
+            toast.error("Failed to send message")
+        },
+    })
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!message.trim()) return
+        if (!message.trim() || sendMessageMutation.isPending) return
 
-        // TODO: Implement actual message sending to backend
-        const newMessage = {
-            id: Date.now().toString(),
-            message: message,
-            createdAt: new Date().toISOString(),
-            sender: {
-                firstname: "You",
-                lastname: "",
-            },
-        }
-
-        setMessages([...messages, newMessage])
-        setMessage("")
+        const messageText = message.trim()
+        setMessage("") // Clear input immediately
+        sendMessageMutation.mutate(messageText)
     }
 
     return (
@@ -87,7 +110,11 @@ export default function ChannelClient({
 
             {/* Messages Area */}
             <ScrollArea className="flex-1 px-4 sm:px-6 md:px-8 py-6">
-                {messages && messages.length > 0 ? (
+                {isLoading ? (
+                    <div className="flex items-center justify-center min-h-[calc(100vh-300px)]">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    </div>
+                ) : messages && messages.length > 0 ? (
                     <div className="space-y-4 pb-4">
                         {messages.map((msg: any, index: number) => {
                             const showAvatar =
@@ -190,32 +217,18 @@ export default function ChannelClient({
                             className="min-h-[60px] max-h-[200px] resize-none bg-background dark:bg-themeGray/20 border-border dark:border-themeGray focus:ring-2 focus:ring-primary rounded-xl"
                         />
                     </div>
-                    <div className="flex gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="rounded-xl border-border dark:border-themeGray hover:bg-accent dark:hover:bg-themeGray/50"
-                        >
-                            <Image className="w-4 h-4" />
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="rounded-xl border-border dark:border-themeGray hover:bg-accent dark:hover:bg-themeGray/50"
-                        >
-                            <Smile className="w-4 h-4" />
-                        </Button>
-                        <Button
-                            type="submit"
-                            size="icon"
-                            disabled={!message.trim()}
-                            className="rounded-xl bg-primary hover:bg-primary/90 shadow-lg disabled:opacity-50"
-                        >
+                    <Button
+                        type="submit"
+                        size="icon"
+                        disabled={!message.trim() || sendMessageMutation.isPending}
+                        className="rounded-xl bg-primary hover:bg-primary/90 shadow-lg disabled:opacity-50 h-[60px] w-[60px]"
+                    >
+                        {sendMessageMutation.isPending ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
                             <Send className="w-4 h-4" />
-                        </Button>
-                    </div>
+                        )}
+                    </Button>
                 </form>
                 <p className="text-xs text-muted-foreground dark:text-themeTextGray mt-2 px-1">
                     Press Enter to send, Shift + Enter for new line

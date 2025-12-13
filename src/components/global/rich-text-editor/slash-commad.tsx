@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 
 import { createSuggestionItems, Command, renderItems } from "novel"
-import { upload } from "@/lib/uploadcare"
+import { upload } from "@/lib/cloudinary"
 
 export const suggestionItems = createSuggestionItems([
     {
@@ -160,16 +160,11 @@ export const suggestionItems = createSuggestionItems([
                     const file = input.files[0]
                     const uploaded = await upload.uploadFile(file)
 
-                    // Use the correct CDN subdomain for your UploadCare project
-                    const cdnSubdomain =
-                        process.env.NEXT_PUBLIC_UPLOADCARE_CDN_SUBDOMAIN ||
-                        "339qsoofdz"
-                    const imgsrc = `https://${cdnSubdomain}.ucarecd.net/${uploaded.uuid}/`
-
-                    if (imgsrc) {
+                    // Use the full URL returned from Cloudinary
+                    if (uploaded.url) {
                         editor.commands.insertContent({
                             type: "image",
-                            attrs: { src: imgsrc },
+                            attrs: { src: uploaded.url },
                         })
                     }
                 }
