@@ -23,6 +23,7 @@ export default async function CreateGroupPage() {
         }
 
         let dbUser
+        let hasExistingGroups = false
 
         // If owner session exists, get owner's user data
         if (ownerSessionId) {
@@ -42,6 +43,10 @@ export default async function CreateGroupPage() {
                             trialEndsAt: true,
                             firstname: true,
                             lastname: true,
+                            groups: {
+                                select: { id: true },
+                                take: 1,
+                            },
                         },
                     }),
                     new Promise((_, reject) =>
@@ -108,6 +113,10 @@ export default async function CreateGroupPage() {
                             trialEndsAt: true,
                             firstname: true,
                             lastname: true,
+                            groups: {
+                                select: { id: true },
+                                take: 1,
+                            },
                         },
                     }),
                     new Promise((_, reject) =>
@@ -191,6 +200,9 @@ export default async function CreateGroupPage() {
 
         console.log("✅ [GROUP CREATE] User found:", dbUser!.id)
 
+        // Check if user has any existing groups
+        hasExistingGroups = (dbUser?.groups?.length || 0) > 0
+
         const hasPaymentMethod = !!(
             dbUser?.razorpayCustomerId && dbUser?.razorpayTokenId
         )
@@ -271,7 +283,9 @@ export default async function CreateGroupPage() {
                     <div className="flex items-center justify-center order-1 lg:order-2">
                         <div className="w-full max-w-md">
                             {hasPaymentMethod ? (
-                                <GroupCreationForm />
+                                <GroupCreationForm
+                                    showSkipButton={hasExistingGroups}
+                                />
                             ) : (
                                 <PaymentForm />
                             )}

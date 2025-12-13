@@ -33,14 +33,15 @@ export const GroupDashboard = ({
     dashboardData,
 }: Props) => {
     const group = groupInfo?.group
+    // Use nullish coalescing (??) instead of || to properly handle 0 values
     const memberCount =
-        dashboardData?.data?.memberCount || subscriptions?.count || 0
+        dashboardData?.data?.memberCount ?? subscriptions?.count ?? 0
     const channelCount =
-        dashboardData?.data?.channelCount || channels?.channels?.length || 0
-    const courseCount = dashboardData?.data?.courseCount || 0
+        dashboardData?.data?.channelCount ?? channels?.channels?.length ?? 0
+    const courseCount = dashboardData?.data?.courseCount ?? 0
     const subscriptionCount =
-        dashboardData?.data?.subscriptionCount ||
-        subscriptions?.subscriptions?.length ||
+        dashboardData?.data?.subscriptionCount ??
+        subscriptions?.subscriptions?.length ??
         0
 
     return (

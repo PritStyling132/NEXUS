@@ -24,6 +24,9 @@ const isAdminRoute = createRouteMatcher(["/admin(.*)"])
 // Admin API routes - only admin can access
 const isAdminApiRoute = createRouteMatcher(["/api/admin/(.*)"])
 
+// Admin login route - must be public to allow login
+const isAdminLoginRoute = createRouteMatcher(["/api/admin/login"])
+
 // Owner auth routes - public for authentication
 const isOwnerAuthRoute = createRouteMatcher([
     "/owner/login(.*)",
@@ -99,6 +102,11 @@ export default clerkMiddleware(async (auth, req) => {
 
     // Allow owner auth routes (login, register, etc.)
     if (isOwnerAuthRoute(req)) {
+        return NextResponse.next()
+    }
+
+    // Allow admin login route without authentication
+    if (isAdminLoginRoute(req)) {
         return NextResponse.next()
     }
 

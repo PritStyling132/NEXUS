@@ -40,6 +40,11 @@ export default function CourseForm({ groupId, onSuccess }: CourseFormProps) {
         }
     }
 
+    // Handle click on the upload area
+    const handleUploadClick = () => {
+        fileInputRef.current?.click()
+    }
+
     return (
         <form onSubmit={onSubmit} className="space-y-6">
             {/* Course Title */}
@@ -85,16 +90,17 @@ export default function CourseForm({ groupId, onSuccess }: CourseFormProps) {
 
             {/* Course Thumbnail */}
             <div className="space-y-2">
-                <Label htmlFor="thumbnail" className="text-base font-semibold">
+                <Label className="text-base font-semibold">
                     Course Thumbnail (Optional)
                 </Label>
                 <Card
                     className={cn(
-                        "border-2 border-dashed transition-colors",
+                        "border-2 border-dashed transition-colors cursor-pointer",
                         errors.thumbnail
                             ? "border-destructive"
                             : "border-muted-foreground/25 hover:border-muted-foreground/50",
                     )}
+                    onClick={handleUploadClick}
                 >
                     <CardContent className="p-6">
                         {thumbnailPreview ? (
@@ -107,19 +113,13 @@ export default function CourseForm({ groupId, onSuccess }: CourseFormProps) {
                                     />
                                 </div>
                                 <div className="flex justify-center">
-                                    <Label
-                                        htmlFor="thumbnail"
-                                        className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors"
-                                    >
+                                    <span className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                                         Click to change thumbnail
-                                    </Label>
+                                    </span>
                                 </div>
                             </div>
                         ) : (
-                            <Label
-                                htmlFor="thumbnail"
-                                className="flex flex-col items-center justify-center py-12 cursor-pointer"
-                            >
+                            <div className="flex flex-col items-center justify-center py-12">
                                 <ImageIcon className="h-12 w-12 text-muted-foreground mb-4" />
                                 <span className="text-sm font-medium mb-1">
                                     Click to upload or drag and drop
@@ -127,10 +127,9 @@ export default function CourseForm({ groupId, onSuccess }: CourseFormProps) {
                                 <span className="text-xs text-muted-foreground">
                                     PNG, JPG, JPEG or WebP (max. 5MB)
                                 </span>
-                            </Label>
+                            </div>
                         )}
-                        <Input
-                            id="thumbnail"
+                        <input
                             type="file"
                             accept="image/png,image/jpg,image/jpeg,image/webp"
                             className="hidden"

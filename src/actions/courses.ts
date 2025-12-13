@@ -216,7 +216,13 @@ export const onGetGroupCourses = async (groupId: string) => {
     try {
         const courses = await prisma.course.findMany({
             where: { groupId },
-            include: {
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                thumbnail: true,
+                published: true,
+                createdAt: true,
                 videos: {
                     where: { published: true },
                     select: { id: true },

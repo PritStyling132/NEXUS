@@ -225,12 +225,21 @@ export const onGetGroupDashboardData = async (groupid: string) => {
             },
         })
 
-        // Get subscription count
-        const subscriptionCount = await client.subscription.count({
-            where: {
-                groupId: groupid,
-            },
+        // Get the group owner to fetch their pricing plans
+        const group = await client.group.findUnique({
+            where: { id: groupid },
+            select: { userId: true },
         })
+
+        // Get pricing plans count (OwnerPricingPlan) for the group owner
+        let pricingPlanCount = 0
+        if (group?.userId) {
+            pricingPlanCount = await client.ownerPricingPlan.count({
+                where: {
+                    userId: group.userId,
+                },
+            })
+        }
 
         // Get recent activity (posts/messages)
         const recentPosts = await client.post.count({
@@ -250,7 +259,7 @@ export const onGetGroupDashboardData = async (groupid: string) => {
                 memberCount,
                 channelCount,
                 courseCount,
-                subscriptionCount,
+                subscriptionCount: pricingPlanCount,
                 recentActivity: recentPosts,
             },
         }
