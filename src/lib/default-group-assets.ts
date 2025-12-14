@@ -75,12 +75,24 @@ export function getGroupIconUrl(
     icon?: string | null,
     category?: string | null,
 ): string {
-    // If icon exists, return it directly (it's already a full URL)
-    if (icon) {
+    // If icon exists and is a valid URL, return it directly
+    if (icon && isValidUrl(icon)) {
         return icon
     }
 
     return getDefaultIcon(category)
+}
+
+/**
+ * Check if a string is a valid URL
+ */
+function isValidUrl(str: string): boolean {
+    try {
+        const url = new URL(str)
+        return url.protocol === "http:" || url.protocol === "https:"
+    } catch {
+        return false
+    }
 }
 
 /**
@@ -91,8 +103,8 @@ export function getGroupThumbnailUrl(
     thumbnail?: string | null,
     category?: string | null,
 ): string {
-    // If thumbnail exists, return it directly (it's already a full URL)
-    if (thumbnail) {
+    // If thumbnail exists and is a valid URL, return it directly
+    if (thumbnail && isValidUrl(thumbnail)) {
         return thumbnail
     }
 

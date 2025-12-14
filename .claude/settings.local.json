@@ -1,14 +1,15 @@
 {
-    "permissions": {
-        "allow": [
-            "Bash(ls:*)",
-            "Bash(find:*)",
-            "Bash(npm run build:*)",
-            "Bash(npx prisma migrate dev:*)",
-            "Bash(npx prisma db push:*)",
-            "Bash(npx next build:*)",
-            "Bash(npm run dev:*)",
-            "Bash(cat:*)"
-        ]
-    }
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(npx prisma db push:*)",
+      "Bash(npx next build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(cat:*)",
+      "Bash(npm install:*)"
+    ]
+  }
 }

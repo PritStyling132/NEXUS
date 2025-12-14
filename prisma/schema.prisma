@@ -40,6 +40,8 @@ model User {
   notifications Notification[]
   ownerPricingPlans OwnerPricingPlan[] @relation("OwnerPricingPlans")
   memberPayments    MemberPayment[]    @relation("MemberPayments")
+  reelLikes     ReelLike[]
+  reelComments  ReelComment[]
 }
 
 model Group {
@@ -69,6 +71,7 @@ model Group {
   videos       Video[]        // NEW: Video uploads
   notifications Notification[]
   memberPayments MemberPayment[]
+  reels        Reel[]         @relation("GroupReels") // Marketing reels
 }
 
 model Members {
@@ -480,4 +483,67 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   REFUNDED
+}
+
+// Marketing Reels - Instagram-like short video feature
+model Reel {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  videoUrl      String   // Cloudinary URL for video
+  thumbnailUrl  String?  // Cloudinary URL for thumbnail
+  caption       String?  // Video description/caption
+  duration      Float?   // Duration in seconds
+
+  // View tracking
+  views         Int      @default(0)
+
+  // Relations
+  groupId       String   @db.Uuid
+  group         Group    @relation("GroupReels", fields: [groupId], references: [id], onDelete: Cascade)
+
+  likes         ReelLike[]
+  comments      ReelComment[]
+
+  @@index([groupId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model ReelLike {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+
+  reelId    String   @db.Uuid
+  userId    String   @db.Uuid
+
+  reel      Reel     @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reelId, userId]) // One like per user per reel
+  @@index([reelId])
+  @@index([userId])
+}
+
+model ReelComment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content   String
+
+  reelId    String   @db.Uuid
+  userId    String   @db.Uuid
+
+  // For nested replies
+  parentId  String?  @db.Uuid
+
+  reel      Reel          @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    ReelComment?  @relation("ReelCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   ReelComment[] @relation("ReelCommentReplies")
+
+  @@index([reelId])
+  @@index([userId])
+  @@index([parentId])
 }
