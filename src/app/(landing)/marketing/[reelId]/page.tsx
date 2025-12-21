@@ -3,10 +3,11 @@ import { redirect } from "next/navigation"
 // This page redirects to the main marketing page with the reel ID as a query param
 // This allows sharing direct links to specific reels
 
-export default function SharedReelPage({
+export default async function SharedReelPage({
     params,
 }: {
-    params: { reelId: string }
+    params: Promise<{ reelId: string }>
 }) {
-    redirect(`/marketing?reel=${params.reelId}`)
+    const { reelId } = await params
+    redirect(`/marketing?reel=${reelId}`)
 }

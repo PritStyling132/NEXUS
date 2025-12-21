@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         // Send rejection email
         await sendEmail({
             to: pendingOwner.email,
-            subject: "Update on Your NeXuS Application",
+            subject: "Update on Your Nexus Application",
             html: getRejectionEmailTemplate(
                 pendingOwner.firstname,
                 reason.trim(),

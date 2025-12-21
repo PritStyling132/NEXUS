@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
         // Send approval email with credentials
         await sendEmail({
             to: pendingOwner.email,
-            subject: "Your NeXuS Application Has Been Approved!",
+            subject: "Your Nexus Application Has Been Approved!",
             html: getApprovalEmailTemplate(
                 pendingOwner.firstname,
                 pendingOwner.email,

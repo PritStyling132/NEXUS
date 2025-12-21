@@ -14,7 +14,7 @@ const CallToAction = () => {
                 Bringing Communities <br className="md:hidden" /> Together
             </GradientText>
             <p className="text-sm sm:text-base md:text-lg text-left md:text-center text-muted-foreground max-w-2xl px-2">
-                NeXuS is a vibrant online platform that empowers communities to{" "}
+                Nexus is a vibrant online platform that empowers communities to{" "}
                 <br className="hidden md:block" />
                 collaborate, and cultivate meaningful relationships
             </p>

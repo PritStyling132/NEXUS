@@ -63,7 +63,7 @@ export const Footer = () => {
                         <p className="text-sm text-muted-foreground mb-4 max-w-xs">
                             Empowering communities to learn, grow, and succeed
                             together. Join thousands of creators and learners on
-                            NeXuS.
+                            Nexus.
                         </p>
                         <div className="flex gap-3">
                             {socialLinks.map((social) => {
@@ -156,7 +156,7 @@ export const Footer = () => {
                 {/* Bottom Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <p className="text-sm text-muted-foreground">
-                        © {new Date().getFullYear()} NeXuS. All rights reserved.
+                        © {new Date().getFullYear()} Nexus. All rights reserved.
                     </p>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">

@@ -107,7 +107,7 @@ export default function PaymentForm() {
                 key: orderData.key,
                 amount: orderData.amount,
                 currency: orderData.currency,
-                name: "NeXuS",
+                name: "Nexus",
                 description: "Card Verification (Refundable ₹1)",
                 order_id: orderData.orderId,
                 handler: async function (response: any) {
@@ -389,7 +389,7 @@ export default function PaymentForm() {
 //                 key: orderData.key,
 //                 amount: orderData.amount,
 //                 currency: orderData.currency,
-//                 name: "NeXuS",
+//                 name: "Nexus",
 //                 description: "Card Verification (₹1 - Refunded)",
 //                 order_id: orderData.orderId,
 //                 customer_id: customerData.customerId,
@@ -679,7 +679,7 @@ export default function PaymentForm() {
 //                 key: orderData.key,
 //                 amount: orderData.amount,
 //                 currency: orderData.currency,
-//                 name: "NeXuS",
+//                 name: "Nexus",
 //                 description: "Setup Subscription - ₹1 verification (refunded)",
 //                 order_id: orderData.orderId,
 

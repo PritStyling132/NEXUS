@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
         // Send confirmation email to applicant
         await sendEmail({
             to: email,
-            subject: "Application Received - NeXuS",
+            subject: "Application Received - Nexus",
             html: getApplicationReceivedEmailTemplate(firstname),
         })
 
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
         if (adminEmail) {
             await sendEmail({
                 to: adminEmail,
-                subject: "New Owner Application - NeXuS",
+                subject: "New Owner Application - Nexus",
                 html: getAdminNotificationEmailTemplate(
                     `${firstname} ${lastname}`,
                     email,

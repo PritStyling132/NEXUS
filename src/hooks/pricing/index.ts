@@ -203,7 +203,7 @@ export const useMemberPayment = (groupId: string) => {
                     key: orderData.key,
                     amount: orderData.amount,
                     currency: orderData.currency,
-                    name: "NeXuS",
+                    name: "Nexus",
                     description: `Join ${orderData.groupName} - ${orderData.planName}`,
                     order_id: orderData.orderId,
                     handler: async (response: any) => {

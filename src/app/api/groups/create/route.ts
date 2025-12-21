@@ -41,10 +41,10 @@ async function getOrCreatePlan(): Promise<string> {
         period: "monthly" as const,
         interval: 1,
         item: {
-            name: "NeXuS Pro Monthly",
+            name: "Nexus Pro Monthly",
             amount: PRICE_PER_GROUP,
             currency: "INR",
-            description: "Monthly subscription for NeXuS Pro features",
+            description: "Monthly subscription for Nexus Pro features",
         },
     }
 

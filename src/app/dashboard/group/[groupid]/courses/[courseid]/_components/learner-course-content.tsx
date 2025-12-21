@@ -22,6 +22,7 @@ import {
     CheckCircle,
 } from "lucide-react"
 import Link from "next/link"
+import AiTutorChat from "@/components/global/ai-tutor-chat"
 
 type LearnerCourseContentProps = {
     groupId: string
@@ -299,6 +300,15 @@ export default function LearnerCourseContent({
                     </div>
                 </div>
             </div>
+
+            {/* AI Tutor Chat - Available for learners while watching course content */}
+            <AiTutorChat
+                courseContext={{
+                    title: course.title,
+                    description: course.description || undefined,
+                    topics: course.videos?.map((v) => v.title).join(", ") || undefined,
+                }}
+            />
         </div>
     )
 }

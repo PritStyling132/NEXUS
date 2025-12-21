@@ -125,7 +125,7 @@ export default function ChangePasswordPage() {
             {/* Header */}
             <header className="border-b">
                 <div className="container flex h-16 items-center justify-between px-4">
-                    <h2 className="text-2xl font-bold">NeXuS.</h2>
+                    <h2 className="text-2xl font-bold">Nexus.</h2>
                     <ThemeToggle />
                 </div>
             </header>

@@ -146,7 +146,7 @@ export default function OwnerPaymentSetupPage() {
                 key: orderData.key,
                 amount: orderData.amount,
                 currency: orderData.currency,
-                name: "NeXuS",
+                name: "Nexus",
                 description: "Card Verification (Refundable ₹1)",
                 order_id: orderData.orderId,
                 handler: async function (response: any) {
@@ -243,7 +243,7 @@ export default function OwnerPaymentSetupPage() {
             {/* Header */}
             <header className="border-b">
                 <div className="container flex h-16 items-center justify-between px-4">
-                    <h2 className="text-2xl font-bold">NeXuS.</h2>
+                    <h2 className="text-2xl font-bold">Nexus.</h2>
                     <ThemeToggle />
                 </div>
             </header>

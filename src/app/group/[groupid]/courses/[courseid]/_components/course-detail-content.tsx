@@ -49,6 +49,7 @@ import {
 import Link from "next/link"
 import CourseVideoForm from "@/components/forms/course-video-form"
 import CourseResourceForm from "@/components/forms/course-resource-form"
+import AiTutorChat from "@/components/global/ai-tutor-chat"
 
 type CourseDetailContentProps = {
     groupId: string
@@ -561,6 +562,15 @@ export default function CourseDetailContent({
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            {/* AI Tutor Chatbot */}
+            <AiTutorChat
+                courseContext={{
+                    title: course.title,
+                    description: course.description || undefined,
+                    topics: course.videos?.map((v) => v.title).join(", ") || undefined,
+                }}
+            />
         </div>
     )
 }

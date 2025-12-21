@@ -9,6 +9,7 @@ import {
     Settings,
     BookOpen,
     Film,
+    Video,
 } from "lucide-react"
 
 export type MenuProps = {
@@ -62,30 +63,36 @@ export const SIDEBAR_SETTINGS_MENU: MenuProps[] = [
     },
     {
         id: 2,
+        label: "Live Sessions",
+        icon: <Video />,
+        path: "live-sessions",
+    },
+    {
+        id: 3,
         label: "Marketing Reels",
         icon: <Film />,
         path: "reels",
     },
     {
-        id: 3,
+        id: 4,
         label: "Subscriptions",
         icon: <CreditCard />,
         path: "subscriptions",
     },
     {
-        id: 4,
+        id: 5,
         label: "Affiliates",
         icon: <Layers />,
         path: "affiliates",
     },
     {
-        id: 5,
+        id: 6,
         label: "Domain Config",
         icon: <Globe />,
         path: "domains",
     },
     {
-        id: 6,
+        id: 7,
         label: "Integration",
         icon: <Zap />,
         path: "integrations",

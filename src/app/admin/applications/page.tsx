@@ -230,7 +230,7 @@ export default function AdminApplicationsPage() {
             <header className="border-b bg-background sticky top-0 z-50">
                 <div className="container flex h-16 items-center justify-between px-4">
                     <div>
-                        <h2 className="text-2xl font-bold">NeXuS Admin</h2>
+                        <h2 className="text-2xl font-bold">Nexus Admin</h2>
                         <p className="text-sm text-muted-foreground">
                             Owner Applications
                         </p>

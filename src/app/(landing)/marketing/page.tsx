@@ -19,11 +19,17 @@ import {
     ExternalLink,
     Copy,
     Check,
+    Video,
+    Sparkles,
+    Compass,
+    ArrowRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
 import {
     Sheet,
     SheetContent,
@@ -91,6 +97,59 @@ type Comment = {
     }
 }
 
+// Floating particles component
+const FloatingShapes = () => {
+    return (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Floating particles */}
+            {[...Array(20)].map((_, i) => (
+                <div
+                    key={i}
+                    className="particle"
+                    style={{
+                        left: `${Math.random() * 100}%`,
+                        animationDelay: `${Math.random() * 10}s`,
+                        animationDuration: `${10 + Math.random() * 10}s`,
+                    }}
+                />
+            ))}
+        </div>
+    )
+}
+
+// 3D Card Component
+const Card3D = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+    const [transform, setTransform] = useState("")
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const card = e.currentTarget
+        const rect = card.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        const centerX = rect.width / 2
+        const centerY = rect.height / 2
+        const rotateX = (y - centerY) / 25
+        const rotateY = (centerX - x) / 25
+
+        setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`)
+    }
+
+    const handleMouseLeave = () => {
+        setTransform("")
+    }
+
+    return (
+        <div
+            className={`transition-all duration-300 ease-out ${className}`}
+            style={{ transform }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+        >
+            {children}
+        </div>
+    )
+}
+
 export default function MarketingPage() {
     const { isSignedIn } = useUser()
     const [reels, setReels] = useState<Reel[]>([])
@@ -109,9 +168,14 @@ export default function MarketingPage() {
     const [newComment, setNewComment] = useState("")
     const [submittingComment, setSubmittingComment] = useState(false)
     const [copied, setCopied] = useState(false)
+    const [mounted, setMounted] = useState(false)
 
     const containerRef = useRef<HTMLDivElement>(null)
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     // Fetch reels
     const fetchReels = useCallback(async (cursor?: string) => {
@@ -145,7 +209,6 @@ export default function MarketingPage() {
             }
         } catch (error) {
             console.error("Error fetching reels:", error)
-            toast.error("Failed to load reels")
         } finally {
             setLoading(false)
         }
@@ -351,7 +414,7 @@ export default function MarketingPage() {
             try {
                 await navigator.share({
                     title: `${reel.group.name} - ${reel.caption || "Check out this reel!"}`,
-                    text: reel.caption || "Check out this amazing reel on NeXuS!",
+                    text: reel.caption || "Check out this amazing reel on Nexus!",
                     url: shareUrl,
                 })
             } catch {
@@ -383,38 +446,109 @@ export default function MarketingPage() {
 
     const currentReel = reels[currentIndex]
 
+    // Loading State
     if (loading && reels.length === 0) {
         return (
-            <div className="fixed inset-0 flex items-center justify-center bg-black">
-                <div className="text-center">
-                    <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-                    <p className="text-white/60">Loading reels...</p>
+            <div className="min-h-screen relative overflow-hidden grid-bg">
+                <FloatingShapes />
+                <div className="flex items-center justify-center min-h-screen relative z-10">
+                    <Card3D>
+                        <Card className="p-12 text-center glass border-primary/20">
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center mx-auto mb-6 animate-float-3d">
+                                <Loader2 className="w-10 h-10 animate-spin text-white" />
+                            </div>
+                            <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
+                                Loading Reels
+                            </h2>
+                            <p className="text-muted-foreground">
+                                Discovering amazing content...
+                            </p>
+                        </Card>
+                    </Card3D>
                 </div>
             </div>
         )
     }
 
+    // Empty State - No Reels
     if (reels.length === 0) {
         return (
-            <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-b from-background to-black/90">
-                <div className="text-center max-w-md px-4">
-                    <div className="relative mx-auto mb-6 w-24 h-24">
-                        <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full animate-pulse" />
-                        <div className="relative w-full h-full rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center">
-                            <Play className="w-10 h-10 text-primary" />
+            <div className="min-h-screen relative overflow-hidden grid-bg">
+                <FloatingShapes />
+                <div className="flex items-center justify-center min-h-screen relative z-10 px-4">
+                    <div className="max-w-lg w-full">
+                        {/* Animated Badge */}
+                        <div className={`text-center ${mounted ? 'animate-fade-in-up' : 'opacity-0'}`}>
+                            <Badge
+                                variant="outline"
+                                className="mb-6 px-4 py-2 border-primary/30 glass animate-pulse-glow"
+                            >
+                                <Video className="w-4 h-4 mr-2 text-primary" />
+                                <span className="bg-gradient-to-r from-primary via-purple-500 to-cyan-500 bg-clip-text text-transparent font-semibold">
+                                    Reels Coming Soon
+                                </span>
+                            </Badge>
+                        </div>
+
+                        <Card3D>
+                            <Card className="glass border-primary/20 overflow-hidden">
+                                <CardContent className="p-8 sm:p-12 text-center">
+                                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center mx-auto mb-6 animate-float-3d shadow-lg">
+                                        <Play className="w-12 h-12 text-white" fill="white" />
+                                    </div>
+                                    <h2 className="text-2xl sm:text-3xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-cyan-500 bg-clip-text text-transparent">
+                                        No Reels Yet
+                                    </h2>
+                                    <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                                        Be the first to discover amazing content from our community groups! Explore communities and check back soon for exciting reels.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                        <Link href="/explore">
+                                            <Button
+                                                size="lg"
+                                                className="btn-futuristic text-white border-0 rounded-xl gap-2 w-full sm:w-auto"
+                                            >
+                                                <Compass className="w-5 h-5" />
+                                                Explore Communities
+                                            </Button>
+                                        </Link>
+                                        <Link href="/">
+                                            <Button
+                                                size="lg"
+                                                variant="outline"
+                                                className="rounded-xl glass hover:bg-primary/10 w-full sm:w-auto"
+                                            >
+                                                Go Home
+                                                <ArrowRight className="w-4 h-4 ml-2" />
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Card3D>
+
+                        {/* Feature hints */}
+                        <div className={`mt-8 grid grid-cols-3 gap-4 ${mounted ? 'animate-fade-in-up stagger-2' : 'opacity-0'}`}>
+                            <div className="text-center">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                    <Heart className="w-6 h-6 text-white" />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Like</p>
+                            </div>
+                            <div className="text-center">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                    <MessageCircle className="w-6 h-6 text-white" />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Comment</p>
+                            </div>
+                            <div className="text-center">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center mx-auto mb-2 shadow-lg">
+                                    <Share2 className="w-6 h-6 text-white" />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Share</p>
+                            </div>
                         </div>
                     </div>
-                    <h2 className="text-2xl font-bold text-foreground mb-2">
-                        No Reels Yet
-                    </h2>
-                    <p className="text-muted-foreground mb-6">
-                        Be the first to discover amazing content from our community groups!
-                    </p>
-                    <Link href="/explore">
-                        <Button className="bg-primary hover:bg-primary/90">
-                            Explore Groups
-                        </Button>
-                    </Link>
                 </div>
             </div>
         )
@@ -631,8 +765,13 @@ export default function MarketingPage() {
 
             {/* Top Bar */}
             <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between z-20">
-                <h1 className="text-white font-bold text-xl">Reels</h1>
-                <div className="flex items-center gap-2 text-white/60 text-sm">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center">
+                        <Video className="w-4 h-4 text-white" />
+                    </div>
+                    <h1 className="text-white font-bold text-xl">Reels</h1>
+                </div>
+                <div className="flex items-center gap-2 text-white/60 text-sm bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
                     <span>{currentIndex + 1}/{reels.length}</span>
                 </div>
             </div>
@@ -742,7 +881,7 @@ export default function MarketingPage() {
                                 size="icon"
                                 onClick={handleSubmitComment}
                                 disabled={!newComment.trim() || submittingComment || !isSignedIn}
-                                className="rounded-xl"
+                                className="rounded-xl bg-gradient-to-r from-primary to-cyan-500"
                             >
                                 {submittingComment ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />

@@ -8,6 +8,8 @@ import { onAuthenticatedUser } from "./auth"
 export const onSendChannelMessage = async (
     channelId: string,
     message: string,
+    mediaType?: "image" | "video" | "voice" | null,
+    mediaUrl?: string | null,
 ) => {
     try {
         const user = await onAuthenticatedUser()
@@ -15,7 +17,8 @@ export const onSendChannelMessage = async (
             return { status: 401, message: "Unauthorized" }
         }
 
-        if (!message.trim()) {
+        // Allow empty message if there's media
+        if (!message.trim() && !mediaUrl) {
             return { status: 400, message: "Message cannot be empty" }
         }
 
@@ -24,6 +27,8 @@ export const onSendChannelMessage = async (
                 message: message.trim(),
                 senderId: user.id,
                 channelId: channelId,
+                mediaType: mediaType || null,
+                mediaUrl: mediaUrl || null,
             },
             include: {
                 sender: {

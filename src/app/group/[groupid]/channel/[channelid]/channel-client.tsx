@@ -1,6 +1,23 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
-import { Hash, Send, MoreVertical, Users, Loader2, Sparkles } from "lucide-react"
+import { useState, useEffect, useRef, useCallback } from "react"
+import {
+    Hash,
+    Send,
+    MoreVertical,
+    Users,
+    Loader2,
+    Sparkles,
+    Smile,
+    Image as ImageIcon,
+    Video,
+    Mic,
+    X,
+    Play,
+    Pause,
+    Square,
+    FileImage,
+    FileVideo,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -11,9 +28,15 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { onGetChannelMessages, onSendChannelMessage } from "@/actions/messages"
+import { uploadFile } from "@/lib/cloudinary"
 import { toast } from "sonner"
 
 interface Props {
@@ -22,13 +45,41 @@ interface Props {
     channelid: string
 }
 
+// Common emoji categories
+const emojiCategories = {
+    "Smileys": ["😀", "😃", "😄", "😁", "😅", "😂", "🤣", "😊", "😇", "🙂", "😉", "😌", "😍", "🥰", "😘", "😗", "😋", "😛", "😜", "🤪", "😝", "🤑", "🤗", "🤭", "🤫", "🤔", "🤐", "🤨", "😐", "😑", "😶", "😏", "😒", "🙄", "😬", "😮‍💨", "🤥"],
+    "Gestures": ["👍", "👎", "👌", "🤌", "🤏", "✌️", "🤞", "🤟", "🤘", "🤙", "👈", "👉", "👆", "👇", "☝️", "👋", "🤚", "🖐️", "✋", "🖖", "👏", "🙌", "🤝", "🙏", "💪", "🦾"],
+    "Hearts": ["❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎", "💔", "❤️‍🔥", "❤️‍🩹", "💕", "💞", "💓", "💗", "💖", "💘", "💝"],
+    "Objects": ["🎉", "🎊", "🎁", "🎈", "✨", "⭐", "🌟", "💫", "🔥", "💯", "💢", "💥", "💦", "💨", "🕳️", "💣", "💬", "👁️‍🗨️", "🗨️", "🗯️", "💭", "💤"],
+    "Animals": ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐻‍❄️", "🐨", "🐯", "🦁", "🐮", "🐷", "🐸", "🐵", "🙈", "🙉", "🙊", "🐔", "🐧", "🐦", "🐤", "🦆", "🦅", "🦉"],
+    "Food": ["🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝", "🍅", "🍆", "🥑", "🥦", "🥬", "🥒", "🌶️", "🫑", "🌽", "🥕", "🫒"],
+}
+
 export default function ChannelClient({
     channelInfo,
     groupid,
     channelid,
 }: Props) {
     const [message, setMessage] = useState("")
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
+    const [uploadProgress, setUploadProgress] = useState(0)
+    const [mediaPreview, setMediaPreview] = useState<{
+        type: "image" | "video" | "voice"
+        url: string
+        file?: File
+    } | null>(null)
+    const [isRecording, setIsRecording] = useState(false)
+    const [recordingTime, setRecordingTime] = useState(0)
+    const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
+
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const videoInputRef = useRef<HTMLInputElement>(null)
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+    const audioChunksRef = useRef<Blob[]>([])
+    const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
     const queryClient = useQueryClient()
 
     const channel =
@@ -56,10 +107,30 @@ export default function ChannelClient({
         scrollToBottom()
     }, [messages])
 
+    // Cleanup recording on unmount
+    useEffect(() => {
+        return () => {
+            if (recordingIntervalRef.current) {
+                clearInterval(recordingIntervalRef.current)
+            }
+            if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+                mediaRecorderRef.current.stop()
+            }
+        }
+    }, [])
+
     // Send message mutation
     const sendMessageMutation = useMutation({
-        mutationFn: async (messageText: string) => {
-            return await onSendChannelMessage(channelid, messageText)
+        mutationFn: async ({
+            text,
+            mediaType,
+            mediaUrl,
+        }: {
+            text: string
+            mediaType?: "image" | "video" | "voice" | null
+            mediaUrl?: string | null
+        }) => {
+            return await onSendChannelMessage(channelid, text, mediaType, mediaUrl)
         },
         onSuccess: (result) => {
             if (result.status === 200) {
@@ -75,13 +146,176 @@ export default function ChannelClient({
         },
     })
 
+    const handleEmojiSelect = (emoji: string) => {
+        setMessage((prev) => prev + emoji)
+        setShowEmojiPicker(false)
+    }
+
+    const handleFileSelect = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+        type: "image" | "video"
+    ) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        // Validate file size (50MB max for videos, 10MB for images)
+        const maxSize = type === "video" ? 50 * 1024 * 1024 : 10 * 1024 * 1024
+        if (file.size > maxSize) {
+            toast.error(`File too large. Max size: ${type === "video" ? "50MB" : "10MB"}`)
+            return
+        }
+
+        // Create preview
+        const previewUrl = URL.createObjectURL(file)
+        setMediaPreview({ type, url: previewUrl, file })
+
+        // Reset input
+        e.target.value = ""
+    }
+
+    const handleRemoveMedia = () => {
+        if (mediaPreview?.url) {
+            URL.revokeObjectURL(mediaPreview.url)
+        }
+        setMediaPreview(null)
+        setAudioBlob(null)
+    }
+
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+            const mediaRecorder = new MediaRecorder(stream)
+            mediaRecorderRef.current = mediaRecorder
+            audioChunksRef.current = []
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) {
+                    audioChunksRef.current.push(e.data)
+                }
+            }
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(audioChunksRef.current, { type: "audio/webm" })
+                setAudioBlob(blob)
+                const url = URL.createObjectURL(blob)
+                setMediaPreview({ type: "voice", url })
+                stream.getTracks().forEach((track) => track.stop())
+            }
+
+            mediaRecorder.start()
+            setIsRecording(true)
+            setRecordingTime(0)
+
+            recordingIntervalRef.current = setInterval(() => {
+                setRecordingTime((prev) => prev + 1)
+            }, 1000)
+        } catch (error) {
+            toast.error("Could not access microphone. Please check permissions.")
+        }
+    }
+
+    const stopRecording = () => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+            mediaRecorderRef.current.stop()
+        }
+        if (recordingIntervalRef.current) {
+            clearInterval(recordingIntervalRef.current)
+        }
+        setIsRecording(false)
+    }
+
+    const formatRecordingTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return `${mins}:${secs.toString().padStart(2, "0")}`
+    }
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!message.trim() || sendMessageMutation.isPending) return
+        if ((!message.trim() && !mediaPreview) || sendMessageMutation.isPending || isUploading) return
 
-        const messageText = message.trim()
-        setMessage("")
-        sendMessageMutation.mutate(messageText)
+        try {
+            let mediaUrl: string | null = null
+            let mediaType: "image" | "video" | "voice" | null = null
+
+            // Upload media if present
+            if (mediaPreview) {
+                setIsUploading(true)
+                setUploadProgress(10)
+
+                let fileToUpload: File
+
+                if (mediaPreview.type === "voice" && audioBlob) {
+                    fileToUpload = new File([audioBlob], `voice-${Date.now()}.webm`, {
+                        type: "audio/webm",
+                    })
+                } else if (mediaPreview.file) {
+                    fileToUpload = mediaPreview.file
+                } else {
+                    throw new Error("No file to upload")
+                }
+
+                mediaUrl = await uploadFile(fileToUpload, setUploadProgress)
+                mediaType = mediaPreview.type
+            }
+
+            const messageText = message.trim()
+            setMessage("")
+            handleRemoveMedia()
+            setIsUploading(false)
+            setUploadProgress(0)
+
+            sendMessageMutation.mutate({
+                text: messageText,
+                mediaType,
+                mediaUrl,
+            })
+        } catch (error: any) {
+            setIsUploading(false)
+            setUploadProgress(0)
+            toast.error(error.message || "Failed to upload media")
+        }
+    }
+
+    // Render media content in message
+    const renderMediaContent = (msg: any) => {
+        if (!msg.mediaUrl) return null
+
+        switch (msg.mediaType) {
+            case "image":
+                return (
+                    <div className="mt-2 max-w-sm">
+                        <img
+                            src={msg.mediaUrl}
+                            alt="Shared image"
+                            className="rounded-xl border border-white/10 cursor-pointer hover:opacity-90 transition-opacity"
+                            onClick={() => window.open(msg.mediaUrl, "_blank")}
+                        />
+                    </div>
+                )
+            case "video":
+                return (
+                    <div className="mt-2 max-w-md">
+                        <video
+                            src={msg.mediaUrl}
+                            controls
+                            className="rounded-xl border border-white/10 w-full"
+                        />
+                    </div>
+                )
+            case "voice":
+                return (
+                    <div className="mt-2 max-w-xs">
+                        <audio
+                            src={msg.mediaUrl}
+                            controls
+                            className="w-full h-10"
+                        />
+                    </div>
+                )
+            default:
+                return null
+        }
     }
 
     return (
@@ -177,9 +411,12 @@ export default function ChannelClient({
                                                 </span>
                                             </div>
                                         )}
-                                        <p className="text-[15px] leading-relaxed text-foreground/90 dark:text-white/75 break-words">
-                                            {msg.message}
-                                        </p>
+                                        {msg.message && (
+                                            <p className="text-[15px] leading-relaxed text-foreground/90 dark:text-white/75 break-words">
+                                                {msg.message}
+                                            </p>
+                                        )}
+                                        {renderMediaContent(msg)}
                                     </div>
                                 </div>
                             )
@@ -214,7 +451,191 @@ export default function ChannelClient({
                 {/* Top border with gradient */}
                 <div className="absolute top-0 left-4 right-4 sm:left-6 sm:right-6 md:left-8 md:right-8 h-px bg-gradient-to-r from-transparent via-border/50 dark:via-white/5 to-transparent" />
 
-                <form onSubmit={handleSendMessage} className="flex gap-3 items-end">
+                {/* Media Preview */}
+                {mediaPreview && (
+                    <div className="mb-3 relative">
+                        <div className="inline-flex items-center gap-3 p-3 rounded-xl bg-muted/50 dark:bg-white/[0.03] border border-border/50 dark:border-white/[0.05]">
+                            {mediaPreview.type === "image" && (
+                                <div className="relative">
+                                    <img
+                                        src={mediaPreview.url}
+                                        alt="Preview"
+                                        className="w-20 h-20 object-cover rounded-lg"
+                                    />
+                                    <div className="absolute -top-1 -left-1 p-1 rounded-full bg-blue-500">
+                                        <FileImage className="w-3 h-3 text-white" />
+                                    </div>
+                                </div>
+                            )}
+                            {mediaPreview.type === "video" && (
+                                <div className="relative">
+                                    <video
+                                        src={mediaPreview.url}
+                                        className="w-20 h-20 object-cover rounded-lg"
+                                    />
+                                    <div className="absolute -top-1 -left-1 p-1 rounded-full bg-purple-500">
+                                        <FileVideo className="w-3 h-3 text-white" />
+                                    </div>
+                                </div>
+                            )}
+                            {mediaPreview.type === "voice" && (
+                                <div className="flex items-center gap-2">
+                                    <div className="p-2 rounded-full bg-gradient-to-br from-green-500 to-emerald-500">
+                                        <Mic className="w-4 h-4 text-white" />
+                                    </div>
+                                    <audio src={mediaPreview.url} controls className="h-8" />
+                                </div>
+                            )}
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 rounded-full hover:bg-red-500/10"
+                                onClick={handleRemoveMedia}
+                            >
+                                <X className="w-4 h-4 text-red-500" />
+                            </Button>
+                        </div>
+                        {isUploading && (
+                            <div className="mt-2">
+                                <div className="h-1 bg-muted rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-primary to-purple-500 transition-all duration-300"
+                                        style={{ width: `${uploadProgress}%` }}
+                                    />
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    Uploading... {uploadProgress}%
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Recording Indicator */}
+                {isRecording && (
+                    <div className="mb-3 flex items-center gap-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                        <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+                        <span className="text-sm font-medium text-red-500">
+                            Recording... {formatRecordingTime(recordingTime)}
+                        </span>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="ml-auto h-8 px-3 bg-red-500/20 hover:bg-red-500/30 text-red-500"
+                            onClick={stopRecording}
+                        >
+                            <Square className="w-4 h-4 mr-1" />
+                            Stop
+                        </Button>
+                    </div>
+                )}
+
+                <form onSubmit={handleSendMessage} className="flex gap-2 items-end">
+                    {/* Media Action Buttons */}
+                    <div className="flex gap-1">
+                        {/* Emoji Picker */}
+                        <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-10 w-10 rounded-xl hover:bg-yellow-500/10 dark:hover:bg-yellow-500/20 transition-colors"
+                                >
+                                    <Smile className="w-5 h-5 text-yellow-500" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                className="w-80 p-0 bg-card/95 dark:bg-[#1a1a1d]/95 backdrop-blur-xl border-border/50 dark:border-white/10"
+                                align="start"
+                                side="top"
+                            >
+                                <div className="p-3 max-h-[300px] overflow-y-auto">
+                                    {Object.entries(emojiCategories).map(([category, emojis]) => (
+                                        <div key={category} className="mb-3">
+                                            <p className="text-xs font-semibold text-muted-foreground mb-2">
+                                                {category}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1">
+                                                {emojis.map((emoji) => (
+                                                    <button
+                                                        key={emoji}
+                                                        type="button"
+                                                        className="p-1.5 hover:bg-muted rounded-lg transition-colors text-xl"
+                                                        onClick={() => handleEmojiSelect(emoji)}
+                                                    >
+                                                        {emoji}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+
+                        {/* Image Upload */}
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-10 w-10 rounded-xl hover:bg-blue-500/10 dark:hover:bg-blue-500/20 transition-colors"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isUploading || isRecording}
+                        >
+                            <ImageIcon className="w-5 h-5 text-blue-500" />
+                        </Button>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            aria-label="Upload image"
+                            onChange={(e) => handleFileSelect(e, "image")}
+                        />
+
+                        {/* Video Upload */}
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-10 w-10 rounded-xl hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-colors"
+                            onClick={() => videoInputRef.current?.click()}
+                            disabled={isUploading || isRecording}
+                        >
+                            <Video className="w-5 h-5 text-purple-500" />
+                        </Button>
+                        <input
+                            ref={videoInputRef}
+                            type="file"
+                            accept="video/*"
+                            className="hidden"
+                            aria-label="Upload video"
+                            onChange={(e) => handleFileSelect(e, "video")}
+                        />
+
+                        {/* Voice Recording */}
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                                "h-10 w-10 rounded-xl transition-colors",
+                                isRecording
+                                    ? "bg-red-500/20 hover:bg-red-500/30"
+                                    : "hover:bg-green-500/10 dark:hover:bg-green-500/20"
+                            )}
+                            onClick={isRecording ? stopRecording : startRecording}
+                            disabled={isUploading || !!mediaPreview}
+                        >
+                            <Mic className={cn(
+                                "w-5 h-5",
+                                isRecording ? "text-red-500" : "text-green-500"
+                            )} />
+                        </Button>
+                    </div>
+
+                    {/* Message Input */}
                     <div className="flex-1 relative">
                         {/* Input glow effect on focus */}
                         <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-0 focus-within:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -229,12 +650,15 @@ export default function ChannelClient({
                             }}
                             placeholder={`Message #${channel?.name || "channel"}...`}
                             className="relative min-h-[56px] max-h-[200px] resize-none bg-muted/50 dark:bg-white/[0.03] border-0 ring-1 ring-border/50 dark:ring-white/[0.05] focus:ring-2 focus:ring-primary/50 dark:focus:ring-primary/30 rounded-2xl text-[15px] placeholder:text-muted-foreground/50 dark:placeholder:text-white/30 transition-all duration-300"
+                            disabled={isRecording}
                         />
                     </div>
+
+                    {/* Send Button */}
                     <Button
                         type="submit"
                         size="icon"
-                        disabled={!message.trim() || sendMessageMutation.isPending}
+                        disabled={(!message.trim() && !mediaPreview) || sendMessageMutation.isPending || isUploading || isRecording}
                         className={cn(
                             "relative h-14 w-14 rounded-2xl transition-all duration-300",
                             "bg-gradient-to-br from-primary to-primary/80 hover:from-primary hover:to-primary",
@@ -245,7 +669,7 @@ export default function ChannelClient({
                     >
                         {/* Button shine effect */}
                         <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        {sendMessageMutation.isPending ? (
+                        {sendMessageMutation.isPending || isUploading ? (
                             <Loader2 className="relative w-5 h-5 animate-spin" />
                         ) : (
                             <Send className="relative w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />

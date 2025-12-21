@@ -152,7 +152,7 @@ export default function OwnerRegisterPage() {
                 <header className="border-b">
                     <div className="container flex h-16 items-center justify-between px-4">
                         <Link href="/">
-                            <h2 className="text-2xl font-bold">NeXuS.</h2>
+                            <h2 className="text-2xl font-bold">Nexus.</h2>
                         </Link>
                         <ThemeToggle />
                     </div>
@@ -196,7 +196,7 @@ export default function OwnerRegisterPage() {
             <header className="border-b bg-background/80 backdrop-blur-sm">
                 <div className="container flex h-16 items-center justify-between px-4">
                     <Link href="/">
-                        <h2 className="text-2xl font-bold">NeXuS.</h2>
+                        <h2 className="text-2xl font-bold">Nexus.</h2>
                     </Link>
                     <div className="flex items-center gap-2">
                         <ThemeToggle />
@@ -226,11 +226,11 @@ export default function OwnerRegisterPage() {
                             </span>
                         </div>
                         <h1 className="text-3xl font-bold tracking-tight mb-2">
-                            Become a NeXuS Owner
+                            Become a Nexus Owner
                         </h1>
                         <p className="text-muted-foreground max-w-md mx-auto">
                             Build your community, create courses, and grow your
-                            audience with NeXuS platform.
+                            audience with Nexus platform.
                         </p>
                     </div>
 

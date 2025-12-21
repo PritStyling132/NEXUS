@@ -42,6 +42,7 @@ model User {
   memberPayments    MemberPayment[]    @relation("MemberPayments")
   reelLikes     ReelLike[]
   reelComments  ReelComment[]
+  createdLiveSessions LiveSession[] @relation("LiveSessionCreator")
 }
 
 model Group {
@@ -72,6 +73,7 @@ model Group {
   notifications Notification[]
   memberPayments MemberPayment[]
   reels        Reel[]         @relation("GroupReels") // Marketing reels
+  liveSessions LiveSession[]
 }
 
 model Members {
@@ -174,6 +176,10 @@ model Message {
   receiverId String?  @db.Uuid
   channelId  String?  @db.Uuid
 
+  // Media attachments
+  mediaType  String?  // "image" | "video" | "voice" | null
+  mediaUrl   String?  // Cloudinary URL for the media
+
   sender   User?    @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User?    @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
   channel  Channel? @relation(fields: [channelId], references: [id], onDelete: Cascade)
@@ -192,6 +198,7 @@ model Course {
   group            Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
   videos           CourseVideo[]
   resources        CourseResource[]
+  liveSessions     LiveSession[]
 
   @@index([groupId])
   @@index([published])
@@ -420,6 +427,42 @@ enum NotificationType {
   NEW_MESSAGE
   COURSE_ADDED
   CHANNEL_CREATED
+  LIVE_SESSION
+}
+
+enum LiveSessionStatus {
+  SCHEDULED
+  LIVE
+  ENDED
+  CANCELLED
+}
+
+// Live Sessions for course-specific video discussions
+model LiveSession {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  description   String?
+  scheduledAt   DateTime?  // null for instant sessions
+  startedAt     DateTime?
+  endedAt       DateTime?
+  status        LiveSessionStatus @default(SCHEDULED)
+  roomUrl       String     // Jitsi room URL
+
+  courseId      String   @db.Uuid
+  groupId       String   @db.Uuid
+  createdBy     String   @db.Uuid
+
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  group         Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  creator       User     @relation("LiveSessionCreator", fields: [createdBy], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([groupId])
+  @@index([status])
+  @@index([scheduledAt])
 }
 
 // Owner's pricing plans for group membership

@@ -42,7 +42,7 @@ const SignInPage = () => {
                     Welcome Back
                 </h5>
                 <p className="text-sm text-muted-foreground dark:text-themeTextGray">
-                    Sign in to continue to NeXuS
+                    Sign in to continue to Nexus
                 </p>
             </div>
 

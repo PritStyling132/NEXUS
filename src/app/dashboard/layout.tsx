@@ -15,7 +15,7 @@ export default function DashboardLayout({
                 <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6">
                     <Link href="/dashboard">
                         <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                            NeXuS.
+                            Nexus.
                         </h2>
                     </Link>
                     <div className="flex items-center gap-3">

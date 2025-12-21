@@ -8,7 +8,7 @@ export default function LoginChoicePage() {
             <header className="border-b">
                 <div className="container flex h-16 items-center justify-between px-4">
                     <Link href="/">
-                        <h2 className="text-2xl font-bold">NeXuS.</h2>
+                        <h2 className="text-2xl font-bold">Nexus.</h2>
                     </Link>
                 </div>
             </header>
@@ -18,7 +18,7 @@ export default function LoginChoicePage() {
                 <div className="w-full max-w-4xl">
                     <div className="text-center mb-12">
                         <h1 className="text-4xl font-bold tracking-tight mb-4">
-                            Welcome to NeXuS
+                            Welcome to Nexus
                         </h1>
                         <p className="text-xl text-muted-foreground">
                             Choose how you want to sign in
@@ -92,7 +92,7 @@ export default function LoginChoicePage() {
 
                     {/* Additional Links */}
                     <div className="mt-12 text-center space-y-4">
-                        <p className="text-muted-foreground">New to NeXuS?</p>
+                        <p className="text-muted-foreground">New to Nexus?</p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <Link
                                 href="/sign-up"

@@ -213,7 +213,7 @@ export default async function CreateGroupPage() {
                 <header className="border-b border-border dark:border-border/40 bg-background/95 dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
                     <div className="container flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6">
                         <h2 className="text-xl sm:text-2xl font-bold text-foreground dark:text-themeTextWhite">
-                            NeXuS.
+                            Nexus.
                         </h2>
                         <UserMenu />
                     </div>

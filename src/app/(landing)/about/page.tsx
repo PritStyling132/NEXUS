@@ -100,8 +100,8 @@ const comparisons = [
 
 const faqs = [
     {
-        question: "What is NeXuS?",
-        answer: "NeXuS is a modern community platform that enables creators to build, grow, and monetize their communities while providing learners with access to quality content and connections.",
+        question: "What is Nexus?",
+        answer: "Nexus is a modern community platform that enables creators to build, grow, and monetize their communities while providing learners with access to quality content and connections.",
     },
     {
         question: "How do I become an Owner?",
@@ -132,7 +132,7 @@ export default function AboutPage() {
                             variant="outline"
                             className="mb-4 px-4 py-1 border-primary/30"
                         >
-                            About NeXuS
+                            About Nexus
                         </Badge>
                         <GradientText
                             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold"
@@ -147,7 +147,7 @@ export default function AboutPage() {
                             to Learn & Grow Together
                         </GradientText>
                         <p className="text-lg sm:text-xl text-muted-foreground mt-6 max-w-3xl mx-auto leading-relaxed">
-                            NeXuS is a vibrant online community platform that
+                            Nexus is a vibrant online community platform that
                             empowers people to connect, learn, and cultivate
                             meaningful relationships through shared knowledge
                             and experiences.
@@ -196,7 +196,7 @@ export default function AboutPage() {
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-12">
                         <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                            Why Choose NeXuS?
+                            Why Choose Nexus?
                         </h2>
                         <p className="text-muted-foreground max-w-2xl mx-auto">
                             Everything you need to build, grow, and monetize
@@ -234,10 +234,10 @@ export default function AboutPage() {
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-12">
                         <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                            NeXuS vs Other Platforms
+                            Nexus vs Other Platforms
                         </h2>
                         <p className="text-muted-foreground">
-                            See why creators and learners choose NeXuS
+                            See why creators and learners choose Nexus
                         </p>
                     </div>
                     <Card className="bg-card dark:bg-themeBlack border-border dark:border-themeGray overflow-hidden">
@@ -249,7 +249,7 @@ export default function AboutPage() {
                                             Feature
                                         </th>
                                         <th className="text-center p-4 font-medium text-primary">
-                                            NeXuS
+                                            Nexus
                                         </th>
                                         <th className="text-center p-4 font-medium text-muted-foreground">
                                             Others
@@ -294,7 +294,7 @@ export default function AboutPage() {
                             Frequently Asked Questions
                         </h2>
                         <p className="text-muted-foreground">
-                            Everything you need to know about NeXuS
+                            Everything you need to know about Nexus
                         </p>
                     </div>
                     <div className="space-y-4">
@@ -326,7 +326,7 @@ export default function AboutPage() {
                     </h2>
                     <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
                         Join thousands of learners and creators building their
-                        future on NeXuS
+                        future on Nexus
                     </p>
                     <div className="flex gap-4 justify-center flex-wrap">
                         <Link href="/sign-up?tab=learner">

@@ -41,7 +41,7 @@ const SignupPage = () => {
                     Create Your Account
                 </h5>
                 <p className="text-sm text-muted-foreground dark:text-themeTextGray">
-                    Join NeXuS as a learner or apply to become an owner
+                    Join Nexus as a learner or apply to become an owner
                 </p>
             </div>
 
@@ -103,7 +103,7 @@ const SignupPage = () => {
                 <TabsContent value="owner" className="space-y-4">
                     <p className="text-sm text-muted-foreground dark:text-themeTextGray leading-relaxed">
                         Build your community, create courses, and grow your
-                        audience with NeXuS platform.
+                        audience with Nexus platform.
                     </p>
 
                     <OwnerRegistrationForm />

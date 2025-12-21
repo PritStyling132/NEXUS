@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 })
 
 const FROM_EMAIL = process.env.SMTP_FROM || "noreply@nexus.com"
-const APP_NAME = "NeXuS"
+const APP_NAME = "Nexus"
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
 
 interface SendEmailOptions {
@@ -112,5 +112,44 @@ export function getAdminNotificationEmailTemplate(
 <p style="margin: 5px 0;"><strong>Phone:</strong> ${applicantPhone}</p></div>
 <div style="text-align: center; margin: 30px 0;">
 <a href="${APP_URL}/admin/applications" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold;">Review Application</a></div>
+</div></body></html>`
+}
+
+export function getLiveSessionEmailTemplate(
+    recipientName: string,
+    courseName: string,
+    sessionTitle: string,
+    isInstant: boolean,
+    scheduledTime: string | null,
+    joinUrl: string,
+    ownerName: string,
+): string {
+    const statusBadge = isInstant
+        ? `<span style="background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">🔴 LIVE NOW</span>`
+        : `<span style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">📅 SCHEDULED</span>`
+
+    const timeSection = isInstant
+        ? `<p style="margin: 10px 0; color: #dc2626; font-weight: bold;">The session is starting NOW! Join immediately to participate.</p>`
+        : `<p style="margin: 10px 0;"><strong>Scheduled for:</strong> ${scheduledTime}</p>`
+
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Live Session Notification</title></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+<h1 style="color: white; margin: 0; font-size: 28px;">${APP_NAME}</h1>
+<p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Live Session</p></div>
+<div style="background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;">
+<div style="text-align: center; margin-bottom: 20px;">${statusBadge}</div>
+<h2 style="color: #333; margin-top: 0;">Hello, ${recipientName}!</h2>
+<p><strong>${ownerName}</strong> has ${isInstant ? "started" : "scheduled"} a live session for the course <strong>"${courseName}"</strong>.</p>
+<div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #667eea;">
+<h3 style="margin: 0 0 10px 0; color: #333;">${sessionTitle}</h3>
+${timeSection}
+<p style="margin: 10px 0 0 0; font-size: 14px; color: #666;"><strong>Course:</strong> ${courseName}</p></div>
+<div style="text-align: center; margin: 30px 0;">
+<a href="${joinUrl}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">${isInstant ? "Join Live Session" : "View Session Details"}</a></div>
+<p style="font-size: 14px; color: #666; text-align: center;">Don't miss out on this learning opportunity!</p>
+</div>
+<div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+<p>You received this email because you're a member of a group on ${APP_NAME}.</p>
 </div></body></html>`
 }
