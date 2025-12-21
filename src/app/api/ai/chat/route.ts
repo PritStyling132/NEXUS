@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-
-// Grok AI uses OpenAI-compatible API format
-const GROK_API_URL = "https://api.x.ai/v1/chat/completions"
+import { GoogleGenerativeAI } from "@google/generative-ai"
 
 export async function POST(request: NextRequest) {
     try {
@@ -14,7 +12,7 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        const apiKey = process.env.GROK_API_KEY
+        const apiKey = process.env.GEMINI_API_KEY
 
         if (!apiKey) {
             return NextResponse.json(
@@ -22,6 +20,10 @@ export async function POST(request: NextRequest) {
                 { status: 500 }
             )
         }
+
+        // Initialize Gemini AI
+        const genAI = new GoogleGenerativeAI(apiKey)
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
 
         // Build system prompt with course context
         const systemPrompt = `You are an AI Tutor assistant for an online learning platform called Nexus. Your role is to help learners understand course material and answer their questions.
@@ -42,38 +44,41 @@ GUIDELINES:
 6. If the question is unrelated to learning or the course, politely redirect the conversation
 7. Encourage learners and celebrate their progress`
 
-        const response = await fetch(GROK_API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: "grok-beta",
-                messages: [
-                    { role: "system", content: systemPrompt },
-                    ...messages,
-                ],
+        // Convert messages to Gemini format
+        // Gemini uses 'user' and 'model' roles, and expects alternating turns
+        const chatHistory = messages.slice(0, -1).map((msg: { role: string; content: string }) => ({
+            role: msg.role === "assistant" ? "model" : "user",
+            parts: [{ text: msg.content }],
+        }))
+
+        // Get the latest user message
+        const latestMessage = messages[messages.length - 1]?.content || ""
+
+        // Start chat with system instruction and history
+        const chat = model.startChat({
+            history: chatHistory,
+            generationConfig: {
                 temperature: 0.7,
-                max_tokens: 1024,
-            }),
+                maxOutputTokens: 1024,
+            },
         })
 
-        if (!response.ok) {
-            const errorText = await response.text()
-            console.error("Grok API error:", response.status, errorText)
-            return NextResponse.json(
-                { error: `AI error: ${response.status}`, details: errorText },
-                { status: response.status }
-            )
-        }
+        // Prepend system prompt to first message if no history, otherwise just send the message
+        const promptToSend = chatHistory.length === 0
+            ? `${systemPrompt}\n\nUser question: ${latestMessage}`
+            : latestMessage
 
-        const data = await response.json()
-        const aiMessage = data.choices?.[0]?.message?.content || "I apologize, but I couldn't generate a response. Please try again."
+        const result = await chat.sendMessage(promptToSend)
+        const response = await result.response
+        const aiMessage = response.text() || "I apologize, but I couldn't generate a response. Please try again."
 
         return NextResponse.json({
             message: aiMessage,
-            usage: data.usage,
+            usage: {
+                prompt_tokens: response.usageMetadata?.promptTokenCount || 0,
+                completion_tokens: response.usageMetadata?.candidatesTokenCount || 0,
+                total_tokens: response.usageMetadata?.totalTokenCount || 0,
+            },
         })
     } catch (error) {
         console.error("AI chat error:", error)
